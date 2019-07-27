@@ -1,9 +1,9 @@
 #!/bin/bash -vx
 GENS=('psychedelic' 'squares+circles' 'sprites' 'cowsay')
 
-FONT=$(realpath ./egw/fonts/contrast.ttf)
-CONFIG=$(realpath ./egw/egw.conf)
-TPL=$(realpath ./egw/templates/random)
+FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
+CONFIG=$(realpath ./einguteswerkzeug/einguteswerkzeug.conf)
+TPL=$(realpath ./einguteswerkzeug/templates/random)
 MAX_SIZE=600
 FOUT="/tmp/test_generators.jpg"
 

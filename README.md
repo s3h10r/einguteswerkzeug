@@ -1,30 +1,31 @@
 einguteswerkzeug - a creative tool #inprogress
 ==============================================
 
-einguteswerkzeug (`egw`) is my latest personal tool for doing minimalistic visual artworks in
+einguteswerkzeug (`egw`) is a cli-tool for doing minimalistic visual artworks in
 printing quality - and learning and mixing fun to use technologies
 full-stack around it (raspi, webapis, flutter). :)
-einguteswerkzeug startet as a simple Python-script for creating high-resolution contactsheets,
-evolved into [something which **creates vintage polaroid style** fairly well](https://github.com/s3h10r/polaroidme)
-then and recently i am hacking some **filters and
-generative art capabilities** mostly based on wonderfull open-source-projects and
-inspiring blog-articles around (see credits) as **plugins** into it.
+The main purpose of the cli-version here is to produce high-quality, hand-signed & limited (generative)
+art prints with it. But you can use `egw` also just for giving your photos  
+[a fairly well & individual **vintage polaroid style**](#).
+einguteswerkzeug provides some phonky **filters and generative art capabilities**
+mostly based on wonderfull open-source-projects and inspiring blog-articles
+around (see credits & thanks). It's easy & fun to chain some simple filters
+to get complex results and a lightweight plugin-mechanism makes it [simple to roll your own **plugin(s)**](https://github.com/s3h10r/egw-plugins).
 
-einguteswerkzeug is far from stable yet and maybe i'll need to rewrite it
-from scratch later again - but for now `egw` works just fine for me. :)
-So maybe it can be usefull for you too - but don't put any blame on me if it
-toasts your hamster or so.
+einguteswerkzeug is in beta-status and therefore some interface-things will
+change for sure (or maybe it will even be rewritten from scratch again later) -
+but **for now `egw` works just fine for me**. So maybe it can be usefull for
+you too - but don't put any blame on me if it toasts your hamster or so.
 
 **Contributions are welcome** and they are greatly appreciated!
 
-Please feel free to
-send a pull-request and use the [issue tracker](https://github.com/s3h10r/polaroidme/issues).
+Please feel free to send a pull-request and use the [issue tracker](https://github.com/s3h10r/polaroidme/issues).
 
 
 show don't tell
 ---------------
 
-Some works i made with `egw` are:
+Some examples of works i am doing with `egw` are:
 
 <img src="/examples/awork_small_prettyinpink_vb.jpg" width="48%" title=""></img>
 <img src="/examples/test_generator-psychedelic.filter-mosaic,oil2.png" width="48%" title="Psychedelisches Öl2"></img>
@@ -33,8 +34,8 @@ Some works i made with `egw` are:
 <img src="/examples/test_generator-psychedelic.filter-pixelsort,oil.png" width="48%" title="Psychedelisches sortiert"></img>
 <img src="examples/spritething-13x13-10-2000.polaroid-01.small.png" width="48%" title="weiste bescheid... ;)"></img>
 
-Credits
-=======
+Credits & Thanks
+----------------
 
 filters
 -------
@@ -58,15 +59,26 @@ The generator 'psychedelic' is the wonderfull code of ["Random (Psychedelic) Art
 
 The generator 'squares+circles' is heavily [inspired by Kevin Howbrook's Squares](https://medium.com/@kevinhowbrook/learning-python-and-being-creative-making-art-with-code-da02880e3738)
 
+**Thank you guys! Live long and prosper!**
 
-**Thank you guys!** Live long and prosper!
-
-All the crap and bugs in the code is made by me of course. Please feel free to refacture, fix, tinker, ...
+All the crap and bugs in the code while quickly porting some old stuff to Py3
+is made by me of course. Please feel free to refacture, fix, tinker, ...
 
  changelog
  ---------
 
 * please see [CHANGELOG.md](./CHANGELOG.md)
+
+
+Donate
+------
+
+You do like einguteswerkzeug and want to support its development but you don't
+have the time? Please **consider a [donation](https://paypal.me/s3h10r)** - every
+cent helps me to pay the bills & to continue building awesome software for
+creative people.
+
+Thank you very much!
 
 License
 -------

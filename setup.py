@@ -13,16 +13,17 @@ with open('requirements.txt') as f:
 
 long_description_md = """
 einguteswerkzeug - vintage polaroid style + generative art
-====================================================
+==========================================================
 
-einguteswerkzeug is a simple command-line-tool & python-library for placing an image
+einguteswerkzeug is a command-line-tool & python-library for placing an image
 into a Polaroid-like frame and optionally put a title / description or meta infos
 out of EXIF-data on the bottom. The default font mimics scribbled handwriting
 but any (ttf-)font which suits your taste is supported. The tool offers basic
 features like auto-scaling up-/downwards and/or cropping, using any (ttf-)font,
 supports high-res output and gets it's job done well.
 
-Starting as `a script for making high-res contactsheets which make the beholder's eyes not bleed <https://github.com/s3h10r/fokus>`_ recently einguteswerkzeug gets phonky by providing:
+Starting as a script for making high-res contactsheets which make the beholder's
+eyes not bleed recently einguteswerkzeug gets phonky by turning into an artist's tool:
 
 * generative-art-"generators" which are fun to play with
 * chainable filters (`--filter f1,f2,...,fN`)
@@ -42,7 +43,7 @@ einguteswerkzeug is actively maintained & developed (2019).
 
 Contributions are welcome, and they are greatly appreciated!
 
-Please feel free to send pull-requests an use the `issue tracker <https://github.com/s3h10r/einguteswerkzeug/issues>`_.
+Please feel free to send a pull-request and use the `issue tracker <https://github.com/s3h10r/einguteswerkzeug/issues>`_.
 
 Have fun!
 
@@ -52,7 +53,7 @@ _`examples`: https://github.com/s3h10r/einguteswerkzeug/blob/master/README.md
 setuptools.setup(
      name='einguteswerkzeug',
      version='0.3.0',
-     scripts=['cli/einguteswerkzeug', 'cli/pom'] ,
+     scripts=['cli/einguteswerkzeug', 'cli/egw'] ,
      author="Sven Hessenmüller",
      author_email="sven.hessenmueller@gmail.com",
      description="converts an image into vintage polaroid style - and can do some phonky stuff. :D",

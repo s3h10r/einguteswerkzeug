@@ -4,8 +4,8 @@ IMAGE="./tmp/tests/DSCF4700"
 IMAGE_EXT=".jpg"
 IMAGE_FQFN="${IMAGE}${IMAGE_EXT}"
 IMAGE_FN="$(basename ${IMAGE_FQFN})"
-#FONT=$(realpath ./egw/fonts/MiasScribblings~.ttf)
-FONT=$(realpath ./egw/fonts/contrast.ttf)
+#FONT=$(realpath ./einguteswerkzeug/fonts/MiasScribblings~.ttf)
+FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
 VENV_INSTALL=$(realpath ./tmp/venv_egw)
 
 # --- build fresh package and install it in a venv for testing purpose

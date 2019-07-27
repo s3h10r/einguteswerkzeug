@@ -1,8 +1,7 @@
 #!/bin/bash -vx
 DIR_IN='./input/'
-FQFN_CONF=$(realpath ./egw/egw.conf)
-#FONT=$(realpath ./egw/fonts/MiasScribblings~.ttf)
-FQFN_FONT=$(realpath ./egw/fonts/contrast.ttf)
+FQFN_CONF=$(realpath ./einguteswerkzeug/einguteswerkzeug.conf)
+FQFN_FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
 
 #egw ./input/spritething-13x13-10-2000.jpg -o ./examples/spritething-13x13-10-2000.polaroid.png -f fonts/asciid.fontvir.us.ttf  --template ./egw/templates/fzm-Polaroid.Frame-10.jpg --title "space invaders" && feh ./examples/spritething-13x13-10-2000.polaroid.png
 egw ${DIR_IN}spritething-13x13-10-2000.jpg -o spritething-13x13-10-2000.polaroid-01.png -f fonts/asciid.fontvir.us.ttf  --template ./egw/templates/fzm-Polaroid.Frame-10.jpg --title "space invaders" && feh spritething-13x13-10-2000.polaroid-01.png
