@@ -3,21 +3,35 @@ einguteswerkzeug - a creative tool #inprogress
 
 einguteswerkzeug (`egw`) is my latest personal tool for doing minimalistic visual artworks in
 printing quality - and learning and mixing fun to use technologies
-full-stack around it (raspi, webapis, flutter). :-)
-eiguteswerkzeug startet as a simple script for creating high-resolution contactsheets,
-evolved into (something which creates **vintage polaroid style**)[https://github.com/s3h10r/polaroidme]
-fairly well and recently i add some **filters and
+full-stack around it (raspi, webapis, flutter). :)
+eiguteswerkzeug startet as a simple Python-script for creating high-resolution contactsheets,
+evolved into [something which creates **vintage polaroid style fairly well**](https://github.com/s3h10r/polaroidme)
+then and recently i am hacking some **filters and
 generative art capabilities** mostly based on wonderfull open-source-projects and
-inspiring blog-articles around (see credits) as **plugins**.
+inspiring blog-articles around (see credits) as **plugins** into it.
+
+einguteswerkzeug is far from stable yet and maybe i'll need to rewrite it
+from scratch later again - but for now `egw` works just fine for me. :)
+So maybe it can be usefull for you too - but don't put any blame on me if it
+toasts your hamster or so.
+
+**Contributions are welcome** and they are greatly appreciated!
+
+Please feel free to
+send a pull-request and use the [issue tracker](https://github.com/s3h10r/polaroidme/issues).
+
+
+show don't tell
+---------------
 
 Some works i made with `egw` are:
 
 <img src="/examples/awork_small_prettyinpink_vb.jpg" width="48%" title=""></img>
+<img src="/examples/test_generator-psychedelic.filter-mosaic,oil2.png" width="48%" title="Psychedelisches Öl2"></img>
 <img src="/examples/awork_small_sushiinsuhl_vb.jpg" width="48%" title=""></img>
 <img src="/examples/awork_small_tagesbefehl_vb.jpg" width="48%" title=""></img>
-<img src="/examples/test_generator-psychedelic.filter-mosaic,oil2.png" width="48%" title="Psychedelisches Öl2"></img>
 <img src="/examples/test_generator-psychedelic.filter-pixelsort,oil.png" width="48%" title="Psychedelisches sortiert"></img>
-<img src="examples/spritething-13x13-10-2000.polaroid-01.small.png" width="90%" title="weiste bescheid... ;)"></img>
+<img src="examples/spritething-13x13-10-2000.polaroid-01.small.png" width="48%" title="weiste bescheid... ;)"></img>
 
 Credits
 =======
