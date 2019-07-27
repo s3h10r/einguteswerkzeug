@@ -19,6 +19,8 @@ do
   echo "testing filter $filter..."
 egw $FIN -o $FOUT --size-inner 400 --template $TPL --config $CONFIG --crop --alignment center --title "--filter $filter #einguteswerkzeug" --filter $filter --font $FONT -m 600 || exit 1
 feh $FOUT
+egw $FIN -o $FOUT --size-inner 800 --crop --alignment center --filter $filter -m 600 --noframe || exit 1
+feh $FOUT
 done
 
 for filter in "${FILTERS_MULTI_INPUT[@]}"
