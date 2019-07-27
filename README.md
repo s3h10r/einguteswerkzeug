@@ -8,7 +8,7 @@ full-stack around it (raspi, webapis, docker, serverless computing, flutter). :)
 <img src="examples/spritething-13x13-10-2000.polaroid-01.small.png" width="90%" title="weiste bescheid... ;)"></img>
 
 The main purpose of the cli-version is to produce **high-quality**, hand-signed & limited (generative)
-**art prints**. But `egw` can also just be used for [**giving your photos a fairly well & individual vintage polaroid style**](README.md). einguteswerkzeug provides some phonky **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
+**art prints**. But `egw` can also just be used only for [**giving your photos a fairly well & individual vintage polaroid style**](README.md) <sup>[1](#footnote1)</sup>. einguteswerkzeug provides some phonky **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
 around (see credits & thanks). in short the software provides:
 
 * generative-art-"generators" which are fun to play with
@@ -138,3 +138,10 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+<!-- footnotes -->
+<a name="footnote1">1</a>: that was everything [the first version](https://github.com/s3h10r/polaroidme) of the tool was made for and it merged herein after the project grew into
+something much more flexible. Now the polaroid style is just a feature
+used for the standard output because i really love the polaroid style and
+find it usefull for contactsheets and alike - but it can be disabled of course (option `--no-frame`).
