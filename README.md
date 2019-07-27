@@ -5,10 +5,21 @@ einguteswerkzeug (`egw`) is a **tool for creating minimalistic visual artworks**
 printing quality - and learning and mixing fun to use technologies
 full-stack around it (raspi, webapis, flutter). :)
 
+<img src="examples/spritething-13x13-10-2000.polaroid-01.small.png" width="90%" title="weiste bescheid... ;)"></img>
+
 The main purpose of the cli-version is to produce high-quality, hand-signed & limited (generative)
-art prints with it. But you can use `egw` also just for giving your photos [a fairly well & individual **vintage polaroid style**](#). einguteswerkzeug provides some phonky **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
-around (see credits & thanks). It's easy & fun to chain some simple filters
+art prints. But `egw` can also just be used for giving your photos [a fairly well & individual **vintage polaroid style**](README.md). einguteswerkzeug provides some phonky **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
+around (see credits & thanks).
+
+simply turn einguteswerkzeug into deinguteswerkzeug
+---------------------------------------------------
+
+It's fun to chain some simple filters
 to get complex results and a lightweight plugin-mechanism makes it [simple to roll your own **plugin(s)**](https://github.com/s3h10r/egw-plugins).
+
+
+contributions are welcome
+--------------------------
 
 This software is in **beta-status** and therefore some interface-things will
 change for sure - but for now `egw` already works just fine for me. So maybe it
@@ -19,8 +30,8 @@ can be usefull for you too.
 Please feel free to send a pull-request and use the [issue tracker](https://github.com/s3h10r/polaroidme/issues).
 
 
-show don't tell
----------------
+TLDR; please show don't tell
+----------------------------
 
 Some examples of works i am doing with `egw` are:
 
@@ -72,7 +83,7 @@ Donate
 ------
 
 You do like einguteswerkzeug and want to support its development but you don't
-have the time? Please **consider a [donation](https://paypal.me/s3h10r)** - every
+have the time? Please **consider a small [donation](https://paypal.me/s3h10r)** - every
 cent helps me to pay the bills & to continue building awesome software for
 creative people.
 
