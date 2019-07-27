@@ -1,14 +1,14 @@
-einguteswerkzeug - a creative tool
-==================================
+einguteswerkzeug - a creative tool for generative artworks
+==========================================================
 
 einguteswerkzeug (`egw`) is a **tool for creating minimalistic visual artworks** in
 printing quality - and learning and mixing fun to use technologies
-full-stack around it (raspi, webapis, flutter). :)
+full-stack around it (raspi, webapis, docker, serverless computing, flutter). :)
 
 <img src="examples/spritething-13x13-10-2000.polaroid-01.small.png" width="90%" title="weiste bescheid... ;)"></img>
 
-The main purpose of the cli-version is to produce high-quality, hand-signed & limited (generative)
-art prints. But `egw` can also just be used for giving your photos [a fairly well & individual **vintage polaroid style**](README.md). einguteswerkzeug provides some phonky **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
+The main purpose of the cli-version is to produce **high-quality**, hand-signed & limited (generative)
+**art prints**. But `egw` can also just be used for [**giving your photos a fairly well & individual vintage polaroid style**](README.md). einguteswerkzeug provides some phonky **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
 around (see credits & thanks). in short the software provides:
 
 * generative-art-"generators" which are fun to play with
@@ -21,7 +21,7 @@ around (see credits & thanks). in short the software provides:
 
 This software is in **beta-status** and therefore some interface-things will
 change for sure - but for now `egw` already works just fine for me. So maybe it
-can be usefull for you too.
+can be usefull for you too, especially if you like to tinker with code.
 
 
 turn einguteswerkzeug into deinguteswerkzeug :)
@@ -38,7 +38,7 @@ Please feel free to send a pull-request and use the [issue tracker](https://gith
 TLDR; show don't tell
 ---------------------
 
-Some examples of works i am doing with `einguteswerkzeug` are:
+Some examples of works i am doing with `einguteswerkzeug`:
 
 <img src="/examples/awork_small_prettyinpink_vb.jpg" width="48%" title=""></img>
 <img src="/examples/test_generator-psychedelic.filter-mosaic,oil2.png" width="48%" title="Psychedelisches Öl2"></img>
@@ -112,6 +112,10 @@ License
 =======
 
 einguteswerkzeug is made with <3, actively maintained & developed by Sven Hessenmüller.
+
+einguteswerkzeug uses some excellent 3rd-party open source software and snippets - please
+take a look at Credits & Thanks for the complete list of codes & inspirations the author
+is gratefull for being allowed to use and remix in this software product.
 
 MIT License
 
