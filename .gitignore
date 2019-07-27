@@ -1,3 +1,6 @@
+einguteswerkzeug/templates/*png
+einguteswerkzeug/templates/*jpg
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

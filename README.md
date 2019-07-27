@@ -4,8 +4,8 @@ einguteswerkzeug - a creative tool #inprogress
 einguteswerkzeug (`egw`) is my latest personal tool for doing minimalistic visual artworks in
 printing quality - and learning and mixing fun to use technologies
 full-stack around it (raspi, webapis, flutter). :)
-eiguteswerkzeug startet as a simple Python-script for creating high-resolution contactsheets,
-evolved into [something which creates **vintage polaroid style fairly well**](https://github.com/s3h10r/polaroidme)
+einguteswerkzeug startet as a simple Python-script for creating high-resolution contactsheets,
+evolved into [something which **creates vintage polaroid style** fairly well](https://github.com/s3h10r/polaroidme)
 then and recently i am hacking some **filters and
 generative art capabilities** mostly based on wonderfull open-source-projects and
 inspiring blog-articles around (see credits) as **plugins** into it.

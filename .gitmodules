@@ -1,0 +1,3 @@
+[submodule "einguteswerkzeug/plugins"]
+	path = einguteswerkzeug/plugins
+	url = https://github.com/s3h10r/egw-plugins

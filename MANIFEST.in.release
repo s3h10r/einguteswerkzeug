@@ -1,0 +1,13 @@
+include README.md
+include CHANGELOG.md
+include LICENSE
+include LICENSE.txt
+recursive-include einguteswerkzeug/core *
+recursive-include einguteswerkzeug/helpers *
+recursive-include einguteswerkzeug/fonts *
+recursive-include einguteswerkzeug/plugins *
+recursive-include einguteswerkzeug/helpers *
+#recursive-include einguteswerkzeug/templates * # only in development mode
+include einguteswerkzeug/templates/README       # for pypi-package we can't include templates at the moment, TODO: make a free einguteswerkzeug-template repo
+include einguteswerkzeug/*conf
+include requirements.txt

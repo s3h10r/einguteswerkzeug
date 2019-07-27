@@ -1,0 +1,12 @@
+include README.md
+include CHANGELOG.md
+include LICENSE
+include LICENSE.txt
+recursive-include einguteswerkzeug/core *
+recursive-include einguteswerkzeug/helpers *
+recursive-include einguteswerkzeug/fonts *
+recursive-include einguteswerkzeug/plugins *
+recursive-include einguteswerkzeug/templates * # only in development mode
+#include einguteswerkzeug/templates/README     # otherwise (pypi-package) this
+include einguteswerkzeug/*conf
+include requirements.txt
