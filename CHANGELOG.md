@@ -1,4 +1,4 @@
-**0.3.0** (work in progress)
+**0.3.1** (work in progress)
 - introduces generators (`--generator` option) as an alternative to source-image
   (psychedelic, squares+circles, sprites, cowsay)
 - implements a simple to use plugin-mechanism for custom filters & generators.
@@ -8,7 +8,8 @@
 - enables filter-chaining support
 - seperates polaroidme-plugin repository from the core-script
 - supports random-template choice (`--template <fqdir>/random`, `--template <fqdir>/rand`)
-- restructures all the messy parts at least a bit ([packages](https://docs.python.org/3.6/tutorial/modules.html#packages)
+- restructures all the messy parts at least a bit ([packages](https://docs.python.org/3.6/tutorial/modules.html#packages))
+- adds `--noframe` option (== do just the plain image processing without pasting it into a template)
 - TODO: contactsheet supports filtering by time-window
 - TODO: improved template support
 - bugfixes & new bugs

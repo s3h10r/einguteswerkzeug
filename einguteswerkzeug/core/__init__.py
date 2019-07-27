@@ -64,7 +64,7 @@ PLUGINS_DUMMY = {}
 PLUGINS_FILTERS = {}
 PLUGINS_GENERATORS = {}
 
-__version__ = (0,9,38)
+__version__ = (0,3,1)
 
 def get_version():
     return(__version__)
@@ -268,15 +268,16 @@ def make_polaroid(source, size, options, align, title, f_font = None, font_size 
     img = scale_square_image(img, size)
     if filter_func:
         img = filter_func(img)
-    if template:
-        log.warning("--template is experimental!")
-        img = _paste_into_template(image=img, template=template)
-        description = None
-        img = add_text(img, caption, description, f_font = f_font, font_size = font_size)
-    else:
-        img = add_frame(img)
-        description = None
-        img = add_text(img, caption, description, f_font = f_font, font_size = font_size)
+    if not options['noframe']: # if pasting into a template (for example a polaroid frame) is wanted #2
+        if template:
+            log.warning("--template is experimental!")
+            img = _paste_into_template(image=img, template=template)
+            description = None
+            img = add_text(img, caption, description, f_font = f_font, font_size = font_size)
+        else:
+            img = add_frame(img)
+            description = None
+            img = add_text(img, caption, description, f_font = f_font, font_size = font_size)
     return img
 
 def _paste_into_template(image = None, template = './templates/fzm-Polaroid.Frame-01.jpg', box=None):
@@ -436,7 +437,7 @@ def main(args):
     rand_seed = random.randrange(sys.maxsize)
     random.seed(rand_seed)
     _register_plugins()
-    options = { 'rotate': None, 'crop' : True } # defaults
+    options = { 'rotate': None, 'crop' : True, 'noframe' : False} # defaults
     source = []
     size = IMAGE_SIZE # inner size, only the picture without surrounding frame
     target = None
@@ -485,6 +486,8 @@ def main(args):
         options['crop'] = True
     elif args['--nocrop']:
         options['crop'] = False
+    if args['--noframe']:
+        options['noframe'] = True # no polaroid at all but filtered image maybe
     if args['--size-inner']:
         size = int(args['--size-inner'])
     if args['--alignment']: # only used if --crop

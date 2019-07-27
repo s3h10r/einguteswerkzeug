@@ -8,7 +8,7 @@ full-stack around it (raspi, webapis, docker, serverless computing, flutter). :)
 <img src="examples/spritething-13x13-10-2000.polaroid-01.small.png" width="90%" title="weiste bescheid... ;)"></img>
 
 The main purpose of the cli-version is to produce **high-quality**, hand-signed & limited (generative)
-**art prints**. But `egw` can also just be used for [**giving your photos a fairly well & individual vintage polaroid style**](README.md). einguteswerkzeug provides some phonky **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
+**art prints**. But `egw` can also just be used only for [**giving your photos a fairly well & individual vintage polaroid style**](README.md) <sup>[1](#footnote1)</sup>. einguteswerkzeug provides some phonky **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
 around (see credits & thanks). in short the software provides:
 
 * generative-art-"generators" which are fun to play with
@@ -22,7 +22,6 @@ around (see credits & thanks). in short the software provides:
 This software is in **beta-status** and therefore some interface-things will
 change for sure - but for now `egw` already works just fine for me. So maybe it
 can be usefull for you too, especially if you like to tinker with code.
-
 
 turn einguteswerkzeug into deinguteswerkzeug :)
 -----------------------------------------------
@@ -138,3 +137,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+Footnotes
+=========
+
+<!-- footnotes -->
+<a name="footnote1">[1]</a>: The polaroid style is a feature
+used by default because i really love the polaroid style and
+find it appealing & usefull for contactsheets and alike - it can be disabled
+of course (option `--noframe`).
