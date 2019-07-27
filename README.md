@@ -107,16 +107,6 @@ changelog
 
 * please see [CHANGELOG.md](./CHANGELOG.md)
 
-footnotes
-=========
-
-<!-- footnotes -->
-<a name="footnote1">[1]</a>: that was everything [the first version](https://github.com/s3h10r/polaroidme) of the tool was made for and it merged herein after the project grew into
-something much more flexible. Now the polaroid style is just a feature
-used for the standard output because i really love the polaroid style and
-find it usefull for contactsheets and alike - but it can be disabled of course (option `--no-frame`).
-
-
 License
 =======
 
@@ -147,3 +137,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+Footnotes
+=========
+
+<!-- footnotes -->
+<a name="footnote1">[1]</a>: The polaroid style is a feature
+used by default because i really love the polaroid style and
+find it appealing & usefull for contactsheets and alike - it can be disabled
+of course (option `--noframe`).

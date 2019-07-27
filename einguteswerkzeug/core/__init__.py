@@ -64,7 +64,7 @@ PLUGINS_DUMMY = {}
 PLUGINS_FILTERS = {}
 PLUGINS_GENERATORS = {}
 
-__version__ = (0,9,38)
+__version__ = (0,3,1)
 
 def get_version():
     return(__version__)
