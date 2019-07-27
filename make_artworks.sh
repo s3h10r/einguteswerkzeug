@@ -6,13 +6,20 @@
 # https://anypla.net/einguteswerkzeug
 
 GENS=('psychedelic' 'squares+circles' 'sprites' 'cowsay')
-FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
+#FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
+FONT=$(realpath ./einguteswerkzeug/fonts/default.ttf)
 CONFIG=$(realpath ./einguteswerkzeug/einguteswerkzeug.conf)
 TPL=$(realpath ./einguteswerkzeug/templates/random)
 MAX_SIZE=600
 FOUT="/tmp/test_generators.jpg"
 
 egw --version
+
+egw --generator squares+circles --params-generator='{"shape" : 0}' -o /tmp/test.jpg --filter quads --params-filter='{"mode" : 1, "iterations" : 128}' --config $CONFIG --template $TPL  --title "quad-filtered generator s+c (variant a), 2019 #einguteswerkzeug" --max-size 800 || exit 1
+feh /tmp/test.jpg
+egw --generator squares+circles --params-generator='{"shape" : 0}' -o /tmp/test.jpg --filter quads --params-filter='{"mode" : 2, "iterations" : 128}' --config $CONFIG --template $TPL  --title "quad-filtered generator s+c (variant b), 2019 #einguteswerkzeug" --max-size 800 || exit 1
+feh /tmp/test.jpg
+
 
 egw ./input/DSCF0593.jpg -o /tmp/test.jpg -c ${CONFIG} --template ${TPL}  --title "pretty in pink, 2018" --max-size 800 --nocrop || exit 1
 feh /tmp/test.jpg
