@@ -1,7 +1,8 @@
 #!/bin/bash -vx
 GENS=('psychedelic' 'squares+circles' 'sprites' 'cowsay')
 
-FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
+#FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
+FONT=$(realpath ./einguteswerkzeug/fonts/default.ttf)
 CONFIG=$(realpath ./einguteswerkzeug/einguteswerkzeug.conf)
 TPL=$(realpath ./einguteswerkzeug/templates/random)
 MAX_SIZE=600
@@ -12,7 +13,7 @@ egw --version
 for gen in "${GENS[@]}"
 do
   echo "testing generator $gen..."
-  egw --generator $gen -o $FOUT --title "--generator=${gen}" --template $TPL -c $CONFIG -f $FONT -m $MAX_SIZE|| exit 1
+  egw --generator $gen -o $FOUT --title "--generator=${gen} #einguteswerkzeug" --template $TPL -c $CONFIG -f $FONT -m $MAX_SIZE|| exit 1
   feh $FOUT
 done
 

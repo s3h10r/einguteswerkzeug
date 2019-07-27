@@ -3,7 +3,8 @@ FILTERS=('quads' 'ascii' 'pixelsort' 'diffuse' 'emboss' 'find_edge' 'glowing_edg
 FILTERS_MULTI_INPUT=('composite')
 CONFIG=$(realpath ./einguteswerkzeug/einguteswerkzeug.conf)
 TPL=$(realpath ./einguteswerkzeug/templates/random)
-FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
+#FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
+FONT=$(realpath ./einguteswerkzeug/fonts/default.ttf)
 #FIN="./input/octocat.png"
 FIN=$(realpath ./input/IMG_20190720_122246.jpg)
 FIN2=$(realpath ./examples/smartphone-endofgreenshirt.png)
@@ -16,7 +17,7 @@ egw --version
 for filter in "${FILTERS[@]}"
 do
   echo "testing filter $filter..."
-egw $FIN -o $FOUT --size-inner 400 --template $TPL --config $CONFIG --crop --alignment center --title "--filter $filter" --filter $filter --font $FONT -m 600 || exit 1
+egw $FIN -o $FOUT --size-inner 400 --template $TPL --config $CONFIG --crop --alignment center --title "--filter $filter #einguteswerkzeug" --filter $filter --font $FONT -m 600 || exit 1
 feh $FOUT
 done
 

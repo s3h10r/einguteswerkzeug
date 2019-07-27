@@ -1,7 +1,8 @@
 #!/bin/bash -vx
 GENS=('psychedelic' 'squares+circles' 'sprites' 'cowsay')
 
-FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
+#FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
+FONT=$(realpath ./einguteswerkzeug/fonts/default.ttf)
 CONFIG=$(realpath ./einguteswerkzeug/einguteswerkzeug.conf)
 TPL=$(realpath ./einguteswerkzeug/templates/random)
 MAX_SIZE=600
@@ -9,11 +10,11 @@ FOUT="/tmp/test_generators.jpg"
 
 egw --version
 
-egw --generator squares+circles --params-generator='{"shape" : 0}' -o /tmp/test.jpg --filter quads --params-filter='{"mode" : 1, "iterations" : 128}' --config $CONFIG --template $TPL  --max-size 800 || exit 1
+egw --generator squares+circles --params-generator='{"shape" : 0}' -o /tmp/test.jpg --filter quads --params-filter='{"mode" : 1, "iterations" : 128}' --config $CONFIG --template $TPL  --title "quad-filtered generator s+c (variant a), 2019 #einguteswerkzeug" --max-size 800 || exit 1
 feh /tmp/test.jpg
-egw --generator squares+circles --params-generator='{"shape" : 0}' -o /tmp/test.jpg --filter quads --params-filter='{"mode" : 2, "iterations" : 128}' --config $CONFIG --template $TPL  --max-size 800 || exit 1
+egw --generator squares+circles --params-generator='{"shape" : 0}' -o /tmp/test.jpg --filter quads --params-filter='{"mode" : 2, "iterations" : 128}' --config $CONFIG --template $TPL  --title "quad-filtered generator s+c (variant b)i, 2019 #einguteswerkzeug" --max-size 800 || exit 1
 feh /tmp/test.jpg
-egw --generator squares+circles --params-generator='{"shape" : 0}' -o /tmp/test.jpg --filter quads --params-filter='{"mode" : 3, "iterations" : 128}' --config $CONFIG --template $TPL  --max-size 800 || exit 1
+egw --generator squares+circles --params-generator='{"shape" : 0}' -o /tmp/test.jpg --filter quads --params-filter='{"mode" : 3, "iterations" : 128}' --config $CONFIG --template $TPL  --title "quad-filtered generator s+c (variant c)i, 2019 #einguteswerkzeug" --max-size 800 || exit 1
 feh /tmp/test.jpg
 
 egw ./input/DSCF6061.jpg -o /tmp/test.jpg --filter quads --params-filter='{"mode" : 3, "iterations" : 128}' --config $CONFIG --template $TPL --title-meta --max-size 800 || exit 1
