@@ -12,29 +12,32 @@ with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
 long_description_md = """
-einguteswerkzeug - vintage polaroid style + generative art
+einguteswerkzeug - a creative tool for generative artworks
 ==========================================================
 
-einguteswerkzeug is a command-line-tool & python-library for placing an image
+einguteswerkzeug (`egw`) is a **cli-tool for creating minimalistic visual artworks** in
+printing quality. it can also simply be used only for **giving your photos a fairly
+well & individual vintage polaroid style** by placing an image
 into a Polaroid-like frame and optionally put a title / description or meta infos
 out of EXIF-data on the bottom. The default font mimics scribbled handwriting
 but any (ttf-)font which suits your taste is supported. The tool offers basic
 features like auto-scaling up-/downwards and/or cropping, using any (ttf-)font,
 supports high-res output and gets it's job done well.
 
-Starting as a script for making high-res contactsheets which make the beholder's
-eyes not bleed recently einguteswerkzeug gets phonky by turning into an artist's tool:
+einguteswerkzeug provides some phonky **filters and generative art capabilities**
+mostly based on wonderfull open-source-projects and inspiring blog-articles
+around (see credits & thanks). in short the software provides:
 
 * generative-art-"generators" which are fun to play with
 * chainable filters (`--filter f1,f2,...,fN`)
-* reading EXIF-data
+* reading & processing EXIF-data
 * lightweight plugin-framework - makes it simple to use (and write) additional filters & generators
-* support for templates
-* `--help`-option :)
+* vintage polaroid style supporting (high-res) templates
+* supports your favorite (truetype-)font
+* `--help`-option :) + usage-examples as shellscripts
 
 The author's main usecase for einguteswerkzeug is doing minimalistic artworks in
-printing quality with it - and learning and mixing fun to use technologies
-full-stack around it (raspi, webapis, flutter). :D
+printing quality with it.
 
 To see if it could be usefull for your needs take a look at the project's
 github-repo and check out the `examples`_
@@ -52,7 +55,7 @@ _`examples`: https://github.com/s3h10r/einguteswerkzeug/blob/master/README.md
 
 setuptools.setup(
      name='einguteswerkzeug',
-     version='0.3.0',
+     version='0.3.1',
      scripts=['cli/einguteswerkzeug', 'cli/egw'] ,
      author="Sven Hessenmüller",
      author_email="sven.hessenmueller@gmail.com",

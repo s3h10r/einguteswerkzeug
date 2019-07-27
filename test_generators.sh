@@ -15,6 +15,9 @@ do
   echo "testing generator $gen..."
   egw --generator $gen -o $FOUT --title "--generator=${gen} #einguteswerkzeug" --template $TPL -c $CONFIG -f $FONT -m $MAX_SIZE|| exit 1
   feh $FOUT
+  egw --generator $gen -o $FOUT -m $MAX_SIZE --noframe || exit 1
+  feh $FOUT
+done
 done
 
 exit 0
