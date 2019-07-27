@@ -87,7 +87,7 @@ The ASCII-art filter relies on codesnippets from the following Open Source proje
 Most filters are adopted from:
      [https://github.com/Tinker-S/SomeImageFilterWithPython](https://github.com/Tinker-S/SomeImageFilterWithPython)
 
-- The quads-filter is a quickndirty py3-port of the wonderfull code by [Michael Fogleman][https://github.com/fogleman/Quads]
+- The quads-filter is a quickndirty py3-port of the wonderfull code by [Michael Fogleman](https://github.com/fogleman/Quads)
 
 generators
 ----------
