@@ -23,7 +23,6 @@ This software is in **beta-status** and therefore some interface-things will
 change for sure - but for now `egw` already works just fine for me. So maybe it
 can be usefull for you too, especially if you like to tinker with code.
 
-
 turn einguteswerkzeug into deinguteswerkzeug :)
 -----------------------------------------------
 
@@ -108,6 +107,16 @@ changelog
 
 * please see [CHANGELOG.md](./CHANGELOG.md)
 
+footnotes
+=========
+
+<!-- footnotes -->
+<a name="footnote1">[1]</a>: that was everything [the first version](https://github.com/s3h10r/polaroidme) of the tool was made for and it merged herein after the project grew into
+something much more flexible. Now the polaroid style is just a feature
+used for the standard output because i really love the polaroid style and
+find it usefull for contactsheets and alike - but it can be disabled of course (option `--no-frame`).
+
+
 License
 =======
 
@@ -138,10 +147,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-
-<!-- footnotes -->
-<a name="footnote1">1</a>: that was everything [the first version](https://github.com/s3h10r/polaroidme) of the tool was made for and it merged herein after the project grew into
-something much more flexible. Now the polaroid style is just a feature
-used for the standard output because i really love the polaroid style and
-find it usefull for contactsheets and alike - but it can be disabled of course (option `--no-frame`).
