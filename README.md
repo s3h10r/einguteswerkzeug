@@ -1,21 +1,18 @@
-einguteswerkzeug - a creative tool #inprogress
-==============================================
+einguteswerkzeug - a creative tool
+==================================
 
-einguteswerkzeug (`egw`) is a cli-tool for doing minimalistic visual artworks in
+einguteswerkzeug (`egw`) is a **tool for creating minimalistic visual artworks** in
 printing quality - and learning and mixing fun to use technologies
 full-stack around it (raspi, webapis, flutter). :)
-The main purpose of the cli-version here is to produce high-quality, hand-signed & limited (generative)
-art prints with it. But you can use `egw` also just for giving your photos  
-[a fairly well & individual **vintage polaroid style**](#).
-einguteswerkzeug provides some phonky **filters and generative art capabilities**
-mostly based on wonderfull open-source-projects and inspiring blog-articles
+
+The main purpose of the cli-version is to produce high-quality, hand-signed & limited (generative)
+art prints with it. But you can use `egw` also just for giving your photos [a fairly well & individual **vintage polaroid style**](#). einguteswerkzeug provides some phonky **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
 around (see credits & thanks). It's easy & fun to chain some simple filters
 to get complex results and a lightweight plugin-mechanism makes it [simple to roll your own **plugin(s)**](https://github.com/s3h10r/egw-plugins).
 
-einguteswerkzeug is in beta-status and therefore some interface-things will
-change for sure (or maybe it will even be rewritten from scratch again later) -
-but **for now `egw` works just fine for me**. So maybe it can be usefull for
-you too - but don't put any blame on me if it toasts your hamster or so.
+This software is in **beta-status** and therefore some interface-things will
+change for sure - but for now `egw` already works just fine for me. So maybe it
+can be usefull for you too.
 
 **Contributions are welcome** and they are greatly appreciated!
 
@@ -33,6 +30,7 @@ Some examples of works i am doing with `egw` are:
 <img src="/examples/awork_small_tagesbefehl_vb.jpg" width="48%" title=""></img>
 <img src="/examples/test_generator-psychedelic.filter-pixelsort,oil.png" width="48%" title="Psychedelisches sortiert"></img>
 <img src="examples/spritething-13x13-10-2000.polaroid-01.small.png" width="48%" title="weiste bescheid... ;)"></img>
+
 
 Credits & Thanks
 ----------------
