@@ -1,12 +1,12 @@
 #!/bin/bash -vx
-GENS=('psychedelic' 'squares+circles' 'sprites' 'cowsay')
+GENS=('nlines' 'psychedelic' 'squares+circles' 'sprites' 'cowsay')
 
 #FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
 FONT=$(realpath ./einguteswerkzeug/fonts/default.ttf)
 CONFIG=$(realpath ./einguteswerkzeug/einguteswerkzeug.conf)
 TPL=$(realpath ./einguteswerkzeug/templates/random)
 MAX_SIZE=600
-FOUT="/tmp/test_generators.jpg"
+FOUT="/tmp/test_generators.png" #jpeg doesn't support 'RGBA'
 
 egw --version
 
@@ -18,9 +18,6 @@ do
   egw --generator $gen -o $FOUT -m $MAX_SIZE --noframe || exit 1
   feh $FOUT
 done
-done
-
-exit 0
 
 for gen in "${GENS[@]}"
 do
@@ -45,5 +42,4 @@ do
   feh $FOUT
   egw --generator $gen -o $FOUT --title "--generator=${gen} + --filter=ascii,oil2" --filter ascii,oil2 --template $TPL -c $CONFIG -f $FONT -m $MAX_SIZE || exit 1
   feh $FOUT
-
 done
