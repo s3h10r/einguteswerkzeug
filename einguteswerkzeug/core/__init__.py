@@ -64,7 +64,7 @@ PLUGINS_DUMMY = {}
 PLUGINS_FILTERS = {}
 PLUGINS_GENERATORS = {}
 
-__version__ = (0,3,1)
+__version__ = (0,3,2)
 
 def get_version():
     return(__version__)
@@ -465,8 +465,8 @@ def main(args):
             show_error("Hu? Sorry generator '%s' unknown. Valid choices are: %s" % (generator, PLUGINS_GENERATORS.keys()))
     params_generator = []
     if args['--params-generator']:
-        params_filter = args['--params-generator'].split('}')
-        params_filter = [el + '}' for el in params_generator if el != '' ]
+        params_generator = args['--params-generator'].split('}')
+        params_generator = [el + '}' for el in params_generator if el != '' ]
     log.debug("params_generator: %s" % params_generator)
     # overwriting the default-kwargs for filters with user-provided settings
     for i,pjson in enumerate(params_generator): # should only be 1 generator
@@ -479,9 +479,9 @@ def main(args):
                 raise Exception("filter %s has no parameter '%s'. please check your --params-filter argument(s)." % (apply_filters[i], k))
 
     if args['--clockwise']:
-        option['rotate'] = 'clockwise'
+        options['rotate'] = 'clockwise'
     elif args['--anticlock']:
-        option['rotate'] = 'anticlockwise'
+        options['rotate'] = 'anticlockwise'
     if args['--crop']:
         options['crop'] = True
     elif args['--nocrop']:
