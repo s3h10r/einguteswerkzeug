@@ -5,7 +5,8 @@ einguteswerkzeug (`egw`) is a **tool for creating minimalistic visual artworks**
 printing quality - and learning and mixing fun to use technologies
 full-stack around it (raspi, webapis, docker, serverless computing, flutter). :)
 
-<img src="examples/spritething-13x13-10-2000.polaroid-01.small.png" width="90%" title="weiste bescheid... ;)"></img>
+<img src="/examples/test_plugin_params.generator.nlines.filter.quads.va.jpg" width="90%" title=""></img>
+<img src="/examples/awork_small_complementarymsg.jpg" width="90%" title="complementary message"></img>
 
 The main purpose of the cli-version is to produce **high-quality**, hand-signed & limited (generative)
 **art prints**. But `egw` can also just be used only for [**giving your photos a fairly well & individual vintage polaroid style**](README.md) <sup>[1](#footnote1)</sup>. einguteswerkzeug provides some phonky **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
@@ -39,14 +40,23 @@ TLDR; show don't tell
 
 Some examples of works i am doing with `einguteswerkzeug`:
 
+<img src="./examples/awork_small_tjodcp.jpg" width="90%" title="the joy (of doing curves poorly) / bézier></img>
+<img src="/examples/awork_small_tjodcp_vb.jpg" width="48%" title="parallelism (tjodcp variant b)"></img>
+
 <img src="/examples/awork_small_prettyinpink_vb.jpg" width="48%" title=""></img>
 <img src="/examples/test_generator-psychedelic.filter-mosaic,oil2.png" width="48%" title="Psychedelisches Öl2"></img>
+
 <img src="/examples/awork_small_sushiinsuhl_vb.jpg" width="48%" title=""></img>
 <img src="/examples/awork_small_tagesbefehl_vb.jpg" width="48%" title=""></img>
+
 <img src="/examples/test_plugin_params.generator.s+c.filter.quads.va.jpg" width="48%" title=""></img>
 <img src="/examples/test_plugin_params.generator.s+c.filter.quads.vb.jpg" width="48%" title=""></img>
+
 <img src="/examples/test_generator-psychedelic.filter-pixelsort,oil.png" width="48%" title="Psychedelisches sortiert"></img>
 <img src="examples/spritething-13x13-10-2000.polaroid-01.small.png" width="48%" title="weiste bescheid... ;)"></img>
+
+<img src="/examples/test_generator-nlines.filterchain.jpg" width="48%" title=""></img>
+
 
 you want to help?
 =================
