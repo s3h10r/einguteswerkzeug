@@ -5,7 +5,6 @@ einguteswerkzeug (`egw`) is a **tool for creating minimalistic visual artworks**
 printing quality - and learning and mixing fun to use technologies
 full-stack around it (raspi, webapis, docker, serverless computing, flutter). :)
 
-<img src="/examples/test_plugin_params.generator.nlines.filter.quads.va.jpg" width="90%" title=""></img>
 <img src="/examples/awork_small_complementarymsg.jpg" width="90%" title="complementary message"></img>
 
 The main purpose of the cli-version is to produce **high-quality**, hand-signed & limited (generative)
@@ -40,7 +39,7 @@ TLDR; show don't tell
 
 Some examples of works i am doing with `einguteswerkzeug`:
 
-<img src="./examples/awork_small_tjodcp.jpg" width="90%" title="the joy (of doing curves poorly) / bézier></img>
+<img src="/examples/awork_small_tjodcp.jpg" width="90%" title="the joy (of doing curves poorly) / bézier></img>
 <img src="/examples/awork_small_tjodcp_vb.jpg" width="48%" title="parallelism (tjodcp variant b)"></img>
 
 <img src="/examples/awork_small_prettyinpink_vb.jpg" width="48%" title=""></img>
@@ -56,6 +55,7 @@ Some examples of works i am doing with `einguteswerkzeug`:
 <img src="examples/spritething-13x13-10-2000.polaroid-01.small.png" width="48%" title="weiste bescheid... ;)"></img>
 
 <img src="/examples/test_generator-nlines.filterchain.jpg" width="48%" title=""></img>
+<img src="/examples/test_plugin_params.generator.nlines.filter.quads.va.jpg" width="48%" title=""></img>
 
 
 you want to help?
