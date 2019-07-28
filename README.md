@@ -39,7 +39,7 @@ TLDR; show don't tell
 
 Some examples of works i am doing with `einguteswerkzeug`:
 
-<img src="/examples/awork_small_tjodcp.jpg" width="90%" title="the joy (of doing curves poorly) / bézier></img>
+<img src="/examples/awork_small_tjodcp.jpg" width="48%" title="the joy (of doing curves poorly) / bézier></img>
 <img src="/examples/awork_small_tjodcp_vb.jpg" width="48%" title="parallelism (tjodcp variant b)"></img>
 
 <img src="/examples/awork_small_prettyinpink_vb.jpg" width="48%" title=""></img>
