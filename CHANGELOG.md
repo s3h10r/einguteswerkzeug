@@ -1,19 +1,19 @@
-**0.3.1** (work in progress)
+**0.3.2** (work in progress)
 - introduces generators (`--generator` option) as an alternative to source-image
-  (psychedelic, squares+circles, sprites, cowsay)
+  (psychedelic, squares+circles, sprites, cowsay, nlines, mondrian)
 - implements a simple to use plugin-mechanism for custom filters & generators.
   => makes it a no-brainer to write a custom plugin (`see plugins/examples/examples.py`).
 - adds minimalistic + fun filter-funcs (asciiart, pixelsorting, quads, heehee)
 - includes "serious filters" from https://github.com/Tinker-S/SomeImageFilterWithPython
 - enables filter-chaining support
-- seperates polaroidme-plugin repository from the core-script
+- seperates [plugin repository](https://github.com/s3h10r/egw-plugins) from the core-script
 - supports random-template choice (`--template <fqdir>/random`, `--template <fqdir>/rand`)
 - restructures all the messy parts at least a bit ([packages](https://docs.python.org/3.6/tutorial/modules.html#packages))
 - adds `--noframe` option (== do just the plain image processing without pasting it into a template)
+- renames the project & migrates latest codebase
 - TODO: contactsheet supports filtering by time-window
 - TODO: improved template support
 - bugfixes & new bugs
-- renames the project & migrates latest codebase
 
 **pom-0.9.32**
 - option to use high-res scanned blank Polaroid frames as template

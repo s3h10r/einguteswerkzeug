@@ -1,5 +1,5 @@
 #!/bin/bash -vx
-GENS=('nlines' 'psychedelic' 'squares+circles' 'sprites' 'cowsay')
+GENS=('mondrian' 'nlines' 'psychedelic' 'squares+circles' 'sprites' 'cowsay')
 
 #FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
 FONT=$(realpath ./einguteswerkzeug/fonts/default.ttf)
