@@ -16,6 +16,9 @@ FOUT="/tmp/test_generators.jpg"
 
 egw --version
 
+egw --generator mondrian --params-generator='{"seed" : 341053573249448960, "width" :1200, "height" : 1200 }' -o $FOUT  --filter oil2 --config $CONFIG --template $TPL2  --title "generator mondrian, 2019 #einguteswerkzeug" --max-size 800 || exit
+feh $FOUT
+
 # filtering is fun! (:
 egw --generator nlines --anticlock --params-generator='{"seed" : 5269546439996500824, "nr_lines" : 9, "x_step" : 20, "thickness" : 6, "color" : [0,255,0,255], "bg_color" : [0,0,200,255]}' -o $FOUT  --filter quads,invert,oil,find_edge --params-filter='{"mode" : 1, "iterations" : 256}{}{"brush_size" : 2, "roughness" : 50}' --config $CONFIG --template $TPL2  --title "g. nlines with 4 chained filters, 2019 #einguteswerkzeug" --max-size 800 || exit 1
 feh $FOUT

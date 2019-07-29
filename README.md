@@ -8,7 +8,7 @@ full-stack around it (raspi, webapis, docker, serverless computing, flutter). :)
 <img src="/examples/awork_small_complementarymsg.jpg" width="90%" title="complementary message"></img>
 
 The main purpose of the cli-version is to produce **high-quality**, hand-signed & limited (generative)
-**art prints**. But `egw` can also just be used only for [**giving your photos a fairly well & individual vintage polaroid style**](README.md) <sup>[1](#footnote1)</sup>. einguteswerkzeug provides some phonky **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
+**art prints**. But `egw` can also just be used only for [**giving your photos a fairly well & individual vintage polaroid style**](README.md) <sup>[1](#footnote1)</sup>. einguteswerkzeug provides some [phonky](https://www.youtube.com/watch?v=TBXv37PFcAQ) **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
 around (see credits & thanks). in short the software provides:
 
 * generative-art-"generators" which are fun to play with
@@ -61,6 +61,8 @@ Some examples of works i am doing with `einguteswerkzeug`:
 <img src="/examples/test_plugin_params.generator.s+c.filter.quads.vb.jpg" width="48%" title=""></img>
 <img src="/examples/test_plugin_params.generator.nlines.filter.quads.va.jpg" width="48%" title=""></img>
 
+<img src="/examples/test_generator-mondrian.filter-oil2.jpg" width="48%" title=""></img>
+
 
 you want to help?
 =================
@@ -79,7 +81,7 @@ donate
 ------
 
 You do like einguteswerkzeug and want to support its development but you don't
-have the time? Please **consider a small [donation](https://paypal.me/s3h10r)** - every
+have the time? Please **[consider a small donation](https://paypal.me/s3h10r)** - every
 cent helps me to pay the bills & to continue building awesome software for
 creative people.
 
@@ -105,11 +107,14 @@ Most filters are adopted from:
 generators
 ----------
 
-The generator 'sprites' is made with [code by Eric Davidson](https://medium.freecodecamp.org/how-to-create-generative-art-in-less-than-100-lines-of-code-d37f379859f).
+The generator `sprites` is made with [code by Eric Davidson](https://medium.freecodecamp.org/how-to-create-generative-art-in-less-than-100-lines-of-code-d37f379859f).
 
-The generator 'psychedelic' is the wonderfull code of ["Random (Psychedelic) Art, and a Pinch of Python" by Jeremy Kun](http://jeremykun.com/2012/01/01/random-psychedelic-art/).
+The generator `psychedelic` is the wonderfull code of ["Random (Psychedelic) Art, and a Pinch of Python" by Jeremy Kun](http://jeremykun.com/2012/01/01/random-psychedelic-art/).
 
-The generator 'squares+circles' is heavily [inspired by Kevin Howbrook's Squares](https://medium.com/@kevinhowbrook/learning-python-and-being-creative-making-art-with-code-da02880e3738)
+The generator `squares+circles` is heavily [inspired by Kevin Howbrook's Squares](https://medium.com/@kevinhowbrook/learning-python-and-being-creative-making-art-with-code-da02880e3738)
+
+The generator [`mondrian`](https://en.wikipedia.org/wiki/Piet_Mondrian) is an adoption of the  [Nifty Assigment](http://nifty.stanford.edu/) [Mondrian Art - Beautiful Recursion by Ben Stephenson](http://nifty.stanford.edu/2018/stephenson-mondrian-art/) (Stanford University)
+
 
 **Thank you guys! Live long and prosper!**
 
@@ -126,7 +131,7 @@ License
 
 einguteswerkzeug is made with <3, actively maintained & developed by Sven Hessenmüller.
 
-einguteswerkzeug uses some excellent 3rd-party open source software and snippets - please
+einguteswerkzeug uses some excellent open source software and snippets - please
 take a look at Credits & Thanks for the complete list of codes & inspirations the author
 is gratefull for being allowed to use and remix in this software product.
 
