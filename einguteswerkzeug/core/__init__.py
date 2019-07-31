@@ -16,7 +16,7 @@ from pluginbase import PluginBase
 
 from einguteswerkzeug.helpers import get_resource_file, show_error
 from einguteswerkzeug.helpers.gfx import get_exif
-from einguteswerkzeug.helpers.gfx import crop_image_to_square, scale_image_to_square, scale_image, scale_square_image
+from einguteswerkzeug.helpers.gfx import add_border_around_image, crop_image_to_square, scale_image_to_square, scale_image, scale_square_image
 
 # --- configure logging
 log = logging.getLogger(__name__)
@@ -28,12 +28,14 @@ log.addHandler(handler)
 # ---
 
 # Image size constraints
-IMAGE_SIZE   = 600                      # the thumbnail size (= the inner picture)
-IMAGE_TOP    = int(IMAGE_SIZE / 16)     # added space on top
-IMAGE_BOTTOM = int(IMAGE_SIZE / 5.333)  # added space on bottom
-IMAGE_LEFT   = int(IMAGE_SIZE / 16)     # ...
-IMAGE_RIGHT  = int(IMAGE_SIZE / 16)     # ...
+IMAGE_SIZE   = (600,600)                # the thumbnail size (= the inner picture)
+# --- polaroid frame specific, needs refactoring, see issue #6
+IMAGE_TOP    = int(IMAGE_SIZE[0] / 16)     # added space on top
+IMAGE_BOTTOM = int(IMAGE_SIZE[0] / 5.333)  # added space on bottom
+IMAGE_LEFT   = int(IMAGE_SIZE[0] / 16)     # ...
+IMAGE_RIGHT  = int(IMAGE_SIZE[0] / 16)     # ...
 BORDER_SIZE  = 3
+# ---
 # Colors
 COLOR_FRAME   = (237, 243, 214)
 COLOR_BORDER  = (0, 0, 0)
@@ -64,7 +66,7 @@ PLUGINS_DUMMY = {}
 PLUGINS_FILTERS = {}
 PLUGINS_GENERATORS = {}
 
-__version__ = (0,3,2)
+__version__ = (0,3,28)
 
 def get_version():
     return(__version__)
@@ -91,8 +93,8 @@ def _register_plugins():
         PLUGINS_FILTERS[plug_instance.name] = plug_instance
         log.info("filter '%s' successfully loaded" % plug_instance.name)
 
-    log.info("loading generator-plugins from %s" % plugin_source_generators.searchpath)
-    log.info("generators.list_plugins %s" % plugin_source_generators.list_plugins())
+    log.debug("loading generator-plugins from %s" % plugin_source_generators.searchpath)
+    log.debug("generators.list_plugins %s" % plugin_source_generators.list_plugins())
     for plug in plugin_source_generators.list_plugins():
             log.info("plug try : %s" % plug)
             plug_instance = plugin_source_generators.load_plugin(plug)
@@ -118,6 +120,11 @@ def setup_globals(size, configfile=None, template = None, show = True):
     global TEMPLATE_BOXES
     global TEMPLATE
 
+    if size and isinstance(size,tuple):
+        size = list(size) # we need to chhnge values in this func, so temporarily turning into list
+    elif size and not isinstance(size,list):
+        size = [size,size] #square format
+
     if configfile:
         if not (os.path.isfile(configfile)):
             log.warning("configfile {} not found... please always give absolute paths to config-file to avoid confusions :D".format(configfile))
@@ -137,10 +144,10 @@ def setup_globals(size, configfile=None, template = None, show = True):
 
     if not template:
         IMAGE_SIZE   = size
-        IMAGE_TOP    = int(IMAGE_SIZE / 16)
-        IMAGE_BOTTOM = int(IMAGE_SIZE / 5.333)
-        IMAGE_LEFT   = int(IMAGE_SIZE / 16)
-        IMAGE_RIGHT  = int(IMAGE_SIZE / 16)
+        IMAGE_TOP    = int(IMAGE_SIZE[0] / 16)
+        IMAGE_BOTTOM = int(IMAGE_SIZE[0] / 5.333)
+        IMAGE_LEFT   = int(IMAGE_SIZE[0] / 16)
+        IMAGE_RIGHT  = int(IMAGE_SIZE[0] / 16)
         BORDER_SIZE  = 3
         RESOURCE_FONT_SIZE = int(IMAGE_BOTTOM - (IMAGE_BOTTOM * 0.2))
     else:
@@ -159,44 +166,42 @@ def setup_globals(size, configfile=None, template = None, show = True):
         w = box[2] - box[0]
         h = box[3] - box[1]
         if w != h:
-            log.warning("boxdefinition for template {} is not a square. w,h {},{}".format(k,w,h))
+            log.warning("boxdefinition for template {} is not a square. w,h {},{}".format(template,w,h))
+            log.warning("difference is {}".format(abs(h-w)))
             log.warning("auto-fixing => making it square...")
-            if w < h: #AUTO_FIX
-                box[3] += (w - h)
-                # now let's try to center
-                box[1] += int((h - w) / 2)
-                box[3] += int((h - w) / 2)
+            # the longer side is made equal to the shorter side by removing pixels on both ends
+            if w < h:
+                diff = h - w
+                box[1] += int(diff // 2)
+                box[3] -= int(diff // 2) + int(diff % 2)
             else:
-                box[2] += (h - w)
-                # now let's try to center
-                box[0] += int(h -w / 2)
-                box[2] += int(h -w / 2)
-
+                diff = w - h
+                box[0] += int(diff // 2)
+                box[2] -= int(diff // 2) + int(diff % 2)
             TEMPLATE_BOXES[os.path.basename(template)] = [box[0], box[1], box[2], box[3]]
             box = TEMPLATE_BOXES[os.path.basename(template)]
             w = box[2] - box[0]
             h = box[3] - box[1]
-            log.warning("boxdefinition for template {} auto-adjusted to: w,h {},{}".format(k,w,h))
+            log.warning("boxdefinition for template {} auto-adjusted to: w,h {},{}".format(os.path.basename(template),w,h))
+            log.warning("boxdefinition is now: {}".format(box))
             assert(w == h)
-        size = w
-        assert((size == w) and (size== h))
-        IMAGE_SIZE = size
+        size = [w,h]
+        assert((size[0] == w) and (size[0]== h)) # only squares supported for now because of legacy #6
+        IMAGE_SIZE = tuple(size) # no further edits of this
         # overwrite the above calculated  _TOP,_BOTTOM, ... values
         # by the one our template "dictates"
         try:
             tpl = Image.open(template)
         except:
             tpl = Image.open(get_resource_file(template))
-
         tpl_x, tpl_y = tpl.size
         tpl.close()
         IMAGE_TOP = box[1]
-        IMAGE_BOTTOM = tpl_y - (IMAGE_TOP + IMAGE_SIZE)
+        IMAGE_BOTTOM = tpl_y - (IMAGE_TOP + IMAGE_SIZE[1])
         IMAGE_LEFT = box[0]
         IMAGE_RIGHT = tpl_x - (IMAGE_LEFT + w)
         BORDER_SIZE  = 3
         RESOURCE_FONT_SIZE = int(IMAGE_BOTTOM - (IMAGE_BOTTOM * 0.2))
-
     # --- show
     if show:
         SETTINGS = {
@@ -235,7 +240,7 @@ def setup_globals(size, configfile=None, template = None, show = True):
 
 def make_polaroid(source, size, options, align, title, f_font = None, font_size = None, template = None, bg_color_inner=(255,255,255),filter_func=None):
     """
-    Converts an image into polaroid-style. This is the main-function of the module
+    Converts an image into polaroid-style. This is the (legacy) main-function of the module
     and it is exposed. It can be imported and used by any Python-Script.
 
     returns
@@ -270,7 +275,6 @@ def make_polaroid(source, size, options, align, title, f_font = None, font_size 
         img = filter_func(img)
     if not options['noframe']: # if pasting into a template (for example a polaroid frame) is wanted #2
         if template:
-            log.warning("--template is experimental!")
             img = _paste_into_template(image=img, template=template)
             description = None
             img = add_text(img, caption, description, f_font = f_font, font_size = font_size)
@@ -280,30 +284,83 @@ def make_polaroid(source, size, options, align, title, f_font = None, font_size 
             img = add_text(img, caption, description, f_font = f_font, font_size = font_size)
     return img
 
-def _paste_into_template(image = None, template = './templates/fzm-Polaroid.Frame-01.jpg', box=None):
+def apply_template(source = None, template = None, size = None, align = "center",  options = None, border_size_fact = None, border_color = (255,255,255) ):
+    """
+    **inprogress** - a more generic alternative to (legacy) make_polaroid
+
+    resizes source-image to fit into template and
+    pastes image into template (for now only square-area supported! #6)
+
+    returns
+        PIL image instance
+    """
+    if isinstance(source,Image.Image):
+        img = source
+    else:
+        img = Image.open(source)
+    [w, h] = img.size
+    # Determine ratio of image length to width to
+    # determine oriantation (portrait, landscape or square)
+    image_ratio = float(float(h)/float(w))
+    log.debug("image_ratio: %f size_w: %i size_h: %i" % (image_ratio, w, h))
+    if round(image_ratio, 1) >= 1.3: # is_portrait
+        log.info("source image ratio is %f (%s)" % (image_ratio, 'is_portrait'))
+    elif round(image_ratio, 1) == 1.0: # is_square
+        log.info("source image ratio is %f (%s)" % (image_ratio, 'is_square'))
+    elif round(image_ratio, 1) <= 0.8: # is_landscape
+        log.info("source image ratio is %f (%s)" % (image_ratio, 'is_landscape'))
+    if options['crop']:
+        img = crop_image_to_square(img, align)
+    else:
+        img = scale_image_to_square(img, bg_color=border_color)
+    if not size: # set size to optimum depending on the template resolution
+        size = _get_template_box_size(template)
+    if border_size_fact and img.size[0] == img.size[1]:
+        img = add_border_around_image(image = img, size = int(img.size[0] * border_size_fact), color = border_color)
+    img = scale_square_image(img, size)
+    log.warning("--template with --nopolaroid is experimental!")
+    img = _paste_into_template(image=img, template=template)
+    return img
+
+def _get_template_box_size(template):
+    """
+    returns
+        tuple(w,h) : width, height of the paste-area for template
+    """
+    box = TEMPLATE_BOXES[os.path.basename(template)]
+    w = int(box[2] - box[0])
+    h = int(box[3] - box[1])
+    return (w,h)
+
+def _paste_into_template(image = None, template = './templates/', box=None):
     """
     """
     if not box:
         box = TEMPLATE_BOXES[os.path.basename(template)]
+        box_size = _get_template_box_size(template)
+    else:
+        w = int(box[2] - box[0])
+        h = int(box[3] - box[1])
+        box_size = (w,h)
     try:
         img_tpl = Image.open(template)
     except:
         img_tpl = Image.open(get_resource_file(template))
-
+    # plausi check
     w = int(box[2] - box[0])
     h = int(box[3] - box[1])
-    log.debug("box-size the picture will be pasted into is (w,h) {} {}".format(w,h))
+    assert(box_size[0] == w and box_size[1] == h)
+    # ---
+    log.debug("box_size the picture will be pasted into is (w,h) {}".format(box_size))
     region2copy = image.crop((0,0,image.size[0],image.size[1]))
-    if region2copy.size[0] > w:
+    if region2copy.size[0] > box_size[0]:
         # Downsample
         log.info("downsampling... (good)")
-        region2copy = region2copy.resize((w,h),Image.ANTIALIAS)
+        region2copy = region2copy.resize(box_size,Image.ANTIALIAS)
     else:
         log.info("upscaling... (not so good ;)")
-        region2copy = region2copy.resize((w,h), Image.BICUBIC)
-    assert(region2copy.size == (w,h))
-    #print(region2copy.size, (w,h))
-    #print(region2copy.size, box)
+        region2copy = region2copy.resize(box_size, Image.BICUBIC)
+    assert(region2copy.size == box_size)
     img_tpl.paste(region2copy,box)
     return img_tpl
 
@@ -332,7 +389,7 @@ def add_frame(image, border_size = 3, color_frame = COLOR_FRAME, color_border = 
     # Create outer and inner borders
     draw = ImageDraw.Draw(frame)
     draw.rectangle((BORDER_SIZE, BORDER_SIZE, frame.size[0] - BORDER_SIZE, frame.size[1] - BORDER_SIZE), fill = COLOR_FRAME)
-    draw.rectangle((IMAGE_LEFT - BORDER_SIZE, IMAGE_TOP - BORDER_SIZE, IMAGE_LEFT + IMAGE_SIZE + BORDER_SIZE, IMAGE_TOP + IMAGE_SIZE + BORDER_SIZE), fill = COLOR_BORDER)
+    draw.rectangle((IMAGE_LEFT - BORDER_SIZE, IMAGE_TOP - BORDER_SIZE, IMAGE_LEFT + IMAGE_SIZE[0] + BORDER_SIZE, IMAGE_TOP + IMAGE_SIZE[1] + BORDER_SIZE), fill = COLOR_BORDER)
     # Add the source image
     frame.paste(image, (IMAGE_LEFT, IMAGE_TOP))
     return frame
@@ -354,7 +411,7 @@ def add_text(image, title = None, description = None, f_font = RESOURCE_FONT, fo
     except:
         show_error("Could not load resource '%s'." % f_font)
     width, height = font_title.getsize(title)
-    while ((width > IMAGE_SIZE) or (height > IMAGE_BOTTOM)) and (size > 0):
+    while ((width > IMAGE_SIZE[1]) or (height > IMAGE_BOTTOM)) and (size > 0):
         size = size - 2
         try:
             font_title = ImageFont.truetype(f_font, font_size)
@@ -366,8 +423,8 @@ def add_text(image, title = None, description = None, f_font = RESOURCE_FONT, fo
     if (size <= 0):
         showError("Text is too large")
     draw = ImageDraw.Draw(image)
-    pos_x = (IMAGE_SIZE + IMAGE_LEFT + IMAGE_RIGHT - width) / 2
-    pos_y = IMAGE_SIZE + IMAGE_TOP + ((IMAGE_BOTTOM - height)) / 2
+    pos_x = (IMAGE_SIZE[0] + IMAGE_LEFT + IMAGE_RIGHT - width) / 2
+    pos_y = IMAGE_SIZE[1] + IMAGE_TOP + ((IMAGE_BOTTOM - height)) / 2
     log.info("title fontsize {} pos_x, pos_y {},{}".format(size, pos_x, pos_y))
     draw.text(
         (pos_x, pos_y),
@@ -439,7 +496,7 @@ def main(args):
     _register_plugins()
     options = { 'rotate': None, 'crop' : True, 'noframe' : False} # defaults
     source = []
-    size = IMAGE_SIZE # inner size, only the picture without surrounding frame
+    size = IMAGE_SIZE[0] # inner size, only the picture without surrounding frame
     target = None
     align = "center"
     title = ""
@@ -449,6 +506,8 @@ def main(args):
     max_size = None # max size (width) of the contactsheet
     add_exif_to_title = None
     bg_color_inner = COLOR_BG_INNER
+    border_size = None           # only used  in combination with --no-polaroid
+    border_color = (255,255,255) # only used  in combination with --no-polaroid
     # process options
     if args['<source-image>']:
         source = args['<source-image>'].split(',') # some filters require a list of images ('composite', ...)
@@ -477,7 +536,11 @@ def main(args):
                 PLUGINS_GENERATORS[generator].kwargs[k] = v
             else:
                 raise Exception("filter %s has no parameter '%s'. please check your --params-filter argument(s)." % (apply_filters[i], k))
-
+    if args['--border-size']:
+        border_size = float(args['--border-size'])
+    if args['--border-color']:
+        border_color = tuple([int(el) for el in args['--border-color'].split(',')])
+        assert(len(border_color)==3)
     if args['--clockwise']:
         options['rotate'] = 'clockwise'
     elif args['--anticlock']:
@@ -487,7 +550,10 @@ def main(args):
     elif args['--nocrop']:
         options['crop'] = False
     if args['--noframe']:
-        options['noframe'] = True # no polaroid at all but filtered image maybe
+        options['noframe'] = True # using no polaroid nor any other template at all, outputs only the (maybe filtered) image
+    nopolaroid = False
+    if args['--nopolaroid']:
+        nopolaroid = True # using an other template thang polaroid
     if args['--size-inner']:
         size = int(args['--size-inner'])
     if args['--alignment']: # only used if --crop
@@ -583,14 +649,18 @@ def main(args):
         log.warning("--filter is experimental. you can chain filters via comma-seperator filter1,filter2,...")
         img = _apply_filters(image=source, filters = apply_filters, filters_args = [])
         source = img
-
-    # finally create the polaroid.
-    img = make_polaroid(
-        source = source, size = size, options = options, align =align,
-        title = title, f_font = f_font, font_size = font_size,
-        template = template,
-        bg_color_inner = bg_color_inner,
-        )
+    if not nopolaroid:
+        # finally create the polaroid.
+        img = make_polaroid(
+            source = source, size = size, options = options, align =align,
+            title = title, f_font = f_font, font_size = font_size,
+            template = template,
+            bg_color_inner = bg_color_inner,
+            )
+    else:
+        img = apply_template(source = source, template = template, size = size, align = align, options = options, border_size_fact=border_size, border_color = border_color)
+        description = None
+        img = add_text(img, title, description, f_font = f_font, font_size = font_size)
     log.debug("size: %i %i" % (img.size[0], img.size[1]))
     # ---  if --max-size is given: check if currently bigger and downscale if necessary...
     if max_size:
@@ -606,6 +676,6 @@ def main(args):
             y_new = int(img.height * factor)
             img = img.resize((x_new,y_new),Image.ANTIALIAS)
     # yai, finally ... :)
-    log.info("seed %f" % rand_seed) # btw. TODO: for being able to reproduce random thingys: add option --set-seed
+    log.info("seed %f" % rand_seed)
     img.save(target)
     print(target)

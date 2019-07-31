@@ -5,14 +5,14 @@ einguteswerkzeug - converts image into polaroid style and/or does phonky generat
 
 Usage:
 egw <source-image> [--output=<filename>]
-egw <source-image> [-o=<filename>] [--title=<str>] [--title-meta] [--font=<f>] [--filter=<str>] [--params-filter=<pydict>] [--noframe]
-egw <source-image> [-o=<fn>] [--template=<str>] [--config=<str>] [--crop] [--alignment=<str>] [--filter=<str>] [--title=<str>] [--params-filter=<pydict>] [--noframe]
-egw <source-image> [-o=<fn>] [--nocrop] [--crop] [--alignment=<str>] [--size-inner=<n>] [--max-size=<w>] [--template=<str>] [--config=<str>] [--title=<str>][--title-meta] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--no-frame]
-egw <source-image> [-o=<fn>] [--template=<str>] [--config=<str>] [--title=<str>][--title-meta] [--font=<f>] [--size-inner=<n>] [--max-size=<w>] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe]
-egw <source-image> [-o=<fn>] [--size-inner=<n>] [--alignment=<str>] [--title=<str>][--title-meta] [-f=<f>] [--template=<str>] [-c=<str>] [-m=<w>] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe]
-egw <source-image> [--nocrop] [--crop] [--alignment=<str>] [--title=<str>] [--title-meta] [-f=<str>] [-s=<n>] [-o=<filename>] [--template=<str>] [--config=<str>] [--max-size=<w>] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe]
-egw <source-image> [--clockwise|--anticlock] [--nocrop|--crop] [--title=<str>] [--title-meta] [-f=<f>] [-s=<n>] [-o=<fn>] [--alignment=<str>] [--template=<str>] [-config=<str>] [-m=<w>] [--title-meta] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe]
-egw --generator=<str> [-o=<fn>] [--template=<str>] [-config=<str>] [--filter=<str>] [--clockwise|--anticlock] [--title=<str>] [--title-meta] [-f=<f>] [-s=<n>] [-m=<w>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe]
+egw <source-image> [-o=<filename>] [--title=<str>] [--title-meta] [--font=<f>] [--filter=<str>] [--params-filter=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
+egw <source-image> [-o=<fn>] [--template=<str>] [--config=<str>] [--crop] [--alignment=<str>] [--filter=<str>] [--title=<str>] [--params-filter=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
+egw <source-image> [-o=<fn>] [--nocrop] [--crop] [--alignment=<str>] [--size-inner=<n>] [--max-size=<w>] [--template=<str>] [--config=<str>] [--title=<str>][--title-meta] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--no-frame] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
+egw <source-image> [-o=<fn>] [--template=<str>] [--config=<str>] [--title=<str>][--title-meta] [--font=<f>] [--size-inner=<n>] [--max-size=<w>] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
+egw <source-image> [-o=<fn>] [--size-inner=<n>] [--alignment=<str>] [--title=<str>][--title-meta] [-f=<f>] [--template=<str>] [-c=<str>] [-m=<w>] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
+egw <source-image> [--nocrop] [--crop] [--alignment=<str>] [--title=<str>] [--title-meta] [-f=<str>] [-s=<n>] [-o=<filename>] [--template=<str>] [--config=<str>] [--max-size=<w>] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
+egw <source-image> [--clockwise|--anticlock] [--nocrop|--crop] [--title=<str>] [--title-meta] [-f=<f>] [-s=<n>] [-o=<fn>] [--alignment=<str>] [--template=<str>] [-config=<str>] [-m=<w>] [--title-meta] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
+egw --generator=<str> [-o=<fn>] [--template=<str>] [-config=<str>] [--filter=<str>] [--clockwise|--anticlock] [--title=<str>] [--title-meta] [-f=<f>] [-s=<n>] [-m=<w>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
 
 Where:
   source-image    Name of the image file to convert.
@@ -24,6 +24,15 @@ Options:
                     'right'. (default="center").
                     Not of any use if --nocrop option is set.
   --anticlockwise   Rotate the image anti-clockwise before processing
+  --border-size=<float>
+                    optional and only valid in combination with --nopolaroid.
+                    defines the percentage of borderspace around the image
+                    example: 0.2 => a border of 20 percent of the image_size
+                    will be added.
+  --border-color=<tuple>
+                    comma-seperated RGB values to set color for the border
+                    (if any, means if --border-size is set).
+                    default is: --border-color 255,255,255
   -c,--config=<py>  a config is only necessary if --template is used (see docs)
   --clockwise       Rotate the image clockwise before processing
   --crop            the images will be cropped to fit. see --alignment
@@ -47,6 +56,7 @@ Options:
   --nocrop          Rescale the image to fit fullframe in the final output
                     (default="--crop"). btw. alignment is ignored if option is set.
   --noframe         put the processed image not into any frame. (ignores template etc.)
+  --nopolaroid      put the processed image into a given template which doesn't have to be a polaroid
   -o, --output=<s>  Defines the name of the outputfile. If omitted a filename
                     based on the original will be used - example:
                     'test.polaroid.png' will be used as filename if input-file is 'test.png'
@@ -60,10 +70,19 @@ Options:
 
 The `latest version is available on github: https://github.com/s3h10r/einguteswerkzeug>
 """
+import logging
 from docopt import docopt
-from einguteswerkzeug.core import __version__, main, make_polaroid
+from einguteswerkzeug.core import __version__, main
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
+handler = logging.StreamHandler() # console-handler
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+log.addHandler(handler)
+
 
 if __name__ == '__main__':
     # --- process args & options
-    args = docopt(__doc__, version=__version__)
+    args = docopt(__doc__, version=str('.'.join([str(el) for el in __version__])))
     main(args)
