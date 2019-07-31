@@ -1,5 +1,5 @@
 #!/bin/bash -vx
-FILTERS=('quads' 'ascii' 'pixelsort' 'diffuse' 'emboss' 'find_edge' 'glowing_edge' 'ice' 'molten' 'mosaic' 'oil' 'oil2')
+FILTERS=('puzzle' 'quads' 'ascii' 'pixelsort' 'diffuse' 'emboss' 'find_edge' 'glowing_edge' 'ice' 'molten' 'mosaic' 'oil' 'oil2')
 FILTERS_MULTI_INPUT=('composite')
 CONFIG=$(realpath ./einguteswerkzeug/einguteswerkzeug.conf)
 TPL=$(realpath ./einguteswerkzeug/templates/random)

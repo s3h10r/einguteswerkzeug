@@ -4,6 +4,7 @@ GENS=('psychedelic' 'squares+circles' 'sprites' 'cowsay')
 #FONT=$(realpath ./einguteswerkzeug/fonts/contrast.ttf)
 FONT=$(realpath ./einguteswerkzeug/fonts/default.ttf)
 CONFIG=$(realpath ./einguteswerkzeug/einguteswerkzeug.conf)
+GENS=('mondrian' 'nlines' 'psychedelic' 'squares+circles' 'sprites' 'cowsay')
 TPL=$(realpath ./einguteswerkzeug/templates/random)
 TPL1=$(realpath ./einguteswerkzeug/templates/fzm-Polaroid.Frame-01.jpg)
 TPL2=$(realpath ./einguteswerkzeug/templates/fzm-Polaroid.Frame-02.jpg)
@@ -13,6 +14,7 @@ TPL2_TRIMMED=$(realpath ./einguteswerkzeug/templates/trimmed-fzm-Polaroid.Frame-
 TPL_REPO_00=$(realpath ./einguteswerkzeug/templates/square/egw-template_julian-hochgesang-BKACkJLu5Hc-unsplash.jpg)
 TPL_REPO_01=$(realpath ./einguteswerkzeug/templates/square/egw-template_david-van-dijk-3LTht2nxd34-unsplash.jpg)
 TPL_REPO_02=$(realpath ./einguteswerkzeug/templates/square/egw-template_sarah-dorweiler-7tFlUFGa7Dk-unsplash.jpg)
+TPL_REPO_03=$(realpath ./einguteswerkzeug/templates/square/egw-template_rodion-kutsaev-IJ25m7fXqtk-unsplash.jpg)
 
 MAX_SIZE=600
 FOUT="/tmp/test_generators.png"
@@ -23,20 +25,19 @@ FOUT3="/tmp/test_generators_r3.png"
 VERSION=$(egw --version | tail -1) || exit 1
 echo $VERSION
 
-TITLE="a point of view #einguteswerkzeug ${VERSION}"
+egw --generator mondrian --nopolaroid  --alpha-blend 0.4 --border-size 0.05 --border-color 238,238,238 -o $FOUT  --config $CONFIG --template $TPL_REPO_03 --title "" --max-size 800 || exit 1
+feh $FOUT
+
 egw --generator nlines --nopolaroid  --border-size 0.3 --border-color 238,238,238 --params-generator='{"seed" : 197919801989002019, "size" : 800, "nr_lines" : 24, "thickness" : 8, "x_step" : 10, "color" : [0,0,200,255] }' -o $FOUT  --config $CONFIG --template $TPL_REPO_02 --title "" --max-size 800 || exit 1
 feh $FOUT
 
 egw $FOUT --nopolaroid  --nocrop --border-size 0.1 --border-color 238,238,238 -o $FOUT1  --config $CONFIG --template $TPL_REPO_02 --title "" --max-size 800 || exit 1
-#feh $FOUT1
 egw $FOUT1 --nopolaroid  --nocrop --border-size 0.1 --border-color 255,255,255 -o $FOUT2  --config $CONFIG --template $TPL_REPO_01 --title "" --max-size 800 || exit 1
-#feh $FOUT2
 egw $FOUT2 --nopolaroid  --nocrop --border-size 0.1 --border-color 238,238,238 -o $FOUT3  --config $CONFIG --template $TPL_REPO_02 --title "" --max-size 800 || exit 1
-egw $FOUT2 --nopolaroid  --nocrop --border-size 0.2 --border-color 238,238,238 -o $FOUT3  --config $CONFIG --template $TPL_REPO_02 --title "" --max-size 800 || exit 1
 feh $FOUT3
 
 egw --generator mondrian --nopolaroid --border-size 0.2 --params-generator='{"seed" : 341053573249448960, "width" :800, "height" : 800 }' -o $FOUT  --config $CONFIG --template $TPL_REPO_01 --title "generator mondrian, 2019 #einguteswerkzeug" --max-size 800 || exit 1
-feh $FOUT1
+feh $FOUT
 egw --generator mondrian --nopolaroid --params-generator='{"seed" : 341053573249448960, "width" :800, "height" : 800 }' -o $FOUT  --config $CONFIG --template $TPL_REPO_00 --title "generator mondrian, 2019 #einguteswerkzeug" --max-size 800 || exit 1
 feh $FOUT
 

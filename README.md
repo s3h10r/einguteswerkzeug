@@ -37,7 +37,10 @@ Please feel free to send a pull-request and use the [issue tracker](https://gith
 TLDR; show don't tell
 ---------------------
 
+<!--
 <img src="/examples/awork_small_platoscave_unfinished.png" width="98%" title="plato's cave (unfinished)"></img>
+-->
+<img src="/examples/test_generator-mondrian.alpha-blend.jpg" width="98%" title=""></img>
 
 Some examples of works i am doing with `einguteswerkzeug`:
 
