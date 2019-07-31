@@ -144,6 +144,15 @@ def crop_image_to_square(image, align='center'):
         log.debug("re-cropped to size: %i %i" % (image.size[0], image.size[1]))
     return image
 
+def add_border_around_image(image, size = None, color = (255,255,255)):
+    w, h = image.size
+    if not size:
+        size = int(w * 0.1)
+    assert(w==h)
+    img = Image.new("RGBA", (w + size, h + size), color)
+    img.paste(image, (int(size / 2),int(size / 2)))
+    return img
+
 def scale_image_to_square(image, bg_color = (255,255,255)):
     img_w, img_h = image.size
     image_ratio = float(float(img_h)/float(img_w))
@@ -174,11 +183,15 @@ def scale_square_image(image, size):
     """
     if image.size[0] != image.size[1]:
         raise Exception("ouch - no square image.")
-    if image.size[0] > size:
+    if isinstance(size,int):
+        size = (size,size)
+    if not isinstance(size,tuple):
+        raise Exception("sorry, we need a tuple(w,h) here...")
+    if image.size[0] > size[0]:
         # Downsample
-        image = image.resize((size, size), Image.ANTIALIAS)
+        image = image.resize(size, Image.ANTIALIAS)
     else:
-        image = image.resize((size, size), Image.BICUBIC)
+        image = image.resize(size, Image.BICUBIC)
     log.debug("scaled to size: %i %i" % (image.size[0], image.size[1]))
     return image
 

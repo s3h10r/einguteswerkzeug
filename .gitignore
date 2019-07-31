@@ -1,5 +1,7 @@
 einguteswerkzeug/templates/*png
 einguteswerkzeug/templates/*jpg
+*big*.jpg
+*big*.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
