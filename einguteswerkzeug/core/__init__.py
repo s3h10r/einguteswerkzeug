@@ -187,7 +187,8 @@ def setup_globals(size, configfile=None, template = None, show = True):
             assert(w == h)
         size = [w,h]
         assert((size[0] == w) and (size[0]== h)) # only squares supported for now because of legacy #6
-        IMAGE_SIZE = tuple(size) # no further edits of this
+        size = tuple(size) # no further edits of this
+        IMAGE_SIZE = size  # no further edits of this
         # overwrite the above calculated  _TOP,_BOTTOM, ... values
         # by the one our template "dictates"
         try:
@@ -385,7 +386,7 @@ def add_frame(image, border_size = 3, color_frame = COLOR_FRAME, color_border = 
     """
     adds the frame around the image
     """
-    frame = Image.new("RGB", (IMAGE_SIZE + IMAGE_LEFT + IMAGE_RIGHT, IMAGE_SIZE + IMAGE_TOP + IMAGE_BOTTOM), COLOR_BORDER)
+    frame = Image.new("RGB", (IMAGE_SIZE[0] + IMAGE_LEFT + IMAGE_RIGHT, IMAGE_SIZE[1] + IMAGE_TOP + IMAGE_BOTTOM), COLOR_BORDER)
     # Create outer and inner borders
     draw = ImageDraw.Draw(frame)
     draw.rectangle((BORDER_SIZE, BORDER_SIZE, frame.size[0] - BORDER_SIZE, frame.size[1] - BORDER_SIZE), fill = COLOR_FRAME)
@@ -652,7 +653,7 @@ def main(args):
     if not nopolaroid:
         # finally create the polaroid.
         img = make_polaroid(
-            source = source, size = size, options = options, align =align,
+            source = source, size = tuple(size), options = options, align =align,
             title = title, f_font = f_font, font_size = font_size,
             template = template,
             bg_color_inner = bg_color_inner,
