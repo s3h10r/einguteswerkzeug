@@ -187,7 +187,8 @@ def setup_globals(size, configfile=None, template = None, show = True):
             assert(w == h)
         size = [w,h]
         assert((size[0] == w) and (size[0]== h)) # only squares supported for now because of legacy #6
-        IMAGE_SIZE = tuple(size) # no further edits of this
+        size = tuple(size) # no further edits of this
+        IMAGE_SIZE = size  # no further edits of this
         # overwrite the above calculated  _TOP,_BOTTOM, ... values
         # by the one our template "dictates"
         try:
@@ -304,11 +305,11 @@ def apply_template(source = None, template = None, size = None, align = "center"
     image_ratio = float(float(h)/float(w))
     log.debug("image_ratio: %f size_w: %i size_h: %i" % (image_ratio, w, h))
     if round(image_ratio, 1) >= 1.3: # is_portrait
-        log.info("source image ratio is %f (%s)" % (image_ratio, 'is_portrait'))
+        log.debug("source image ratio is %f (%s)" % (image_ratio, 'is_portrait'))
     elif round(image_ratio, 1) == 1.0: # is_square
-        log.info("source image ratio is %f (%s)" % (image_ratio, 'is_square'))
+        log.debug("source image ratio is %f (%s)" % (image_ratio, 'is_square'))
     elif round(image_ratio, 1) <= 0.8: # is_landscape
-        log.info("source image ratio is %f (%s)" % (image_ratio, 'is_landscape'))
+        log.debug("source image ratio is %f (%s)" % (image_ratio, 'is_landscape'))
     if options['crop']:
         img = crop_image_to_square(img, align)
     else:
@@ -318,8 +319,8 @@ def apply_template(source = None, template = None, size = None, align = "center"
     if border_size_fact and img.size[0] == img.size[1]:
         img = add_border_around_image(image = img, size = int(img.size[0] * border_size_fact), color = border_color)
     img = scale_square_image(img, size)
-    log.warning("--template with --nopolaroid is experimental!")
-    img = _paste_into_template(image=img, template=template)
+    log.warning("--template with --nopolaroid is experimental! alpha_blend: {}".format(options['alpha_blend']))
+    img = _paste_into_template(image=img, template=template, blend=options['alpha_blend'])
     return img
 
 def _get_template_box_size(template):
@@ -332,7 +333,7 @@ def _get_template_box_size(template):
     h = int(box[3] - box[1])
     return (w,h)
 
-def _paste_into_template(image = None, template = './templates/', box=None):
+def _paste_into_template(image = None, template = './templates/', blend=None, box=None):
     """
     """
     if not box:
@@ -361,6 +362,11 @@ def _paste_into_template(image = None, template = './templates/', box=None):
         log.info("upscaling... (not so good ;)")
         region2copy = region2copy.resize(box_size, Image.BICUBIC)
     assert(region2copy.size == box_size)
+    if blend:
+        region2pasteinto = img_tpl.crop(box)
+        log.info("alpha_blend: {} paste_area_size: {} {} copy_into_paste_area_size: {} {}".format(blend, region2pasteinto.size, region2pasteinto.mode, region2copy.size, region2copy.mode))
+        region2copy = Image.blend(region2copy.convert('RGB'), region2pasteinto, blend)
+
     img_tpl.paste(region2copy,box)
     return img_tpl
 
@@ -385,7 +391,7 @@ def add_frame(image, border_size = 3, color_frame = COLOR_FRAME, color_border = 
     """
     adds the frame around the image
     """
-    frame = Image.new("RGB", (IMAGE_SIZE + IMAGE_LEFT + IMAGE_RIGHT, IMAGE_SIZE + IMAGE_TOP + IMAGE_BOTTOM), COLOR_BORDER)
+    frame = Image.new("RGB", (IMAGE_SIZE[0] + IMAGE_LEFT + IMAGE_RIGHT, IMAGE_SIZE[1] + IMAGE_TOP + IMAGE_BOTTOM), COLOR_BORDER)
     # Create outer and inner borders
     draw = ImageDraw.Draw(frame)
     draw.rectangle((BORDER_SIZE, BORDER_SIZE, frame.size[0] - BORDER_SIZE, frame.size[1] - BORDER_SIZE), fill = COLOR_FRAME)
@@ -505,6 +511,7 @@ def main(args):
     configfile = get_resource_file(RESOURCE_CONFIG_FILE)
     max_size = None # max size (width) of the contactsheet
     add_exif_to_title = None
+    alpha_blend = None
     bg_color_inner = COLOR_BG_INNER
     border_size = None           # only used  in combination with --no-polaroid
     border_color = (255,255,255) # only used  in combination with --no-polaroid
@@ -536,6 +543,8 @@ def main(args):
                 PLUGINS_GENERATORS[generator].kwargs[k] = v
             else:
                 raise Exception("filter %s has no parameter '%s'. please check your --params-filter argument(s)." % (apply_filters[i], k))
+    if args['--alpha-blend']:
+        alpha_blend = float(args['--alpha-blend'])
     if args['--border-size']:
         border_size = float(args['--border-size'])
     if args['--border-color']:
@@ -652,12 +661,13 @@ def main(args):
     if not nopolaroid:
         # finally create the polaroid.
         img = make_polaroid(
-            source = source, size = size, options = options, align =align,
+            source = source, size = tuple(size), options = options, align =align,
             title = title, f_font = f_font, font_size = font_size,
             template = template,
             bg_color_inner = bg_color_inner,
             )
     else:
+        options['alpha_blend'] = alpha_blend
         img = apply_template(source = source, template = template, size = size, align = align, options = options, border_size_fact=border_size, border_color = border_color)
         description = None
         img = add_text(img, title, description, f_font = f_font, font_size = font_size)
