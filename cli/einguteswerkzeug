@@ -5,14 +5,14 @@ einguteswerkzeug - converts image into polaroid style and/or does phonky generat
 
 Usage:
 egw <source-image> [--output=<filename>]
-egw <source-image> [-o=<filename>] [--title=<str>] [--title-meta] [--font=<f>] [--filter=<str>] [--params-filter=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
-egw <source-image> [-o=<fn>] [--template=<str>] [--config=<str>] [--crop] [--alignment=<str>] [--filter=<str>] [--title=<str>] [--params-filter=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
-egw <source-image> [-o=<fn>] [--nocrop] [--crop] [--alignment=<str>] [--size-inner=<n>] [--max-size=<w>] [--template=<str>] [--config=<str>] [--title=<str>][--title-meta] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--no-frame] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
-egw <source-image> [-o=<fn>] [--template=<str>] [--config=<str>] [--title=<str>][--title-meta] [--font=<f>] [--size-inner=<n>] [--max-size=<w>] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
-egw <source-image> [-o=<fn>] [--size-inner=<n>] [--alignment=<str>] [--title=<str>][--title-meta] [-f=<f>] [--template=<str>] [-c=<str>] [-m=<w>] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
-egw <source-image> [--nocrop] [--crop] [--alignment=<str>] [--title=<str>] [--title-meta] [-f=<str>] [-s=<n>] [-o=<filename>] [--template=<str>] [--config=<str>] [--max-size=<w>] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
-egw <source-image> [--clockwise|--anticlock] [--nocrop|--crop] [--title=<str>] [--title-meta] [-f=<f>] [-s=<n>] [-o=<fn>] [--alignment=<str>] [--template=<str>] [-config=<str>] [-m=<w>] [--title-meta] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
-egw --generator=<str> [-o=<fn>] [--template=<str>] [-config=<str>] [--filter=<str>] [--clockwise|--anticlock] [--title=<str>] [--title-meta] [-f=<f>] [-s=<n>] [-m=<w>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>]
+egw <source-image> [-o=<filename>] [--title=<str>] [--title-meta] [--font=<f>] [--filter=<str>] [--params-filter=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>] [--alpha-blend=<f>]
+egw <source-image> [-o=<fn>] [--template=<str>] [--config=<str>] [--crop] [--alignment=<str>] [--filter=<str>] [--title=<str>] [--params-filter=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>] [--alpha-blend=<f>]
+egw <source-image> [-o=<fn>] [--nocrop] [--crop] [--alignment=<str>] [--size-inner=<n>] [--max-size=<w>] [--template=<str>] [--config=<str>] [--title=<str>][--title-meta] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--no-frame] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>] [--alpha-blend=<f>]
+egw <source-image> [-o=<fn>] [--template=<str>] [--config=<str>] [--title=<str>][--title-meta] [--font=<f>] [--size-inner=<n>] [--max-size=<w>] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>] [--alpha-blend=<f>]
+egw <source-image> [-o=<fn>] [--size-inner=<n>] [--alignment=<str>] [--title=<str>][--title-meta] [-f=<f>] [--template=<str>] [-c=<str>] [-m=<w>] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>] [--alpha-blend=<f>]
+egw <source-image> [--nocrop] [--crop] [--alignment=<str>] [--title=<str>] [--title-meta] [-f=<str>] [-s=<n>] [-o=<filename>] [--template=<str>] [--config=<str>] [--max-size=<w>] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>] [--alpha-blend=<f>]
+egw <source-image> [--clockwise|--anticlock] [--nocrop|--crop] [--title=<str>] [--title-meta] [-f=<f>] [-s=<n>] [-o=<fn>] [--alignment=<str>] [--template=<str>] [-config=<str>] [-m=<w>] [--title-meta] [--filter=<str>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>] [--alpha-blend=<f>]
+egw --generator=<str> [-o=<fn>] [--template=<str>] [-config=<str>] [--filter=<str>] [--clockwise|--anticlock] [--title=<str>] [--title-meta] [-f=<f>] [-s=<n>] [-m=<w>] [--params-filter=<pydict>] [--params-generator=<pydict>] [--noframe] [--nopolaroid] [--border-size=<float>] [--border-color=<tuple>] [--alpha-blend=<f>]
 
 Where:
   source-image    Name of the image file to convert.
@@ -24,6 +24,10 @@ Options:
                     'right'. (default="center").
                     Not of any use if --nocrop option is set.
   --anticlockwise   Rotate the image anti-clockwise before processing
+  --alpha-blend=<float>
+                    option to blend image into a template
+                    value has a range of 0 to 1, for example "0.5".
+                    (default=None)
   --border-size=<float>
                     optional and only valid in combination with --nopolaroid.
                     defines the percentage of borderspace around the image
