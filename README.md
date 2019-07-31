@@ -37,7 +37,7 @@ Please feel free to send a pull-request and use the [issue tracker](https://gith
 TLDR; show don't tell
 ---------------------
 
-<img src="/examples/awork_big_platoscave_unfinished.png" width="98%" title="plato's cave (unfinished)"></img>
+<img src="/examples/awork_small_platoscave_unfinished.png" width="98%" title="plato's cave (unfinished)"></img>
 
 Some examples of works i am doing with `einguteswerkzeug`:
 
@@ -64,24 +64,11 @@ Some examples of works i am doing with `einguteswerkzeug`:
 <img src="/examples/test_plugin_params.generator.nlines.filter.quads.va.jpg" width="48%" title=""></img>
 
 <img src="/examples/test_generator-mondrian.filter-oil2.jpg" width="48%" title=""></img>
-<img src="/examples/awork_big_platoscave_unfinished.png" width="48%" title=""></img>
+<img src="/examples/awork_small_platoscave_unfinished.png" width="48%" title=""></img>
 
 
 you want to help?
 =================
-
-we need [free high-res templates](https://github.com/s3h10r/egw-templates)
--------------------------------
-
-To get an appealing rugged analogue style you can also make "huge" prints of [use high-resolution scans of polaroid Frames - the ones i use at the moment can be downloaded here for free](http://www.fuzzimo.com/free-hi-res-blank-polaroid-frames/).
-
-Sadly i don't know a source of CreativeCommons (or alike) licensed scans in that
-high quality and i don't own a good scanner - if you would like to help:
-adding some high-res scans in the FLOSS tradition - means for "free as in freedom, not as in beer" - would be wonderfull! (:
-
-non-polaroid templates are very welcome too of course! at the moment [there is a
-handfull available here](https://github.com/s3h10r/egw-templates)!
-
 
 donate
 ------
@@ -92,6 +79,16 @@ cent helps me to pay the bills & to continue building awesome software for
 creative people.
 
 Thank you very much!
+
+we need [free high-res templates](https://github.com/s3h10r/egw-templates)
+-------------------------------
+
+To get an appealing rugged analogue style you can also make "huge" prints of [use high-resolution scans of polaroid Frames - the ones i use at the moment can be downloaded here for free](http://www.fuzzimo.com/free-hi-res-blank-polaroid-frames/).
+
+Sadly i don't know a source of CreativeCommons (or alike) licensed scans in that
+high quality and i don't own a good scanner - if you would like to help:
+adding some high-res scans in the FLOSS tradition - means for "free as in freedom, not as in beer" - would be wonderfull! (: non-polaroid templates are very welcome too of course - at the moment [there is a
+handfull available here](https://github.com/s3h10r/egw-templates)!
 
 
 Credits & Thanks
