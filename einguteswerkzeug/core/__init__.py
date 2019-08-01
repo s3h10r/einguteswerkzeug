@@ -438,7 +438,7 @@ def add_text(image, title = None, description = None, f_font = RESOURCE_FONT, fo
     )
     return image
 
-def _apply_filters(image, filters = None, filters_args = None):
+def _apply_filters(image, filters = None, custom_args_set = False):
     """
     applies filter(s) to the image
     return PIL Image
@@ -451,49 +451,58 @@ def _apply_filters(image, filters = None, filters_args = None):
         log.info("got a list of images to apply filters for. only few filters are supporting this: %s" % supports_lists)
     kwargs = None
     for edit_filter in filters:
-        filter_func = None
-        if is_list and ( (edit_filter not in supports_lists)):
-                log.warning("%s only supports one image as input (no lists) -> skipping %s" % edit_filter)
-                continue
-        elif is_list == False and edit_filter in requires_lists:
-                log.warning("%s only supports multiple image as input but got only one. -> skipping %s" % (edit_filter, edit_filter))
-                continue
-        if edit_filter in ('ascii', 'ascii-color'):
-            kwargs = PLUGINS_FILTERS[edit_filter].kwargs
-            kwargs['image'] = img
-            if edit_filter == 'ascii':
-                kwargs['color'] = (0,0,0)
+        if not custom_args_set: # randomize params to get some unpredictable variations per default
+            log.info("no custom parameters for filters set (--params-filter). applying parameter-randomization.")
+            filter_func = None
+            if is_list and ( (edit_filter not in supports_lists)):
+                    log.warning("%s only supports one image as input (no lists) -> skipping %s" % edit_filter)
+                    continue
+            elif is_list == False and edit_filter in requires_lists:
+                    log.warning("%s only supports multiple image as input but got only one. -> skipping %s" % (edit_filter, edit_filter))
+                    continue
+            if edit_filter in ('ascii', 'ascii-color'):
+                kwargs = PLUGINS_FILTERS[edit_filter].kwargs
+                kwargs['image'] = img
+                if edit_filter == 'ascii':
+                    kwargs['color'] = (0,0,0)
+                else:
+                    kwargs['color'] = (0,0,240)
+            elif edit_filter in ('composite'):
+                kwargs = PLUGINS_FILTERS[edit_filter].kwargs
+                kwargs['image'] = img
+                kwargs['alpha'] = 0.5
+            elif edit_filter in ('mosaic'):
+                kwargs = PLUGINS_FILTERS[edit_filter].kwargs
+                block_size = int(img.size[0] / random.randint(2,32))
+                kwargs['image'] = img
+                kwargs['block_size'] = block_size
+            elif edit_filter in ('oil', 'oil2'):
+                kwargs = PLUGINS_FILTERS[edit_filter].kwargs
+                brush_size = random.randint(1,8)
+                roughness = random.randint(1,255)
+                kwargs['image'] = img
+                kwargs['brush_size'] = brush_size
+                kwargs['roughness'] = roughness
+            elif edit_filter in ('pixelsort'):
+                kwargs = PLUGINS_FILTERS[edit_filter].kwargs
+                algos = [1,10,20]
+                idx = random.randint(0,2)
+                algo = algos[idx]
+                kwargs['image'] = img
             else:
-                kwargs['color'] = (0,0,240) #TODO choose random color
-        elif edit_filter in ('composite'):
-            kwargs = PLUGINS_FILTERS[edit_filter].kwargs
-            kwargs['image'] = img
-            kwargs['alpha'] = 0.5
-        elif edit_filter in ('mosaic'):
-            kwargs = PLUGINS_FILTERS[edit_filter].kwargs
-            block_size = int(img.size[0] / random.randint(2,32))
-            kwargs['image'] = img
-            kwargs['block_size'] = block_size
-        elif edit_filter in ('oil', 'oil2'):
-            kwargs = PLUGINS_FILTERS[edit_filter].kwargs
-            brush_size = random.randint(1,8)
-            roughness = random.randint(1,255)
-            kwargs['image'] = img
-            kwargs['brush_size'] = brush_size
-            kwargs['roughness'] = roughness
-        elif edit_filter in ('pixelsort'):
-            kwargs = PLUGINS_FILTERS[edit_filter].kwargs
-            algos = [1,10,20]
-            idx = random.randint(0,2)
-            algo = algos[idx]
-            kwargs['image'] = img
-            kwargs['algo'] = algo
+                # generic interface (kwargs always with 'image' and optionally with other arguments set to defaults)
+                kwargs = PLUGINS_FILTERS[edit_filter].kwargs
+                kwargs['image'] = img
+            log.info("%s kwargs = %s" % (edit_filter,kwargs))
+            img = PLUGINS_FILTERS[edit_filter].run(**kwargs)
         else:
+            log.info("custom parameters for filters set via --params-filter. therefore no parameter-randomization applied.")
             # generic interface (kwargs always with 'image' and optionally with other arguments set to defaults)
             kwargs = PLUGINS_FILTERS[edit_filter].kwargs
             kwargs['image'] = img
-        log.debug("%s kwargs = %s" % (edit_filter,kwargs))
-        img = PLUGINS_FILTERS[edit_filter].run(**kwargs)
+            log.info("%s kwargs = %s" % (edit_filter,kwargs))
+            img = PLUGINS_FILTERS[edit_filter].run(**kwargs)
+
     return img
 
 def main(args):
@@ -656,7 +665,10 @@ def main(args):
         source = source_inst
     if apply_filters:
         log.warning("--filter is experimental. you can chain filters via comma-seperator filter1,filter2,...")
-        img = _apply_filters(image=source, filters = apply_filters, filters_args = [])
+        custom_args_set = False
+        if len(params_filter) > 0:
+            custom_args_set = True
+        img = _apply_filters(image=source, filters = apply_filters, custom_args_set = custom_args_set)
         source = img
     if not nopolaroid:
         # finally create the polaroid.
