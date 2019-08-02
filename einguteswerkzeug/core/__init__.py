@@ -99,16 +99,16 @@ def _register_plugins():
     for plug in plugin_source_generators.list_plugins():
             log.info("plug try : %s" % plug)
             plug_instance = plugin_source_generators.load_plugin(plug)
-            # dirty way to check if file is a valid plugin: has it a name atrribute -> then it's valid for now...
             try:
-                plug_name = plug_instance.name
+                if isinstance(plug_instance.generator, EGWPluginGenerator):
+                    log.info("{} provides a EGWPluginGenerator-instance (valid new-style plugin)".format(plug_instance.generator.name))
             except:
                 continue
-            if plug_name in PLUGINS_GENERATORS:
-                log.warning("loading generator-plugin '%s' skipped because of name-conflict" % plug_name)
+            if plug_instance.generator.name in PLUGINS_GENERATORS:
+                log.warning("loading generator-plugin '%s' skipped because of name-conflict" % plug_instance.generator.name)
                 continue
-            PLUGINS_GENERATORS[plug_instance.name] = plug_instance
-            log.info("generator '%s' successfully loaded" % plug_instance.name)
+            PLUGINS_GENERATORS[plug_instance.generator.name] = plug_instance.generator
+            log.info("generator '%s' successfully loaded" % plug_instance.generator.name)
 
 def setup_globals(size, configfile=None, template = None, show = True):
     global IMAGE_SIZE
@@ -234,8 +234,8 @@ def setup_globals(size, configfile=None, template = None, show = True):
             SETTINGS["plugins.filters." + k + ".kwargs"] = PLUGINS_FILTERS[k].kwargs
             SETTINGS["plugins.filters." + k + ".author"] = PLUGINS_FILTERS[k].author
         for k in list(PLUGINS_GENERATORS.keys()):
-            SETTINGS["plugins.generators." + k + ".description"] = PLUGINS_GENERATORS[k].description
             SETTINGS["plugins.generators." + k + ".version"] = PLUGINS_GENERATORS[k].version
+            SETTINGS["plugins.generators." + k + ".iface_version"] = PLUGINS_GENERATORS[k].iface_version
             SETTINGS["plugins.generators." + k + ".kwargs"] = PLUGINS_GENERATORS[k].kwargs
             SETTINGS["plugins.generators." + k + ".author"] = PLUGINS_GENERATORS[k].author
         print(json.dumps(SETTINGS,indent=4,sort_keys=True))
@@ -542,15 +542,15 @@ def main(args):
         params_generator = args['--params-generator'].split('}')
         params_generator = [el + '}' for el in params_generator if el != '' ]
     log.debug("params_generator: %s" % params_generator)
-    # overwriting the default-kwargs for filters with user-provided settings
+    # overwriting the default-kwargs for generators with user-provided settings
     for i,pjson in enumerate(params_generator): # should only be 1 generator
         log.info("generator %s : loading & applying --params-generator %s '%s'" % (generator, i, pjson))
         params = json.loads(pjson)
         for k,v in params.items():
             if k in PLUGINS_GENERATORS[generator].kwargs:
-                PLUGINS_GENERATORS[generator].kwargs[k] = v
+                PLUGINS_GENERATORS[generator].kwargs = {'k' : v}
             else:
-                raise Exception("filter %s has no parameter '%s'. please check your --params-filter argument(s)." % (apply_filters[i], k))
+                raise Exception("generator '%s' has no parameter '%s'. please check your --params-generator argument(s)." % (params_generator[i], k))
     if args['--alpha-blend']:
         alpha_blend = float(args['--alpha-blend'])
     if args['--border-size']:
@@ -648,7 +648,7 @@ def main(args):
         else:
             log.warning("deprecated : generator {} doesn't provide 'size' parameter".format(generator))
         generator = PLUGINS_GENERATORS[generator]
-        source, meta = generator.run(**kwargs)
+        source = generator.run()
     if add_meta_to_title:
         if len(title) > 0:
             title += " "

@@ -24,6 +24,13 @@ echo "please activate venv to test. the command to do this is:"
 SWITCH2VENV_TEST="source $VENV_INSTALL/bin/activate"
 echo "$SWITCH2VENV_TEST"
 
+./test_generators_basic.sh || echo "... test_generators_basic : FAILED" && exit 1
+echo "... test_generators_basic : ok"
+./test_filters_basic.sh || echo "... test_filters_basic : FAILED" && exit 1
+echo "... test_filters_basic : ok"
+
+exit 0
+
 ./test_plugin-params.sh || exit 1
 ./test_generators.sh || exit 1
 ./test_filters.sh || exit 1
