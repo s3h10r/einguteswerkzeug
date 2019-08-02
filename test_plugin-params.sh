@@ -15,6 +15,7 @@ TPL_REPO_00=$(realpath ./einguteswerkzeug/templates/square/egw-template_julian-h
 TPL_REPO_01=$(realpath ./einguteswerkzeug/templates/square/egw-template_david-van-dijk-3LTht2nxd34-unsplash.jpg)
 TPL_REPO_02=$(realpath ./einguteswerkzeug/templates/square/egw-template_sarah-dorweiler-7tFlUFGa7Dk-unsplash.jpg)
 TPL_REPO_03=$(realpath ./einguteswerkzeug/templates/square/egw-template_rodion-kutsaev-IJ25m7fXqtk-unsplash.jpg)
+TPL_REPO_04=$(realpath ./einguteswerkzeug/templates/square/egw-template_sarah-dorweiler-x2Tmfd1-SgA-unsplash.jpg)
 
 MAX_SIZE=600
 FOUT="/tmp/test_generators.png"
@@ -25,7 +26,10 @@ FOUT3="/tmp/test_generators_r3.png"
 VERSION=$(egw --version | tail -1) || exit 1
 echo $VERSION
 
-egw --generator mondrian --nopolaroid  --alpha-blend 0.4 --border-size 0.05 --border-color 238,238,238 -o $FOUT  --config $CONFIG --template $TPL_REPO_03 --title "" --max-size 800 || exit 1
+egw "$TPL_REPO_00" --nopolaroid  --alpha-blend 0.3 --border-size 0.05 --border-color 238,238,238 --filter pixelsort,oil2 --params-filter='{"algo" : 1}' -o $FOUT  --config $CONFIG --template $TPL_REPO_04 --title "" --max-size 800 || exit 1
+feh $FOUT
+
+egw --generator mondrian --nopolaroid  --alpha-blend 0.36 --border-size 0.05 --border-color 238,238,238 -o $FOUT  --config $CONFIG --template $TPL_REPO_03 --title "" --max-size 800 || exit 1
 feh $FOUT
 
 egw --generator nlines --nopolaroid  --border-size 0.3 --border-color 238,238,238 --params-generator='{"seed" : 197919801989002019, "size" : 800, "nr_lines" : 24, "thickness" : 8, "x_step" : 10, "color" : [0,0,200,255] }' -o $FOUT  --config $CONFIG --template $TPL_REPO_02 --title "" --max-size 800 || exit 1
