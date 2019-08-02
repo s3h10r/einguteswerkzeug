@@ -67,7 +67,7 @@ PLUGINS_DUMMY = {}
 PLUGINS_FILTERS = {}
 PLUGINS_GENERATORS = {}
 
-__version__ = (0,3,3)
+__version__ = (0,3,32)
 
 def get_version():
     return(__version__)
@@ -493,14 +493,14 @@ def _apply_filters(image, filters = None, custom_args_set = False):
                 kwargs = PLUGINS_FILTERS[edit_filter].kwargs
                 kwargs['image'] = img
             log.info("%s kwargs = %s" % (edit_filter,kwargs))
-            img = PLUGINS_FILTERS[edit_filter].run()
         else:
             log.info("custom parameters for filters set via --params-filter. therefore no parameter-randomization applied.")
             # generic interface (kwargs always with 'image' and optionally with other arguments set to defaults)
             kwargs = PLUGINS_FILTERS[edit_filter].kwargs
             kwargs['image'] = img
             log.info("%s kwargs = %s" % (edit_filter,kwargs))
-            img = PLUGINS_FILTERS[edit_filter].run(**kwargs)
+        PLUGINS_FILTERS[edit_filter].kwargs = kwargs
+        img = PLUGINS_FILTERS[edit_filter].run()
 
     return img
 
