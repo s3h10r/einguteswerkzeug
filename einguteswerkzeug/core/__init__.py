@@ -14,6 +14,7 @@ import exifread
 from PIL import Image, ImageDraw, ImageFont, ExifTags
 from pluginbase import PluginBase
 
+from einguteswerkzeug.plugins import EGWPluginFilter, EGWPluginGenerator
 from einguteswerkzeug.helpers import get_resource_file, show_error
 from einguteswerkzeug.helpers.gfx import get_exif
 from einguteswerkzeug.helpers.gfx import add_border_around_image, crop_image_to_square, scale_image_to_square, scale_image, scale_square_image
@@ -66,7 +67,7 @@ PLUGINS_DUMMY = {}
 PLUGINS_FILTERS = {}
 PLUGINS_GENERATORS = {}
 
-__version__ = (0,3,29)
+__version__ = (0,3,3)
 
 def get_version():
     return(__version__)
@@ -86,12 +87,12 @@ def _register_plugins():
     for plug in plugin_source_filters.list_plugins():
         plug_instance = plugin_source_filters.load_plugin(plug)
         try:
-            plug_name = plug_instance.name
+            if isinstance(plug_instance.filter, EGWPluginFilter):
+                log.info("{} provides a EGWPluginFilter-instance (valid new-style plugin)".format(plug_instance.filter.name))
         except:
-            log.warning("loading of %s failed. no .name set?" % plug)
             continue
-        PLUGINS_FILTERS[plug_instance.name] = plug_instance
-        log.info("filter '%s' successfully loaded" % plug_instance.name)
+        PLUGINS_FILTERS[plug_instance.filter.name] = plug_instance.filter
+        log.info("filter '%s' successfully loaded" % plug_instance.filter.name)
 
     log.debug("loading generator-plugins from %s" % plugin_source_generators.searchpath)
     log.debug("generators.list_plugins %s" % plugin_source_generators.list_plugins())
@@ -228,8 +229,8 @@ def setup_globals(size, configfile=None, template = None, show = True):
             SETTINGS["plugins.example." + k + ".kwargs"] = PLUGINS_DUMMY[k].kwargs
             SETTINGS["plugins.example." + k + ".author"] = PLUGINS_DUMMY[k].author
         for k in list(PLUGINS_FILTERS.keys()):
-            SETTINGS["plugins.filters." + k + ".description"] = PLUGINS_FILTERS[k].description
             SETTINGS["plugins.filters." + k + ".version"] = PLUGINS_FILTERS[k].version
+            SETTINGS["plugins.filters." + k + ".iface_version"] = PLUGINS_FILTERS[k].iface_version
             SETTINGS["plugins.filters." + k + ".kwargs"] = PLUGINS_FILTERS[k].kwargs
             SETTINGS["plugins.filters." + k + ".author"] = PLUGINS_FILTERS[k].author
         for k in list(PLUGINS_GENERATORS.keys()):
@@ -492,7 +493,7 @@ def _apply_filters(image, filters = None, custom_args_set = False):
                 kwargs = PLUGINS_FILTERS[edit_filter].kwargs
                 kwargs['image'] = img
             log.info("%s kwargs = %s" % (edit_filter,kwargs))
-            img = PLUGINS_FILTERS[edit_filter].run(**kwargs)
+            img = PLUGINS_FILTERS[edit_filter].run()
         else:
             log.info("custom parameters for filters set via --params-filter. therefore no parameter-randomization applied.")
             # generic interface (kwargs always with 'image' and optionally with other arguments set to defaults)
