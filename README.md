@@ -14,7 +14,7 @@ around (see credits & thanks). in short the software provides:
 * generative-art-"generators" which are fun to play with
 * chainable filters (`--filter f1,f2,...,fN`)
 * reading & processing EXIF-data
-* lightweight [plugin-framework](/einguteswerkzeug/plugins/) - simple to use (and write) filters & generators
+* lightweight plugin-framework - simple to use (and write) filters & generators
 * vintage polaroid style supporting (high-res) templates
 * supports your favorite 100% free (truetype-)font](https://www.dafont.com)
 * `--help`-option :) + usage-examples as shellscripts
@@ -74,15 +74,6 @@ Some examples of works i am doing with `einguteswerkzeug`:
 you want to help?
 =================
 
-we need [free high-res templates](https://github.com/s3h10r/egw-templates)
--------------------------------
-
-To get an appealing rugged analogue style you can also make "huge" prints of [use high-resolution scans of polaroid Frames - the ones i use at the moment can be downloaded here for free](http://www.fuzzimo.com/free-hi-res-blank-polaroid-frames/).
-
-Sadly i don't know a source of CreativeCommons (or alike) licensed scans in that
-high quality and i don't own a good scanner - if you would like to help:
-adding some high-res scans in the FLOSS tradition - means for "free as in freedom, not as in beer" - would be wonderfull! (: non-polaroid templates are very welcome too of course - [a handfull of free high-res templates is available here](https://github.com/s3h10r/egw-templates)!
-
 donate
 ------
 
@@ -92,6 +83,12 @@ cent helps me to pay the bills & to continue building awesome software for
 creative people.
 
 Thank you very much!
+
+
+we need [free high-res templates](https://github.com/s3h10r/egw-templates)
+-------------------------------
+
+To get an appealing rugged analogue style you can also make "huge" prints of [use high-resolution scans of polaroid Frames - the ones i use at the moment can be downloaded here for free](http://www.fuzzimo.com/free-hi-res-blank-polaroid-frames/). Sadly i don't know a source of CreativeCommons (or alike) licensed scans in that high quality and i don't own a good scanner - if you would like to help: [adding some high-res scans in the FLOSS tradition](https://github.com/s3h10r/egw-templates) - means for "free as in freedom, not as in beer" - would be wonderfull! (:
 
 
 Credits & Thanks
