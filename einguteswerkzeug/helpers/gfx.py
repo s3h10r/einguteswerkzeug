@@ -185,6 +185,8 @@ def scale_square_image(image, size):
         raise Exception("ouch - no square image.")
     if isinstance(size,int):
         size = (size,size)
+    elif isinstance(size,list) and len(size) == 2:
+        size = tuple(size)
     if not isinstance(size,tuple):
         raise Exception("sorry, we need a tuple(w,h) here...")
     if image.size[0] > size[0]:
