@@ -1,4 +1,11 @@
-**0.3.2** (work in progress)
+**0.3.4** (in progress)
+- refactoring: transition to class-based plugins #13
+- TODO: refactoring : transition to class-based core #13
+- TODO: contactsheet supports filtering by time-window
+- TODO: improved template support
+
+
+**0.3.2**
 - introduces generators (`--generator` option) as an alternative to source-image
   (psychedelic, squares+circles, sprites, cowsay, nlines, mondrian)
 - implements a simple to use plugin-mechanism for custom filters & generators.
@@ -11,8 +18,6 @@
 - restructures all the messy parts at least a bit ([packages](https://docs.python.org/3.6/tutorial/modules.html#packages))
 - adds `--noframe` option (== do just the plain image processing without pasting it into a template)
 - renames the project & migrates latest codebase
-- TODO: contactsheet supports filtering by time-window
-- TODO: improved template support
 - bugfixes & new bugs
 
 **pom-0.9.32**
