@@ -246,7 +246,7 @@ class EGWTemplate:
             return None
 
 
-def _load_templates(config = None):
+def load_templates(config = None):
     """
     loads templatedefinition & params from provided configfile
     returns list of Template-instances
@@ -274,7 +274,7 @@ def _load_templates(config = None):
     return templates
 
 
-def _select_template(name = None, templates = {}):
+def select_template(name = None, templates = {}):
     if name.endswith('random') or name.endswith('rand'):
         log.info("choosing a random template...")
         tpl_keys = list(templates.keys())
@@ -287,13 +287,13 @@ def _select_template(name = None, templates = {}):
 
 
 if __name__ == '__main__':
-    templates = _load_templates(config = RESOURCE_CONFIG_FILE)
+    templates = load_templates(config = RESOURCE_CONFIG_FILE)
     for name, tpl in templates.items():
         print(tpl.info)
         img = tpl.get_image()
 
-    tpl = _select_template(name = 'egw-template_rodion-kutsaev-IJ25m7fXqtk-unsplash.jpg', templates = templates)
+    tpl = select_template(name = 'egw-template_rodion-kutsaev-IJ25m7fXqtk-unsplash.jpg', templates = templates)
     print(tpl.info)
 
-    tpl = _select_template(name = 'random', templates = templates)
+    tpl = select_template(name = 'random', templates = templates)
     print(tpl.info)
