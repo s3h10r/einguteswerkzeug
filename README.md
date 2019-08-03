@@ -7,9 +7,8 @@ full-stack around it (raspi, webapis, docker, serverless computing, flutter). :)
 
 <img src="/examples/awork_small_complementarymsg.jpg" width="90%" title="complementary message"></img>
 
-The main purpose of the cli-version is to produce **high-quality** (generative)
-**art prints**. But `egw` can also just be used for giving your photos or
-contactsheets a fairly well & **[individual vintage polaroid style**](README.md) <sup>[1](#footnote1)</sup>. einguteswerkzeug provides some [phonky](https://www.youtube.com/watch?v=TBXv37PFcAQ) **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
+`egw` can be used for creating **high-quality art prints**
+or just for giving your photos or contactsheets a fairly well & [**individual vintage polaroid style**](README.md) <sup>[1](#footnote1)</sup>. einguteswerkzeug provides some [phonky](https://www.youtube.com/watch?v=TBXv37PFcAQ) **filters and generative art capabilities** mostly based on wonderfull open-source-projects and inspiring blog-articles
 around (see credits & thanks). in short the software provides:
 
 * generative-art-"generators" which are fun to play with
@@ -20,8 +19,8 @@ around (see credits & thanks). in short the software provides:
 * supports your favorite [(truetype-)font](https://www.dafont.com)
 * `--help`-option :) + usage-examples as shellscripts
 
-This software is in **beta-status** and therefore some interface-things will
-change for sure - but for now `egw` already works fine for me. So maybe it
+`egw` is in **beta-status** and therefore some interface-things will
+change for sure - but for now it already works fine for me. Maybe it
 can be usefull for you too, especially if you like to tinker with code.
 
 
@@ -79,7 +78,7 @@ free high-res templates with "free as in freedom, not as in free beer"
 ----------------------------------------------------------------------
 
 To get an appealing rugged analogue style which is good enough for large prints high-res
-scans of polaroid frames are needed. [the ones i use for now (and include the confs for)
+scans of polaroid frames are required. [the ones i use for now (and include the confs for)
 can be downloaded here for free](http://www.fuzzimo.com/free-hi-res-blank-polaroid-frames/)
 - but they are not licensed under CreativeCommons or alike...
 If you own a good scanner and could [provide some high-res scans of polaroid frames](https://github.com/s3h10r/egw-templates) this would be awesome! (:
