@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-TODO #13
+enjoy the mess ;) #13
+the transition of the legacy code into class-based looks... ummm...
+"not very pretty"... but it works so it's good enough for now. 
 """
 import glob
 import logging
@@ -11,6 +13,7 @@ import string
 import sys
 from PIL import Image
 from einguteswerkzeug.helpers import get_resource_file
+from einguteswerkzeug.helpers.gfx import paste_image_into_box
 
 # --- configure logging
 log = logging.getLogger(__name__)
@@ -33,7 +36,7 @@ class EGWTemplate:
 
     BOX_FORMATS = { 'square' : 0, 'free' : 10}
     l_search_paths = [
-        os.path.dirname(os.path.realpath(__file__)) + "/../templates/", ]
+        os.path.dirname(os.path.realpath(__file__)) + "/../../templates/", ]
 
     def __init__(self, name = None, box = [], box_format = BOX_FORMATS['square']):
         self._IFACE_VERSION = "0.4.0"
@@ -158,6 +161,25 @@ class EGWTemplate:
 
 
     @property
+    def image_max(self):
+        """
+        returns
+            Image instance : the original template (max size)
+        """
+        return self._tpl_image_max
+
+    @property
+    def image(self):
+        """
+        returns
+            Image instance : the custom-size template
+            (at the moment 1:1 _max but we wanna change this later
+            and use .scale-funcs etc. #11)
+        """
+        return self._tpl_image
+
+
+    @property
     def size_max(self):
         """
         returns
@@ -218,16 +240,19 @@ class EGWTemplate:
     def paste(image, alpha_blend = 1.0, max = False):
         """
         pastes Image instance into the .box of the template
+        (not init box_max! but usually they are the same for now
+        but we'll change this, see #11)
 
         returns
             Image instance
         """
-        raise Exception("TODO #13")
+        return paste_image_into_box(image = self._tpl_image, paste_into_image = image, blend=alpha_blend, box = self.box)
 
 
     def resize(self,**kwargs):
         """
         resizes template (and changes the .box, .size, ... properties accordingly)
+        # 11
         """
         raise Exception("TODO #13")
 
@@ -283,7 +308,7 @@ def select_template(name = None, templates = {}):
     if name in templates:
         return templates[name]
     else:
-        raise Exception("Sorry. Template not found. :-/")
+        raise Exception("Sorry. Template '{}' not found. :-/".format(name))
 
 
 if __name__ == '__main__':

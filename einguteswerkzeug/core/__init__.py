@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+legacy code #13
 """
 import datetime as dt
+import glob
 import json
+import logging
 import os
 import random
-import site
+import string
 import sys
-import logging
-from docopt import docopt
-import exifread
-from PIL import Image, ImageDraw, ImageFont, ExifTags
+from PIL import Image
 from pluginbase import PluginBase
-
-from einguteswerkzeug.plugins import EGWPluginFilter, EGWPluginGenerator
 from einguteswerkzeug.helpers import get_resource_file, show_error
-from einguteswerkzeug.helpers.gfx import get_exif
-from einguteswerkzeug.helpers.gfx import add_border_around_image, crop_image_to_square, scale_image_to_square, scale_image, scale_square_image
+from einguteswerkzeug.helpers.gfx import scale_and_prep_image, scale_square_image, add_border_around_image
+from einguteswerkzeug.plugins import EGWPluginFilter, EGWPluginGenerator
+from einguteswerkzeug.core.template import EGWTemplate, load_templates, select_template
+from einguteswerkzeug.core.polaroid import make_polaroid # legacy #13
 
 # --- configure logging
 log = logging.getLogger(__name__)
@@ -28,701 +28,519 @@ handler.setFormatter(formatter)
 log.addHandler(handler)
 # ---
 
-# Image size constraints
-IMAGE_SIZE   = (600,600)                # the thumbnail size (= the inner picture)
-# --- polaroid frame specific, needs refactoring, see issue #6
-IMAGE_TOP    = int(IMAGE_SIZE[0] / 16)     # added space on top
-IMAGE_BOTTOM = int(IMAGE_SIZE[0] / 5.333)  # added space on bottom
-IMAGE_LEFT   = int(IMAGE_SIZE[0] / 16)     # ...
-IMAGE_RIGHT  = int(IMAGE_SIZE[0] / 16)     # ...
-BORDER_SIZE  = 3
-# ---
-# Colors
-COLOR_FRAME   = (237, 243, 214)
-COLOR_BORDER  = (0, 0, 0)
-COLOR_TEXT_TITLE = (58, 68, 163)
-COLOR_TEXT_DESCR = COLOR_TEXT_TITLE
-COLOR_BG_INNER = (0,0,0)                # usefull if --nocrop
-# Font for the caption text
-RESOURCE_FONT      = "fonts/default.ttf"
-RESOURCE_FONT_SIZE = int(IMAGE_BOTTOM - (IMAGE_BOTTOM * 0.9))
-RESOURCE_CONFIG_FILE="einguteswerkzeug.conf"
+__version__ = (0,3,92)
 
-TEMPLATE_BOXES = {} # if --template is used we need a dict with templatename and box-definition for the image
-TEMPLATE = None
+class EGW:
+    __version__ = __version__
 
-plugin_base = PluginBase(package='einguteswerkzeug.pluginframework')
-plugin_source_dummy = plugin_base.make_plugin_source(
-    searchpath=[os.path.dirname(os.path.realpath(__file__)) + "/../plugins/dummy/", ])
-plugin_source_filters = plugin_base.make_plugin_source(
-    searchpath=[os.path.dirname(os.path.realpath(__file__)) + "/../plugins/filters/", ])
-subdirs = [os.path.dirname(os.path.realpath(__file__)) + "/../plugins/generators/"]
-subd = [x[0] for x in os.walk(os.path.dirname(os.path.realpath(__file__)) + "/../plugins/generators/")]
-for d in subd:
-    subdirs.append(d)
-print(subdirs)
-plugin_source_generators = plugin_base.make_plugin_source(searchpath=subdirs)
+    l_searchpaths_filters = [os.path.dirname(os.path.realpath(__file__)) + "/../plugins/filters/", ]
+    l_searchpaths_generators = [os.path.dirname(os.path.realpath(__file__)) + "/../plugins/generators/", ]
+    _plugin_base = PluginBase(package='einguteswerkzeug.pluginframework')
+    _plugin_source_filters = _plugin_base.make_plugin_source(searchpath=l_searchpaths_filters)
+    _plugin_source_generators = _plugin_base.make_plugin_source(searchpath=l_searchpaths_generators)
+    _PLUGINS_FILTERS = {}
+    _PLUGINS_GENERATORS = {}
+    _TEMPLATES = {}
 
-PLUGINS_DUMMY = {}
-PLUGINS_FILTERS = {}
-PLUGINS_GENERATORS = {}
+    _RESOURCE_CONFIG_FILE="einguteswerkzeug.conf"
+    # Font for the caption text
+    _RESOURCE_FONT      = "fonts/default.ttf"
+    _RESOURCE_FONT_SIZE = None
 
-__version__ = (0,3,32)
+    def __init__(self, *args, **kwargs):
+        self._IFACE_VERSION = "0.4.0"
+        self._load_plugins()
+        log.info("filters registered: {}".format(len(self.filters)))
+        log.info("generators registered: {}".format(len(self.generators)))
+        self._seed = None
+        self._setup_args(**kwargs)
+        if not self._seed:
+            self._seed = random.randrange(sys.maxsize)
+        random.seed(self._seed)
+        self._process_args()
 
-def get_version():
-    return(__version__)
 
-# ---
-
-def _register_plugins():
-    global PLUGINS_TESTS
-    global PLUGINS_FILTERS
-    global PLUGINS_GENERATORS
-    #print(plugin_source_dummy.searchpath)
-    for plug in plugin_source_dummy.list_plugins():
-        log.info("loading dummy-plugin %s ... " % plug)
-        plug_instance = plugin_source_dummy.load_plugin(plug)
-        PLUGINS_DUMMY[plug_instance.name] = plug_instance
-    log.info("loading filter-plugins from %s" % plugin_source_filters.searchpath)
-    for plug in plugin_source_filters.list_plugins():
-        plug_instance = plugin_source_filters.load_plugin(plug)
-        try:
-            if isinstance(plug_instance.filter, EGWPluginFilter):
-                log.info("{} provides a EGWPluginFilter-instance (valid new-style plugin)".format(plug_instance.filter.name))
-        except:
-            continue
-        PLUGINS_FILTERS[plug_instance.filter.name] = plug_instance.filter
-        log.info("filter '%s' successfully loaded" % plug_instance.filter.name)
-
-    log.debug("loading generator-plugins from %s" % plugin_source_generators.searchpath)
-    log.debug("generators.list_plugins %s" % plugin_source_generators.list_plugins())
-    for plug in plugin_source_generators.list_plugins():
-            log.info("plug try : %s" % plug)
-            plug_instance = plugin_source_generators.load_plugin(plug)
+    def _load_plugins(self):
+        """
+        searches for plugins and registers / loads them class-wide
+        """
+        log.debug("loading filter-plugins from %s" % self._plugin_source_filters.searchpath)
+        for plug in self._plugin_source_filters.list_plugins():
+            plug_instance = self._plugin_source_filters.load_plugin(plug)
             try:
-                if isinstance(plug_instance.generator, EGWPluginGenerator):
-                    log.info("{} provides a EGWPluginGenerator-instance (valid new-style plugin)".format(plug_instance.generator.name))
+                if isinstance(plug_instance.filter, EGWPluginFilter):
+                    log.debug("{} provides a EGWPluginFilter-instance. iface_v : {}".format(plug_instance.filter.name, plug_instance.filter.iface_version))
             except:
                 continue
-            if plug_instance.generator.name in PLUGINS_GENERATORS:
-                log.warning("loading generator-plugin '%s' skipped because of name-conflict" % plug_instance.generator.name)
+            if plug_instance.filter.name in self._PLUGINS_FILTERS:
+                log.warning("loading filter-plugin '%s' skipped because of name-conflict :/" % plug_instance.filter.name)
                 continue
-            PLUGINS_GENERATORS[plug_instance.generator.name] = plug_instance.generator
-            log.info("generator '%s' successfully loaded" % plug_instance.generator.name)
+            self._PLUGINS_FILTERS[plug_instance.filter.name] = plug_instance.filter
+            log.info("filter '%s' successfully loaded" % plug_instance.filter.name)
 
-def setup_globals(size, configfile=None, template = None, show = True):
-    global IMAGE_SIZE
-    global IMAGE_TOP
-    global IMAGE_BOTTOM
-    global IMAGE_LEFT
-    global IMAGE_RIGHT
-    global BORDER_SIZE
-    global RESOURCE_FONT_SIZE
-    global TEMPLATE_BOXES
-    global TEMPLATE
+        log.debug("loading generator-plugins from %s" % self._plugin_source_generators.searchpath)
+        log.debug("generators.list_plugins %s" % self._plugin_source_generators.list_plugins())
+        for plug in self._plugin_source_generators.list_plugins():
+                plug_instance = self._plugin_source_generators.load_plugin(plug)
+                try:
+                    if isinstance(plug_instance.generator, EGWPluginGenerator):
+                        log.debug("{} provides a EGWPluginGenerator-instance. iface_v: {}".format(plug_instance.generator.name, plug_instance.generator.iface_version))
+                except:
+                    continue
+                if plug_instance.generator.name in self._PLUGINS_GENERATORS:
+                    log.warning("loading generator-plugin '%s' skipped because of name-conflict :/" % plug_instance.generator.name)
+                    continue
+                self._PLUGINS_GENERATORS[plug_instance.generator.name] = plug_instance.generator
+                log.info("generator '%s' successfully loaded" % plug_instance.generator.name)
 
-    if size and isinstance(size,tuple):
-        size = list(size) # we need to chhnge values in this func, so temporarily turning into list
-    elif size and not isinstance(size,list):
-        size = [size,size] #square format
 
-    if configfile:
-        if not (os.path.isfile(configfile)):
-            log.warning("configfile {} not found... please always give absolute paths to config-file to avoid confusions :D".format(configfile))
-            sys.exit(1)
-        # --- load config file (if any)
-        with open(configfile) as f:
-            log.info("reading config...")
-            code = compile(f.read(), configfile, 'exec')
-            global_vars ={}
-            local_vars = {}
-            exec(code,global_vars, local_vars)
-            TEMPLATE_BOXES=local_vars['TEMPLATE_BOXES']
-    else:
-        if template:
-            log.critical("to use --template you need to define a config-file")
-            sys.exit(1)
-
-    if not template:
-        IMAGE_SIZE   = size
-        IMAGE_TOP    = int(IMAGE_SIZE[0] / 16)
-        IMAGE_BOTTOM = int(IMAGE_SIZE[0] / 5.333)
-        IMAGE_LEFT   = int(IMAGE_SIZE[0] / 16)
-        IMAGE_RIGHT  = int(IMAGE_SIZE[0] / 16)
-        BORDER_SIZE  = 3
-        RESOURCE_FONT_SIZE = int(IMAGE_BOTTOM - (IMAGE_BOTTOM * 0.2))
-    else:
-        # calculate the values based on the properties of the template image
-        # --- setup templates
+    def _load_templates(config = None):
+        """
+        loads templatedefinition & params from provided configfile
+        returns list of Template-instances
+        """
+        templates = {} # template-instances
+        configfile = get_resource_file(config)
+        TEMPLATE_BOXES = None
+        if configfile:
+            if not (os.path.isfile(configfile)):
+                log.warning("configfile {} not found... please always give absolute paths to config-file to avoid confusions :D".format(configfile))
+                sys.exit(1)
+            # --- load config file (if any)
+            with open(configfile) as f:
+                log.info("reading config...")
+                code = compile(f.read(), configfile, 'exec')
+                global_vars ={}
+                local_vars = {}
+                exec(code,global_vars, local_vars)
+                TEMPLATE_BOXES=local_vars['TEMPLATE_BOXES']
         for k in TEMPLATE_BOXES:
             TEMPLATE_BOXES[k] = [int(round(f)) for f in TEMPLATE_BOXES[k]]
+        for k,v in TEMPLATE_BOXES.items():
+            templates[k] = EGWTemplate(name=k, box = list(v))
+        log.info("{} templates loaded.".format(len(templates.keys())))
+        return templates
+
+
+    def _setup_args(self,**kwargs):
         # ---
-        if template.endswith('random') or template.endswith('rand'):
-            log.info("choosing a random template...")
-            templates = list(TEMPLATE_BOXES.keys())
-            rnd = random.randint(0,len(TEMPLATE_BOXES) - 1)
-            template = os.path.dirname(template) + "/" + templates[rnd]
-        TEMPLATE=template
-        box = TEMPLATE_BOXES[os.path.basename(template)]
-        w = box[2] - box[0]
-        h = box[3] - box[1]
-        if w != h:
-            log.warning("boxdefinition for template {} is not a square. w,h {},{}".format(template,w,h))
-            log.warning("difference is {}".format(abs(h-w)))
-            log.warning("auto-fixing => making it square...")
-            # the longer side is made equal to the shorter side by removing pixels on both ends
-            if w < h:
-                diff = h - w
-                box[1] += int(diff // 2)
-                box[3] -= int(diff // 2) + int(diff % 2)
-            else:
-                diff = w - h
-                box[0] += int(diff // 2)
-                box[2] -= int(diff // 2) + int(diff % 2)
-            TEMPLATE_BOXES[os.path.basename(template)] = [box[0], box[1], box[2], box[3]]
-            box = TEMPLATE_BOXES[os.path.basename(template)]
-            w = box[2] - box[0]
-            h = box[3] - box[1]
-            log.warning("boxdefinition for template {} auto-adjusted to: w,h {},{}".format(os.path.basename(template),w,h))
-            log.warning("boxdefinition is now: {}".format(box))
-            assert(w == h)
-        size = [w,h]
-        assert((size[0] == w) and (size[0]== h)) # only squares supported for now because of legacy #6
-        size = tuple(size) # no further edits of this
-        IMAGE_SIZE = size  # no further edits of this
-        # overwrite the above calculated  _TOP,_BOTTOM, ... values
-        # by the one our template "dictates"
-        try:
-            tpl = Image.open(template)
-        except:
-            tpl = Image.open(get_resource_file(template))
-        tpl_x, tpl_y = tpl.size
-        tpl.close()
-        IMAGE_TOP = box[1]
-        IMAGE_BOTTOM = tpl_y - (IMAGE_TOP + IMAGE_SIZE[1])
-        IMAGE_LEFT = box[0]
-        IMAGE_RIGHT = tpl_x - (IMAGE_LEFT + w)
-        BORDER_SIZE  = 3
-        RESOURCE_FONT_SIZE = int(IMAGE_BOTTOM - (IMAGE_BOTTOM * 0.2))
-    # --- show
-    if show:
-        SETTINGS = {
-        'IMAGE_SIZE' : IMAGE_SIZE,
-        'IMAGE_TOP' : IMAGE_TOP,
-        'IMAGE_BOTTOM' : IMAGE_BOTTOM,
-        'IMAGE_LEFT' : IMAGE_LEFT,
-        'IMAGE_RIGHT' : IMAGE_RIGHT,
-        'BORDER_SIZE' : BORDER_SIZE,
-        'RESOURCE_FONT_SIZE' : RESOURCE_FONT_SIZE,
-        'TEMPLATE_KEY' : TEMPLATE,
-        'TEMPLATE_VALUE': None,# we fill this if template ist != None
-        'PLUGINS_DUMMY' : list(PLUGINS_DUMMY.keys()),
-        'PLUGINS_FILTERS' : list(PLUGINS_FILTERS.keys()),
-        'PLUGINS_GENERATORS' : list(PLUGINS_GENERATORS.keys()),
-        }
-        if template:
-            SETTINGS['TEMPLATE_KEY'] = os.path.basename(TEMPLATE),
-            SETTINGS['TEMPLATE_VALUE'] = TEMPLATE_BOXES[os.path.basename(TEMPLATE)],
-        for k in list(PLUGINS_DUMMY.keys()):
-            SETTINGS["plugins.example." + k + ".description"] = PLUGINS_DUMMY[k].description
-            SETTINGS["plugins.example." + k + ".description"] = PLUGINS_DUMMY[k].version
-            SETTINGS["plugins.example." + k + ".kwargs"] = PLUGINS_DUMMY[k].kwargs
-            SETTINGS["plugins.example." + k + ".author"] = PLUGINS_DUMMY[k].author
-        for k in list(PLUGINS_FILTERS.keys()):
-            SETTINGS["plugins.filters." + k + ".version"] = PLUGINS_FILTERS[k].version
-            SETTINGS["plugins.filters." + k + ".iface_version"] = PLUGINS_FILTERS[k].iface_version
-            SETTINGS["plugins.filters." + k + ".kwargs"] = PLUGINS_FILTERS[k].kwargs
-            SETTINGS["plugins.filters." + k + ".author"] = PLUGINS_FILTERS[k].author
-        for k in list(PLUGINS_GENERATORS.keys()):
-            SETTINGS["plugins.generators." + k + ".version"] = PLUGINS_GENERATORS[k].version
-            SETTINGS["plugins.generators." + k + ".iface_version"] = PLUGINS_GENERATORS[k].iface_version
-            SETTINGS["plugins.generators." + k + ".kwargs"] = PLUGINS_GENERATORS[k].kwargs
-            SETTINGS["plugins.generators." + k + ".author"] = PLUGINS_GENERATORS[k].author
-        print(json.dumps(SETTINGS,indent=4,sort_keys=True))
+        # Colors
+        COLOR_FRAME   = (237, 243, 214)
+        COLOR_BORDER  = (0, 0, 0)
+        COLOR_TEXT_TITLE = (58, 68, 163)
+        COLOR_TEXT_DESCR = COLOR_TEXT_TITLE
+        COLOR_BG_INNER = (0,0,0)                # usefull if --nocrop
+        # ---
 
-def scale_and_prep_image(source = None, size = None, options = {}, align = "center", bg_color_inner=(0,0,0)):
-    """
-    preprocessing (crop and/or scale) input image before applying filters etc.
-    #11
+        self._options = { 'rotate': None, 'crop' : True, 'noframe' : False} # defaults
+        self._source = []
+        self._size_box = (400,400) # inner size, only the picture without surrounding frame
+        self._target = None
+        self._align = "center"
+        self._title = ""
+        self._add_meta_to_title = False
+        self._f_font = None
+        self._template = None
+        self._configfile = get_resource_file(self._RESOURCE_CONFIG_FILE)
+        self._max_size = None # max size (width)
+        self._add_exif_to_title = None
+        self._alpha_blend = None
+        self._bg_color_inner = COLOR_BG_INNER
+        self._nopolaroid = False
+        self._border_size = None           # only used  in combination with --no-polaroid
+        self._border_color = (255,255,255) # only used  in combination with --no-polaroid
+        self._apply_filters = None
+        self._params_filter = []
 
-    returns Image instance
-    """
-    img_in = None
-    if isinstance(source,Image.Image):
-        img_in = source
-    else:
-        img_in = Image.open(source)
-    img_in.load()
-    img = rotate_image(img_in, options['rotate'])
-    [w, h] = img.size
-    # Determine ratio of image length to width to
-    # determine oriantation (portrait, landscape or square)
-    image_ratio = float(float(h)/float(w))
-    log.debug("image_ratio: %f size_w: %i size_h: %i" % (image_ratio, w, h))
-    if round(image_ratio, 1) >= 1.3: # is_portrait
-        log.info("source image ratio is %f (%s)" % (image_ratio, 'is_portrait'))
-    elif round(image_ratio, 1) == 1.0: # is_square
-        log.info("source image ratio is %f (%s)" % (image_ratio, 'is_square'))
-    elif round(image_ratio, 1) <= 0.8: # is_landscape
-        log.info("source image ratio is %f (%s)" % (image_ratio, 'is_landscape'))
-    if options['crop']:
-        img = crop_image_to_square(img, align)
-    else:
-        img = scale_image_to_square(img, bg_color=bg_color_inner)
-    img = scale_square_image(img, size)
-    return img
-
-def make_polaroid(source, size, options, align, title, f_font = None, font_size = None, template = None, bg_color_inner=(255,255,255),filter_func=None):
-    """
-    Converts an image into polaroid-style. This is the (legacy) main-function of the module
-    and it is exposed. It can be imported and used by any Python-Script.
-
-    returns
-        PIL image instance
-    """
-    img = None
-    if isinstance(source,Image.Image):
-        img= source
-    else:
-        img = Image.open(source)
-    if not options['crop']:
-        img = _add_border(img, BORDER_SIZE, COLOR_BORDER)
-    caption = title
-    if not options['noframe']: # if pasting into a template (for example a polaroid frame) is wanted #2
-        if template:
-            img = _paste_into_template(image=img, template=template)
-            description = None
-            img = add_text(img, caption, description, f_font = f_font, font_size = font_size)
-        else:
-            img = add_frame(img)
-            description = None
-            img = add_text(img, caption, description, f_font = f_font, font_size = font_size)
-    return img
-
-def apply_template(source = None, template = None, size = None, align = "center",  options = None, border_size_fact = None, border_color = (255,255,255) ):
-    """
-    **inprogress** - a more generic alternative to (legacy) make_polaroid
-
-    resizes source-image to fit into template and
-    pastes image into template (for now only square-area supported! #6)
-
-    returns
-        PIL image instance
-    """
-    if isinstance(source,Image.Image):
-        img = source
-    else:
-        img = Image.open(source)
-    [w, h] = img.size
-    if not size: # set size to optimum depending on the template resolution
-        size = _get_template_box_size(template)
-    if border_size_fact and img.size[0] == img.size[1]:
-        img = add_border_around_image(image = img, size = int(img.size[0] * border_size_fact), color = border_color)
-    img = scale_square_image(img, size)
-    log.warning("--template with --nopolaroid is experimental! alpha_blend: {}".format(options['alpha_blend']))
-    img = _paste_into_template(image=img, template=template, blend=options['alpha_blend'])
-    return img
-
-def _get_template_box_size(template):
-    """
-    returns
-        tuple(w,h) : width, height of the paste-area for template
-    """
-    box = TEMPLATE_BOXES[os.path.basename(template)]
-    w = int(box[2] - box[0])
-    h = int(box[3] - box[1])
-    return (w,h)
-
-def _paste_into_template(image = None, template = './templates/', blend=None, box=None):
-    """
-    """
-    if not box:
-        box = TEMPLATE_BOXES[os.path.basename(template)]
-        box_size = _get_template_box_size(template)
-    else:
-        w = int(box[2] - box[0])
-        h = int(box[3] - box[1])
-        box_size = (w,h)
-    try:
-        img_tpl = Image.open(template)
-    except:
-        img_tpl = Image.open(get_resource_file(template))
-    # plausi check
-    w = int(box[2] - box[0])
-    h = int(box[3] - box[1])
-    assert(box_size[0] == w and box_size[1] == h)
-    # ---
-    log.debug("box_size the picture will be pasted into is (w,h) {}".format(box_size))
-    region2copy = image.crop((0,0,image.size[0],image.size[1]))
-    if region2copy.size[0] > box_size[0]:
-        # Downsample
-        log.info("downsampling... (good)")
-        region2copy = region2copy.resize(box_size,Image.ANTIALIAS)
-    else:
-        log.info("upscaling... (not so good ;)")
-        region2copy = region2copy.resize(box_size, Image.BICUBIC)
-    assert(region2copy.size == box_size)
-    if blend:
-        region2pasteinto = img_tpl.crop(box)
-        log.info("alpha_blend: {} paste_area_size: {} {} copy_into_paste_area_size: {} {}".format(blend, region2pasteinto.size, region2pasteinto.mode, region2copy.size, region2copy.mode))
-        region2copy = Image.blend(region2pasteinto, region2copy.convert('RGB'), blend)
-    img_tpl.paste(region2copy,box)
-    return img_tpl
-
-def rotate_image(image, rotation):
-    """
-    rotates the image appropriately
-    """
-    if rotation == "clockwise":
-        image = image.rotate(-90)
-    elif rotation == "anticlockwise":
-        image = image.rotate(90)
-    return image
-
-def _add_border(image, border_size = 3, color_border = COLOR_BORDER):
-    w, h = image.size
-    assert(w==h)
-    img = Image.new("RGBA", (w + border_size, h + border_size), color_border)
-    img.paste(image, (border_size,border_size))
-    return img
-
-def add_frame(image, border_size = 3, color_frame = COLOR_FRAME, color_border = COLOR_BORDER):
-    """
-    adds the frame around the image
-    """
-    frame = Image.new("RGB", (IMAGE_SIZE[0] + IMAGE_LEFT + IMAGE_RIGHT, IMAGE_SIZE[1] + IMAGE_TOP + IMAGE_BOTTOM), COLOR_BORDER)
-    # Create outer and inner borders
-    draw = ImageDraw.Draw(frame)
-    draw.rectangle((BORDER_SIZE, BORDER_SIZE, frame.size[0] - BORDER_SIZE, frame.size[1] - BORDER_SIZE), fill = COLOR_FRAME)
-    draw.rectangle((IMAGE_LEFT - BORDER_SIZE, IMAGE_TOP - BORDER_SIZE, IMAGE_LEFT + IMAGE_SIZE[0] + BORDER_SIZE, IMAGE_TOP + IMAGE_SIZE[1] + BORDER_SIZE), fill = COLOR_BORDER)
-    # Add the source image
-    frame.paste(image, (IMAGE_LEFT, IMAGE_TOP))
-    return frame
-
-def add_text(image, title = None, description = None, f_font = RESOURCE_FONT, font_size = RESOURCE_FONT_SIZE):
-    """
-    adds a title (string) to the image
-    description is unused at the moment
-
-    returns
-        PIL Image instance
-    """
-    if (title is None) or (len(title)==0):
-        return image
-    size = font_size
-    f_font = get_resource_file(f_font)
-    try:
-        font_title = ImageFont.truetype(f_font, font_size)
-    except:
-        show_error("Could not load resource '%s'." % f_font)
-    width, height = font_title.getsize(title)
-    while ((width > IMAGE_SIZE[1]) or (height > IMAGE_BOTTOM)) and (size > 0):
-        size = size - 2
-        try:
-            font_title = ImageFont.truetype(f_font, font_size)
-        except:
-            show_error("Could not load resource '%s'." % f_font)
-        font_title = ImageFont.truetype(get_resource_file(f_font), size)
-        width, height = font_title.getsize(title)
-        log.debug("searching suiting font_size... trying {}".format(size))
-    if (size <= 0):
-        showError("Text is too large")
-    draw = ImageDraw.Draw(image)
-    pos_x = (IMAGE_SIZE[0] + IMAGE_LEFT + IMAGE_RIGHT - width) / 2
-    pos_y = IMAGE_SIZE[1] + IMAGE_TOP + ((IMAGE_BOTTOM - height)) / 2
-    log.info("title fontsize {} pos_x, pos_y {},{}".format(size, pos_x, pos_y))
-    draw.text(
-        (pos_x, pos_y),
-        title, font = font_title, fill = COLOR_TEXT_TITLE,
-    )
-    return image
-
-def _apply_filters(image, filters = None, custom_args_set = False):
-    """
-    applies filter(s) to the image
-    return PIL Image
-    """
-    img = image
-    requires_lists = ('composite') # subset of filters which support processing of image-lists
-    supports_lists = requires_lists # filters which support processing of image-lists
-    is_list = isinstance(img, list)
-    if is_list:
-        log.info("got a list of images to apply filters for. only few filters are supporting this: %s" % supports_lists)
-    kwargs = None
-    for edit_filter in filters:
-        if not custom_args_set: # randomize params to get some unpredictable variations per default
-            log.info("no custom parameters for filters set (--params-filter). applying parameter-randomization.")
-            filter_func = None
-            if is_list and ( (edit_filter not in supports_lists)):
-                    log.warning("%s only supports one image as input (no lists) -> skipping %s" % edit_filter)
-                    continue
-            elif is_list == False and edit_filter in requires_lists:
-                    log.warning("%s only supports multiple image as input but got only one. -> skipping %s" % (edit_filter, edit_filter))
-                    continue
-            if edit_filter in ('ascii', 'ascii-color'):
-                kwargs = PLUGINS_FILTERS[edit_filter].kwargs
-                kwargs['image'] = img
-                if edit_filter == 'ascii':
-                    kwargs['color'] = (0,0,0)
+        # process options
+        if kwargs['<source-image>']:
+            self._source = kwargs['<source-image>'].split(',') # some filters require a list of images ('composite', ...)
+        if len(self._source) == 1:
+            self._source = self._source[0]
+        log.debug("source : %s" % self._source)
+        self._generator = None
+        if self._source and not isinstance(self._source, list):
+            if self._source.lower() in('-', 'stdin'):
+                raise Exception("hey, great idea! :) reading from STDIN isn't supported yet but it's on the TODO-list.")
+        elif not self._source:
+            self._generator = kwargs['--generator'] # surpriseme :)
+            if not self._generator in self._PLUGINS_GENERATORS:
+                show_error("Hu? Sorry generator '%s' unknown. Valid choices are: %s" % (generator, PLUGINS_GENERATORS.keys()))
+        self._params_generator = []
+        if kwargs['--params-generator']:
+            self._params_generator = kwargs['--params-generator'].split('}')
+            self._params_generator = [el + '}' for el in self._params_generator if el != '' ]
+        log.debug("params_generator: %s" % self._params_generator)
+        # overwriting the default-kwargs for generators with user-provided settings
+        for i,pjson in enumerate(self._params_generator): # should only be 1 generator
+            log.info("generator %s : loading & applying --params-generator %s '%s'" % (self._generator, i, pjson))
+            params = json.loads(pjson)
+            for k,v in params.items():
+                if k in self._PLUGINS_GENERATORS[generator].kwargs:
+                    self._PLUGINS_GENERATORS[generator].kwargs = {'k' : v}
                 else:
-                    kwargs['color'] = (0,0,240)
-            elif edit_filter in ('composite'):
-                kwargs = PLUGINS_FILTERS[edit_filter].kwargs
-                kwargs['image'] = img
-                kwargs['alpha'] = 0.5
-            elif edit_filter in ('mosaic'):
-                kwargs = PLUGINS_FILTERS[edit_filter].kwargs
-                block_size = int(img.size[0] / random.randint(2,32))
-                kwargs['image'] = img
-                kwargs['block_size'] = block_size
-            elif edit_filter in ('oil', 'oil2'):
-                kwargs = PLUGINS_FILTERS[edit_filter].kwargs
-                brush_size = random.randint(1,8)
-                roughness = random.randint(1,255)
-                kwargs['image'] = img
-                kwargs['brush_size'] = brush_size
-                kwargs['roughness'] = roughness
-            elif edit_filter in ('pixelsort'):
-                kwargs = PLUGINS_FILTERS[edit_filter].kwargs
-                algos = [1,10,20]
-                idx = random.randint(0,2)
-                algo = algos[idx]
-                kwargs['image'] = img
+                    raise Exception("generator '%s' provides no parameter '%s'. please check your --params-generator argument(s)." % (self._params_generator[i], k))
+        if kwargs['--alpha-blend']:
+            self._alpha_blend = float(kwargs['--alpha-blend'])
+        if kwargs['--border-size']:
+            self._border_size = float(kwargs['--border-size'])
+        if kwargs['--border-color']:
+            self._border_color = tuple([int(el) for el in kwargs['--border-color'].split(',')])
+            assert(len(self._border_color)==3)
+        if kwargs['--clockwise']:
+            self._options['rotate'] = 'clockwise'
+        elif kwargs['--anticlock']:
+            self._options['rotate'] = 'anticlockwise'
+        if kwargs['--crop']:
+            self._options['crop'] = True
+        elif kwargs['--nocrop']:
+            self._options['crop'] = False
+        if kwargs['--noframe']:
+            self._options['noframe'] = True # using no polaroid nor any other template at all, outputs only the (maybe filtered) image
+        if kwargs['--nopolaroid']:
+            self._nopolaroid = True # using an other template thang polaroid
+        if kwargs['--size-inner']:
+            self._size_box = int(kwargs['--size-inner'])
+        if kwargs['--alignment']: # only used if --crop
+            self._align = kwargs['--alignment']
+        if kwargs['--title']:
+            self._title = kwargs['--title']
+        if kwargs['--title-meta']:
+            self._add_meta_to_title = True # exif data | infos about choosen generator's-params
+        if kwargs['--font']:
+            self._f_font = kwargs['--font']
+        else:
+            self._f_font = self._RESOURCE_FONT
+        if kwargs['--output']:
+            self._target = kwargs['--output']
+        if kwargs['--template']:
+            self._template = kwargs['--template']
+        if kwargs['--config']:
+            self._configfile = kwargs['--config']
+        if kwargs['--filter']:
+            self._apply_filters = kwargs['--filter'].split(',')
+            for filter in self._apply_filters:
+                if filter not in self._PLUGINS_FILTERS:
+                    show_error("Hu? Filter '%s' not available. Valid choices are: %s" % (filter, self._PLUGINS_FILTERS))
+        if kwargs['--params-filter']:
+            self._params_filter = kwargs['--params-filter'].split('}')
+            self._params_filter = [el + '}' for el in self._params_filter if el != '' ]
+        log.debug("params_filter: %s" % self._params_filter)
+        # overwriting the default-kwargs for filters with user-provided settings
+        for i,pjson in enumerate(self._params_filter):
+            log.info("filter %s : loading & applying --params-filter %s '%s'" % (self._apply_filters[i], i, pjson))
+            params = json.loads(pjson)
+            for k,v in params.items():
+                if k in self._PLUGINS_FILTERS[self._apply_filters[i]].kwargs:
+                    self._PLUGINS_FILTERS[self._apply_filters[i]].kwargs[k] = v
+                else:
+                    raise Exception("filter %s has no parameter '%s'. please check your --params-filter argument(s)." % (self._apply_filters[i], k))
+        # ---
+        if self._template:
+            self._size_box = None # needs to be calculated
+        if kwargs['--max-size']:
+            self._max_size = int(kwargs['--max-size'])
+
+        self._TEMPLATES = load_templates(self._configfile)
+
+        if self._size_box and isinstance(self._size_box,int):
+            self._size_box = (self._size_box,self._size_box) #square format
+
+        if self._template:
+            self._template = select_template(name=os.path.basename(self._template), templates = self._TEMPLATES)
+            self._size_box = self._template.box_size
+            tpl_size = self._template.size
+            # --- polaroid frame specific, needs refactoring, see issue #6
+            self._LEGACY_POLAROID_IMAGE_TOP = self._template.box[1]
+            self._LEGACY_POLAROID_IMAGE_BOTTOM = tpl_size[1] - (self._LEGACY_POLAROID_IMAGE_TOP + self._size_box[1])
+            self._LEGACY_POLAROID_IMAGE_LEFT = self._template.box[0]
+            self._LEGACY_POLAROID_IMAGE_RIGHT = tpl_size[1] - (self._LEGACY_POLAROID_IMAGE_LEFT + self._size_box[0])
+            self._LEGACY_POLAROID_BORDER_SIZE  = 3
+            self._RESOURCE_FONT_SIZE = int(self._LEGACY_POLAROID_IMAGE_BOTTOM - (self._LEGACY_POLAROID_IMAGE_BOTTOM * 0.2))
+            self._RESOURCE_FONT_SIZE = 32
+
+            # ---
+        else:
+            # --- polaroid frame specific, needs refactoring, see issue #6
+            self._LEGACY_POLAROID_IMAGE_TOP    = int(self._size_box[0] / 16)     # added space on top
+            self._LEGACY_POLAROID_IMAGE_BOTTOM = int(self._size_box[0] / 5.333)  # added space on bottom
+            self._LEGACY_POLAROID_IMAGE_LEFT   = int(self._size_box[0] / 16)     # ...
+            self._LEGACY_POLAROID_IMAGE_RIGHT  = int(self._size_box[0] / 16)     # ...
+            self._LEGACY_POLAROID_BORDER_SIZE  = 3
+            self._RESOURCE_FONT_SIZE = int(self._LEGACY_POLAROID_IMAGE_BOTTOM - (self._LEGACY_POLAROID_IMAGE_BOTTOM * 0.2))
+
+            # ...
+
+
+    def _process_args(self):
+        """
+        """
+        # -- here we go...
+        if not isinstance(self._source, list):
+            if self._add_meta_to_title:
+                exif_data = get_exif(source)
+                if ('EXIF DateTimeOriginal') in exif_data:
+                    v = exif_data['EXIF DateTimeOriginal']
+                    timestamp = dt.datetime.strptime(str(v), '%Y:%m:%d %H:%M:%S')
+                    meta = timestamp
+                else:
+                    log.warning("--title-meta set but exif_data about DateTime unavailable for the input-image. :-/ : {}; ;".format(fn))
+            name, ext = os.path.splitext(self._source)
+            if not os.path.isfile(self._source):
+                show_error("Source file '%s' does not exist." % source)
+            if not self._target:
+                self._target = name + ".polaroid.png"
+            if not self._align in ("left", "right", "top", "bottom", "center"):
+                show_error("Unknown alignment %s." % self._align)
+        elif self._generator: # source can also be a generative art thingy
+            kwargs = self._PLUGINS_GENERATORS[self._generator].kwargs
+            # TODO #11 if --size-inner or --max-size we can set generator kwargs['size'] to this already
+            # for this the generator interface should provide always a tuple(size) ...
+            if 'size' in kwargs:
+                kwargs['size'] = self._size_box
             else:
+                log.warning("deprecated : generator {} doesn't provide 'size' parameter".format(generator))
+            generator = self._PLUGINS_GENERATORS[self._generator]
+            self._source = generator.run()
+        if self._add_meta_to_title:
+            if len(self._title) > 0:
+                self._title += " "
+            self._title += "%s" % (meta)
+        # Prepare our resources
+        self._f_font = get_resource_file(self._f_font)
+        self._RESOURCE_FONT_SIZE = font_size = self._LEGACY_POLAROID_IMAGE_BOTTOM
+        if not isinstance(self._source,Image.Image): # that's the case if we're not using a generator
+            source_inst = []
+            if not isinstance(self._source,list):
+                source_inst.append(Image.open(self._source))
+            else:
+                for src in self._source:
+                    source_inst.append(Image.open(src))
+            self._source = source_inst
+        else:
+            self._source = [self._source]
+        source_unprep = self._source
+        self._source = []
+        if not isinstance(self._max_size,tuple):
+            self._max_size=(self._max_size,self._max_size)
+        for el in source_unprep:
+            # do downsizing and cropping etc. befor applying filters
+            log.info("size: {} max_size: {} image-input size: {}".format(self._size_box,self._max_size,el.size))
+            if not isinstance(el,Image.Image):
+                raise Exception("Ouch. Holy crap... wt..?!? ")
+            if self._max_size and (self._max_size[0]*self._max_size[1] < el.size[0] * el.size[1]):
+                log.warning("input-image can be downsized before applying filters etc..... TODO #11")
+            if self._nopolaroid:
+                self._bg_color_inner = self._border_color
+            self._source.append(scale_and_prep_image(source = el, size = self._size_box, options = self._options, align = self._align, bg_color_inner= self._bg_color_inner))
+        for el in self._source:
+            log.info("size: {} max_size: {} image-input size after preproc: {}".format(self._size_box,self._max_size,self._source[-1].size))
+        if len(self._source) == 1:
+            self._source = self._source[0]
+
+
+    def _do_filters(self, image, filters = None, custom_args_set = False):
+        """
+        applies filter(s) to the image
+        return PIL Image
+        """
+        img = image
+        requires_lists = ('composite') # subset of filters which support processing of image-lists
+        supports_lists = requires_lists # filters which support processing of image-lists
+        is_list = isinstance(img, list)
+        if is_list:
+            log.info("got a list of images to apply filters for. only few filters are supporting this: %s" % supports_lists)
+        kwargs = None
+        for edit_filter in filters:
+            if not custom_args_set: # randomize params to get some unpredictable variations per default
+                log.info("no custom parameters for filters set (--params-filter). applying parameter-randomization.")
+                filter_func = None
+                if is_list and ( (edit_filter not in supports_lists)):
+                        log.warning("%s only supports one image as input (no lists) -> skipping %s" % edit_filter)
+                        continue
+                elif is_list == False and edit_filter in requires_lists:
+                        log.warning("%s only supports multiple image as input but got only one. -> skipping %s" % (edit_filter, edit_filter))
+                        continue
+                if edit_filter in ('ascii', 'ascii-color'):
+                    kwargs = self._PLUGINS_FILTERS[edit_filter].kwargs
+                    kwargs['image'] = img
+                    if edit_filter == 'ascii':
+                        kwargs['color'] = (0,0,0)
+                    else:
+                        kwargs['color'] = (0,0,240)
+                elif edit_filter in ('composite'):
+                    kwargs = self._PLUGINS_FILTERS[edit_filter].kwargs
+                    kwargs['image'] = img
+                    kwargs['alpha'] = 0.5
+                elif edit_filter in ('mosaic'):
+                    kwargs = self._PLUGINS_FILTERS[edit_filter].kwargs
+                    block_size = int(img.size[0] / random.randint(2,32))
+                    kwargs['image'] = img
+                    kwargs['block_size'] = block_size
+                elif edit_filter in ('oil', 'oil2'):
+                    kwargs = self._PLUGINS_FILTERS[edit_filter].kwargs
+                    brush_size = random.randint(1,8)
+                    roughness = random.randint(1,255)
+                    kwargs['image'] = img
+                    kwargs['brush_size'] = brush_size
+                    kwargs['roughness'] = roughness
+                elif edit_filter in ('pixelsort'):
+                    kwargs = self._PLUGINS_FILTERS[edit_filter].kwargs
+                    algos = [1,10,20]
+                    idx = random.randint(0,2)
+                    algo = algos[idx]
+                    kwargs['image'] = img
+                else:
+                    # generic interface (kwargs always with 'image' and optionally with other arguments set to defaults)
+                    kwargs = self._PLUGINS_FILTERS[edit_filter].kwargs
+                    kwargs['image'] = img
+                log.info("%s kwargs = %s" % (edit_filter,kwargs))
+            else:
+                log.info("custom parameters for filters set via --params-filter. therefore no parameter-randomization applied.")
                 # generic interface (kwargs always with 'image' and optionally with other arguments set to defaults)
-                kwargs = PLUGINS_FILTERS[edit_filter].kwargs
+                kwargs = self._PLUGINS_FILTERS[edit_filter].kwargs
                 kwargs['image'] = img
-            log.info("%s kwargs = %s" % (edit_filter,kwargs))
-        else:
-            log.info("custom parameters for filters set via --params-filter. therefore no parameter-randomization applied.")
-            # generic interface (kwargs always with 'image' and optionally with other arguments set to defaults)
-            kwargs = PLUGINS_FILTERS[edit_filter].kwargs
-            kwargs['image'] = img
-            log.info("%s kwargs = %s" % (edit_filter,kwargs))
-        PLUGINS_FILTERS[edit_filter].kwargs = kwargs
-        img = PLUGINS_FILTERS[edit_filter].run()
+                log.info("%s kwargs = %s" % (edit_filter,kwargs))
+            self._PLUGINS_FILTERS[edit_filter].kwargs = kwargs
+            img = self._PLUGINS_FILTERS[edit_filter].run()
 
-    return img
+        return img
 
-def main(args):
-    rand_seed = random.randrange(sys.maxsize)
-    random.seed(rand_seed)
-    _register_plugins()
-    options = { 'rotate': None, 'crop' : True, 'noframe' : False} # defaults
-    source = []
-    size = IMAGE_SIZE[0] # inner size, only the picture without surrounding frame
-    target = None
-    align = "center"
-    title = ""
-    f_font = None
-    template = None
-    configfile = get_resource_file(RESOURCE_CONFIG_FILE)
-    max_size = None # max size (width)
-    add_exif_to_title = None
-    alpha_blend = None
-    bg_color_inner = COLOR_BG_INNER
-    border_size = None           # only used  in combination with --no-polaroid
-    border_color = (255,255,255) # only used  in combination with --no-polaroid
-    # process options
-    if args['<source-image>']:
-        source = args['<source-image>'].split(',') # some filters require a list of images ('composite', ...)
-    if len(source) == 1:
-        source = source[0]
-    log.debug("source : %s" % source)
-    generator = None
-    if source and not isinstance(source, list):
-        if source.lower() in('-', 'stdin'):
-            raise Exception("hey, great idea! :) reading from STDIN isn't supported yet but it's on the TODO-list.")
-    elif not source:
-        generator = args['--generator'] # surpriseme :)
-        if not generator in PLUGINS_GENERATORS:
-            show_error("Hu? Sorry generator '%s' unknown. Valid choices are: %s" % (generator, PLUGINS_GENERATORS.keys()))
-    params_generator = []
-    if args['--params-generator']:
-        params_generator = args['--params-generator'].split('}')
-        params_generator = [el + '}' for el in params_generator if el != '' ]
-    log.debug("params_generator: %s" % params_generator)
-    # overwriting the default-kwargs for generators with user-provided settings
-    for i,pjson in enumerate(params_generator): # should only be 1 generator
-        log.info("generator %s : loading & applying --params-generator %s '%s'" % (generator, i, pjson))
-        params = json.loads(pjson)
-        for k,v in params.items():
-            if k in PLUGINS_GENERATORS[generator].kwargs:
-                PLUGINS_GENERATORS[generator].kwargs = {'k' : v}
-            else:
-                raise Exception("generator '%s' has no parameter '%s'. please check your --params-generator argument(s)." % (params_generator[i], k))
-    if args['--alpha-blend']:
-        alpha_blend = float(args['--alpha-blend'])
-    if args['--border-size']:
-        border_size = float(args['--border-size'])
-    if args['--border-color']:
-        border_color = tuple([int(el) for el in args['--border-color'].split(',')])
-        assert(len(border_color)==3)
-    if args['--clockwise']:
-        options['rotate'] = 'clockwise'
-    elif args['--anticlock']:
-        options['rotate'] = 'anticlockwise'
-    if args['--crop']:
-        options['crop'] = True
-    elif args['--nocrop']:
-        options['crop'] = False
-    if args['--noframe']:
-        options['noframe'] = True # using no polaroid nor any other template at all, outputs only the (maybe filtered) image
-    nopolaroid = False
-    if args['--nopolaroid']:
-        nopolaroid = True # using an other template thang polaroid
-    if args['--size-inner']:
-        size = int(args['--size-inner'])
-    if args['--alignment']: # only used if --crop
-        align = args['--alignment']
-    if args['--title']:
-        title = args['--title']
-    add_meta_to_title = False
-    if args['--title-meta']:
-        add_meta_to_title = True # exif data | infos about choosen generator's-params
-    if args['--font']:
-        f_font = args['--font']
-    else:
-        f_font = RESOURCE_FONT
-    if args['--output']:
-        target = args['--output']
-    if args['--template']:
-        template = args['--template']
-    if args['--config']:
-        configfile = args['--config']
-    apply_filters = None
-    if args['--filter']:
-        apply_filters = args['--filter'].split(',')
-        for filter in apply_filters:
-            if filter not in PLUGINS_FILTERS:
-                show_error("Hu? Filter '%s' not available. Valid choices are: %s" % (filter, PLUGINS_FILTERS))
-    params_filter = []
-    if args['--params-filter']:
-        params_filter = args['--params-filter'].split('}')
-        params_filter = [el + '}' for el in params_filter if el != '' ]
-    log.debug("params_filter: %s" % params_filter)
-    # overwriting the default-kwargs for filters with user-provided settings
-    for i,pjson in enumerate(params_filter):
-        log.info("filter %s : loading & applying --params-filter %s '%s'" % (apply_filters[i], i, pjson))
-        params = json.loads(pjson)
-        for k,v in params.items():
-            if k in PLUGINS_FILTERS[apply_filters[i]].kwargs:
-                PLUGINS_FILTERS[apply_filters[i]].kwargs[k] = v
-            else:
-                raise Exception("filter %s has no parameter '%s'. please check your --params-filter argument(s)." % (apply_filters[i], k))
-    # ---
-    if template:
-        size = None # needs to be calculated
-    setup_globals(size, configfile, template)
-    size = IMAGE_SIZE
-    template = TEMPLATE
-    if args['--max-size']:
-        max_size = int(args['--max-size'])
-    # -- here we go...
-    if not isinstance(source, list):
-        if add_meta_to_title:
-            exif_data = get_exif(source)
-            if ('EXIF DateTimeOriginal') in exif_data:
-                v = exif_data['EXIF DateTimeOriginal']
-                timestamp = dt.datetime.strptime(str(v), '%Y:%m:%d %H:%M:%S')
-                meta = timestamp
-            else:
-                log.warning("--title-meta set but exif_data about DateTime unavailable for the input-image. :-/ : {}; ;".format(fn))
-        name, ext = os.path.splitext(source)
-        if not os.path.isfile(source):
-            show_error("Source file '%s' does not exist." % source)
-        if not target:
-            target = name + ".polaroid.png"
-        if not align in ("left", "right", "top", "bottom", "center"):
-            show_error("Unknown alignment %s." % align)
-    elif generator: # source can also be a generative art thingy
-        kwargs = PLUGINS_GENERATORS[generator].kwargs
-        # TODO #11 if --size-inner or --max-size we can set generator kwargs['size'] to this already
-        # for this the generator interface should provide always a tuple(size) ...
-        if 'size' in kwargs:
-            size_gen = kwargs['size']
-            if isinstance(size_gen,tuple):
-                kwargs['size'] = size
-            else:
-                log.warning("deprecated : generator {} doesn't provide 'size' parameter as tuple yet".format(generator))
-        else:
-            log.warning("deprecated : generator {} doesn't provide 'size' parameter".format(generator))
-        generator = PLUGINS_GENERATORS[generator]
-        source = generator.run()
-    if add_meta_to_title:
-        if len(title) > 0:
-            title += " "
-        title += "%s" % (meta)
-    # Prepare our resources
-    f_font = get_resource_file(f_font)
-    font_size = IMAGE_BOTTOM
-    if not isinstance(source,Image.Image): # that's the case if we're not using a generator
-        source_inst = []
-        if not isinstance(source,list):
-            source_inst.append(Image.open(source))
-        else:
-            for src in source:
-                source_inst.append(Image.open(src))
-        source = source_inst
-    else:
-        source = [source]
-    source_unprep = source
-    source = []
-    if not isinstance(max_size,tuple):
-        max_size=(max_size,max_size)
-    for el in source_unprep:
-        # do downsizing and cropping etc. befor applying filters
-        log.info("size: {} max_size: {} image-input size: {}".format(size,max_size,el.size))
-        if not isinstance(el,Image.Image):
-            raise Exception("Ouch. Holy crap... wt..?!? ")
-        if max_size and (max_size[0]*max_size[1] < el.size[0] * el.size[1]):
-            log.warning("input-image can be downsized before applying filters etc..... TODO #11")
-        if nopolaroid:
-            bg_color_inner = border_color
-        source.append(scale_and_prep_image(source = el, size = size, options = options, align = align, bg_color_inner= bg_color_inner))
-    for el in source:
-        log.info("size: {} max_size: {} image-input size after preproc: {}".format(size,max_size,source[-1].size))
-    if len(source) == 1:
-        source = source[0]
-    if apply_filters:
-        log.info("... start applying --filter(s): {}".format(apply_filters))
-        if len(apply_filters) == 1:
-            log.info("btw. did you know that you can chain filters via comma-seperator filter1,filter2,...? just sayin' that's fun. :)")
-        custom_args_set = False
-        if len(params_filter) > 0:
-            custom_args_set = True
-        img = _apply_filters(image=source, filters = apply_filters, custom_args_set = custom_args_set)
-        source = img
-        log.info("ok. filter(s) finished.")
 
-    if not nopolaroid:
-        # finally create the polaroid.
-        img = make_polaroid(
-            source = source, size = tuple(size), options = options, align =align,
-            title = title, f_font = f_font, font_size = font_size,
-            template = template,
-            bg_color_inner = bg_color_inner,
-            )
-    else:
-        options['alpha_blend'] = alpha_blend
-        img = apply_template(source = source, template = template, size = size, align = align, options = options, border_size_fact=border_size, border_color = border_color)
-        description = None
-        img = add_text(img, title, description, f_font = f_font, font_size = font_size)
-    log.debug("size: %i %i" % (img.size[0], img.size[1]))
-    # ---  if --max-size is given: check if currently bigger and downscale if necessary...
-    if max_size:
-        xs, ys = img.size
-        if (xs > max_size[0]) or (ys > max_size[1]):
-            log.info('scaling result down to --max_size {}'.format(max_size))
-            factor = 1
-            if xs >= ys:
-                factor = max_size[0] / xs
+    def run(self):
+        """
+        apply filters, paste into template, generate output, save output
+        returns
+            Imagin instance : the final image is saved and also returned
+        """
+        # --- apply_filters
+        if self._apply_filters:
+            log.info("... start applying --filter(s): {}".format(self._apply_filters))
+            if len(self._apply_filters) == 1:
+                log.info("btw. did you know that you can chain filters via comma-seperator filter1,filter2,...? just sayin' that's fun. :)")
+            custom_args_set = False
+            if len(self._params_filter) > 0:
+                custom_args_set = True
+            img = self._do_filters(image=self._source, filters = self._apply_filters, custom_args_set = custom_args_set)
+            self._source = img
+            log.info("ok. filter(s) finished.")
+        # --- finish the picture: paste it into the template,
+        #     add borders, text, whatsoever
+        if self._nopolaroid:
+            options['alpha_blend'] = self._alpha_blend
+            if isinstance(self._source,Image.Image):
+                img = self._source
             else:
-                factor = max_size[1] / ys
-            x_new = int(img.width * factor)
-            y_new = int(img.height * factor)
-            img = img.resize((x_new,y_new),Image.ANTIALIAS)
-    # yai, finally ... :)
-    log.info("seed %f" % rand_seed)
-    img.save(target)
-    print(target)
+                img = Image.open(self._source)
+            [w, h] = img.size
+            assert(w == self._size_box[0])
+            assert(h == self._size_box[1])
+            if self._border_size_fact and (w == h):
+                img = add_border_around_image(image = img, size = int(img.size[0] * border_size_fact), color = self._border_color)
+            img = scale_square_image(img, self._size_box)
+            log.warning("--template with --nopolaroid is experimental! alpha_blend: {}".format(options['alpha_blend']))
+            img = self._template.paste(image=img, alpha_blend = self._alpha_blend)
+            self._img = img
+            #description = None
+            #img = add_text(img, title, description, f_font = f_font, font_size = font_size)
+        else:
+            LEGACY_CONST = { 'IMAGE_TOP' : self._LEGACY_POLAROID_IMAGE_TOP,
+                             'IMAGE_BOTTOM' : self._LEGACY_POLAROID_IMAGE_BOTTOM,
+                             'IMAGE_LEFT' : self._LEGACY_POLAROID_IMAGE_LEFT,
+                             'IMAGE_RIGHT' : self._LEGACY_POLAROID_IMAGE_RIGHT }
+            if self._template:
+                self._img = make_polaroid(source = self._source, size = self._size_box, options = self._options, align = self._align, title = self._title, f_font = self._f_font, font_size = self._RESOURCE_FONT_SIZE, template = self._template.image, template_box = self._template.box, LEGACY_CONST = LEGACY_CONST)
+            else:
+                self._img = make_polaroid(source = self._source, size = self._size_box, options = self._options, align = self._align, title = self._title, f_font = self._f_font, font_size = self._RESOURCE_FONT_SIZE, template = None, template_box = None, LEGACY_CONST = LEGACY_CONST)
+        log.debug("size: {}".format(self._img.size))
+        # ---  if --max-size is given: check if currently bigger and downscale if necessary...
+        if self._max_size:
+            xs, ys = self._img.size
+            if (xs > self._max_size[0]) or (ys > self._max_size[1]):
+                log.info('scaling result down to --max_size {}'.format(self._max_size))
+                factor = 1
+                if xs >= ys:
+                    factor = self._max_size[0] / xs
+                else:
+                    factor = self._max_size[1] / ys
+                x_new = int(self._img.width * factor)
+                y_new = int(self._img.height * factor)
+                self._img_final = self._img.resize((x_new,y_new),Image.ANTIALIAS)
+            else:
+                self._img_final = self._img
+        else:
+            self._img_final = self._img
+        self._img_final.save(self._target)
+        print("saving final image...")
+        print(self._target)
+        return self._img_final
+
+    @property
+    def filters(self):
+        """
+        returns
+            list : names of filter-plugins available
+        """
+        return list(self._PLUGINS_FILTERS.keys())
+
+
+    @property
+    def generators(self):
+        """
+        returns
+            list : names of generator-plugins available
+        """
+        return list(self._PLUGINS_GENERATORS.keys())
+
+    @property
+    def version(self):
+        """
+        returns
+            string : version of einguteswerkzeug
+        """
+        return self.__version__
+
+    @property
+    def info(self):
+        """
+        shows infos about the current state of the template
+        """
+        tpl_doc = string.Template("""
+        version       : $version
+        filters       : $len_filters
+        filters       : $filters
+        generators    : $len_generators
+        generators    : $generators
+        len_templates : $len_templates
+        template      : $template
+        templates     : $templates
+        """)
+        tpl_name = None
+        if self._template:
+            tpl_name = self._template.name
+        return tpl_doc.substitute({
+            'version' : self.version,
+            'len_filters' : len(self.filters),
+            'filters' : self.filters,
+            'len_generators' : len(self.generators),
+            'generators' : self.generators,
+            'len_templates' : len(self._TEMPLATES),
+            'template' : tpl_name,
+            'templates' : self._TEMPLATES,
+            })
+
+
+    @property
+    def help(self):
+        return self.info()
+
+
+def main(kwargs):
+    print(type(kwargs), kwargs)
+    egw = EGW(**kwargs)
+    print(egw.info)
+    egw.run()
+
+if __name__ == '__main__':
+    egw = EGW()
+    print(egw.info)

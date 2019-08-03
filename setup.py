@@ -55,7 +55,7 @@ _`examples`: https://github.com/s3h10r/einguteswerkzeug/blob/master/README.md
 
 setuptools.setup(
      name='einguteswerkzeug',
-     version='0.3.32',
+     version='0.3.93',
      scripts=['cli/einguteswerkzeug', 'cli/egw'] ,
      author="Sven Hessenmüller",
      author_email="sven.hessenmueller@gmail.com",

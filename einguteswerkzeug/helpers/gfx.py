@@ -153,6 +153,49 @@ def add_border_around_image(image, size = None, color = (255,255,255)):
     img.paste(image, (int(size / 2),int(size / 2)))
     return img
 
+def paste_image_into_box(image = None, paste_into_image = None, blend=1.0, box=None):
+    """
+    """
+    image_tpl = paste_into_image
+    if not box:
+        raise Exception("Sorry, no pasting-area defined. Please use argument 'box'.")
+    else:
+        w = int(box[2] - box[0])
+        h = int(box[3] - box[1])
+        box_size = (w,h)
+    # plausi check
+    w = int(box[2] - box[0])
+    h = int(box[3] - box[1])
+    assert(box_size[0] == w and box_size[1] == h)
+    # ---
+    log.debug("box_size the picture will be pasted into is (w,h) {}".format(box_size))
+    region2copy = image.crop((0,0,image.size[0],image.size[1]))
+    if region2copy.size[0] > box_size[0]:
+        # Downsample
+        log.info("downsampling... (good)")
+        region2copy = region2copy.resize(box_size,Image.ANTIALIAS)
+    else:
+        log.info("upscaling... (not so good ;)")
+        region2copy = region2copy.resize(box_size, Image.BICUBIC)
+    assert(region2copy.size == box_size)
+    if blend:
+        region2pasteinto = image_tpl.crop(box)
+        log.info("alpha_blend: {} paste_area_size: {} {} copy_into_paste_area_size: {} {}".format(blend, region2pasteinto.size, region2pasteinto.mode, region2copy.size, region2copy.mode))
+        region2copy = Image.blend(region2pasteinto, region2copy.convert('RGB'), blend)
+    image_tpl.paste(region2copy,box)
+    return image_tpl
+
+
+def rotate_image(image, rotation):
+    """
+    rotates the image appropriately
+    """
+    if rotation == "clockwise":
+        image = image.rotate(-90)
+    elif rotation == "anticlockwise":
+        image = image.rotate(90)
+    return image
+
 def scale_image_to_square(image, bg_color = (255,255,255)):
     img_w, img_h = image.size
     image_ratio = float(float(img_h)/float(img_w))
@@ -216,3 +259,35 @@ def trim(im):
     bbox = diff.getbbox()
     if bbox:
         return im.crop(bbox)
+
+def scale_and_prep_image(source = None, size = None, options = {}, align = "center", bg_color_inner=(0,0,0)):
+    """
+    preprocessing (crop and/or scale) input image before applying filters etc.
+    #11
+
+    returns Image instance
+    """
+    img_in = None
+    if isinstance(source,Image.Image):
+        img_in = source
+    else:
+        img_in = Image.open(source)
+    img_in.load()
+    img = rotate_image(img_in, options['rotate'])
+    [w, h] = img.size
+    # Determine ratio of image length to width to
+    # determine oriantation (portrait, landscape or square)
+    image_ratio = float(float(h)/float(w))
+    log.debug("image_ratio: %f size_w: %i size_h: %i" % (image_ratio, w, h))
+    if round(image_ratio, 1) >= 1.3: # is_portrait
+        log.info("source image ratio is %f (%s)" % (image_ratio, 'is_portrait'))
+    elif round(image_ratio, 1) == 1.0: # is_square
+        log.info("source image ratio is %f (%s)" % (image_ratio, 'is_square'))
+    elif round(image_ratio, 1) <= 0.8: # is_landscape
+        log.info("source image ratio is %f (%s)" % (image_ratio, 'is_landscape'))
+    if options['crop']:
+        img = crop_image_to_square(img, align)
+    else:
+        img = scale_image_to_square(img, bg_color=bg_color_inner)
+    img = scale_square_image(img, size)
+    return img
