@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-legacy code #13
+enjoy the mess ;) #13
+the transition of the legacy code into class-based looks... ummm...
+"not very pretty"... but it works so it's good enough for now.
 """
 import datetime as dt
 import glob
@@ -28,7 +30,7 @@ handler.setFormatter(formatter)
 log.addHandler(handler)
 # ---
 
-__version__ = (0,3,92)
+__version__ = (0,3,93)
 
 class EGW:
     __version__ = __version__
@@ -45,7 +47,7 @@ class EGW:
     _RESOURCE_CONFIG_FILE="einguteswerkzeug.conf"
     # Font for the caption text
     _RESOURCE_FONT      = "fonts/default.ttf"
-    _RESOURCE_FONT_SIZE = None
+    _RESOURCE_FONT_SIZE = 64
 
     def __init__(self, *args, **kwargs):
         self._IFACE_VERSION = "0.4.0"
@@ -249,27 +251,6 @@ class EGW:
         if self._template:
             self._template = select_template(name=os.path.basename(self._template), templates = self._TEMPLATES)
             self._size_box = self._template.box_size
-            tpl_size = self._template.size
-            # --- polaroid frame specific, needs refactoring, see issue #6
-            self._LEGACY_POLAROID_IMAGE_TOP = self._template.box[1]
-            self._LEGACY_POLAROID_IMAGE_BOTTOM = tpl_size[1] - (self._LEGACY_POLAROID_IMAGE_TOP + self._size_box[1])
-            self._LEGACY_POLAROID_IMAGE_LEFT = self._template.box[0]
-            self._LEGACY_POLAROID_IMAGE_RIGHT = tpl_size[1] - (self._LEGACY_POLAROID_IMAGE_LEFT + self._size_box[0])
-            self._LEGACY_POLAROID_BORDER_SIZE  = 3
-            self._RESOURCE_FONT_SIZE = int(self._LEGACY_POLAROID_IMAGE_BOTTOM - (self._LEGACY_POLAROID_IMAGE_BOTTOM * 0.2))
-            self._RESOURCE_FONT_SIZE = 32
-
-            # ---
-        else:
-            # --- polaroid frame specific, needs refactoring, see issue #6
-            self._LEGACY_POLAROID_IMAGE_TOP    = int(self._size_box[0] / 16)     # added space on top
-            self._LEGACY_POLAROID_IMAGE_BOTTOM = int(self._size_box[0] / 5.333)  # added space on bottom
-            self._LEGACY_POLAROID_IMAGE_LEFT   = int(self._size_box[0] / 16)     # ...
-            self._LEGACY_POLAROID_IMAGE_RIGHT  = int(self._size_box[0] / 16)     # ...
-            self._LEGACY_POLAROID_BORDER_SIZE  = 3
-            self._RESOURCE_FONT_SIZE = int(self._LEGACY_POLAROID_IMAGE_BOTTOM - (self._LEGACY_POLAROID_IMAGE_BOTTOM * 0.2))
-
-            # ...
 
 
     def _process_args(self):
@@ -308,7 +289,6 @@ class EGW:
             self._title += "%s" % (meta)
         # Prepare our resources
         self._f_font = get_resource_file(self._f_font)
-        self._RESOURCE_FONT_SIZE = font_size = self._LEGACY_POLAROID_IMAGE_BOTTOM
         if not isinstance(self._source,Image.Image): # that's the case if we're not using a generator
             source_inst = []
             if not isinstance(self._source,list):
@@ -425,7 +405,7 @@ class EGW:
             self._source = img
             log.info("ok. filter(s) finished.")
         # --- finish the picture: paste it into the template,
-        #     add borders, text, whatsoever
+        #     add borders, text, whatsoever ...
         if self._nopolaroid:
             options['alpha_blend'] = self._alpha_blend
             if isinstance(self._source,Image.Image):
@@ -441,17 +421,14 @@ class EGW:
             log.warning("--template with --nopolaroid is experimental! alpha_blend: {}".format(options['alpha_blend']))
             img = self._template.paste(image=img, alpha_blend = self._alpha_blend)
             self._img = img
-            #description = None
-            #img = add_text(img, title, description, f_font = f_font, font_size = font_size)
         else:
-            LEGACY_CONST = { 'IMAGE_TOP' : self._LEGACY_POLAROID_IMAGE_TOP,
-                             'IMAGE_BOTTOM' : self._LEGACY_POLAROID_IMAGE_BOTTOM,
-                             'IMAGE_LEFT' : self._LEGACY_POLAROID_IMAGE_LEFT,
-                             'IMAGE_RIGHT' : self._LEGACY_POLAROID_IMAGE_RIGHT }
             if self._template:
-                self._img = make_polaroid(source = self._source, size = self._size_box, options = self._options, align = self._align, title = self._title, f_font = self._f_font, font_size = self._RESOURCE_FONT_SIZE, template = self._template.image, template_box = self._template.box, LEGACY_CONST = LEGACY_CONST)
+                self._img = make_polaroid(source = self._source, size = self._size_box, options = self._options, template = self._template.image, template_box = self._template.box)
+                if (self._title and self._title != ""):
+                    f_kwargs = {'title' : self._title, 'font' : self._f_font, 'color' : (0,0,220)}
+                    self._img = self._template.add_text(**f_kwargs)
             else:
-                self._img = make_polaroid(source = self._source, size = self._size_box, options = self._options, align = self._align, title = self._title, f_font = self._f_font, font_size = self._RESOURCE_FONT_SIZE, template = None, template_box = None, LEGACY_CONST = LEGACY_CONST)
+                self._img = make_polaroid(source = self._source, size = self._size_box, options = self._options, template = None, template_box = None)
         log.debug("size: {}".format(self._img.size))
         # ---  if --max-size is given: check if currently bigger and downscale if necessary...
         if self._max_size:

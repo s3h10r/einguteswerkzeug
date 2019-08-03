@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-enjoy the mess ;) #13
-the transition of the legacy code into class-based looks... ummm...
-"not very pretty"... but it works so it's good enough for now. 
 """
 import glob
 import logging
@@ -11,8 +8,8 @@ import os
 import random
 import string
 import sys
-from PIL import Image
-from einguteswerkzeug.helpers import get_resource_file
+from PIL import Image, ImageDraw, ImageFont
+from einguteswerkzeug.helpers import get_resource_file, show_error
 from einguteswerkzeug.helpers.gfx import paste_image_into_box
 
 # --- configure logging
@@ -249,12 +246,57 @@ class EGWTemplate:
         return paste_image_into_box(image = self._tpl_image, paste_into_image = image, blend=alpha_blend, box = self.box)
 
 
+    def add_text(self,**kwargs):
+        """
+        #13 quickfix: kicks the messy & broken (polaroid-)legacy code ala add_text
+        adds text (title) below the paste-box
+
+        returns
+            Image instance
+        """
+        log.critical("TODO #13")
+        title = kwargs['title']
+        font = kwargs['font']
+        color = kwargs['color']
+        if (title is None) or (len(title)==0):
+            return image
+        font_size = int(self.size[1] - self.box[3])
+        f_font = get_resource_file(font)
+        try:
+            font_title = ImageFont.truetype(f_font, font_size)
+        except:
+            show_error("Could not load resource '%s'." % f_font)
+        width, height = font_title.getsize(title)
+        while (width > self.box_size[0]) or (height > int(self.box_size[1] / 5.33)) and (font_size > 0):
+            font_size -= 2
+            try:
+                font_title = ImageFont.truetype(f_font, font_size)
+            except:
+                show_error("Could not load resource '%s'." % f_font)
+            font_title = ImageFont.truetype(get_resource_file(f_font), font_size)
+            width, height = font_title.getsize(title)
+            log.debug("searching suiting font_size... trying {}".format(font_size))
+        if (font_size <= 0):
+            show_error("Text is too large")
+        draw = ImageDraw.Draw(self._tpl_image)
+        pos_x = self.box[0] + int(self.box_size[0] / 2) - width / 2
+        pos_y = self.box[3] + int(self.box[3] / 7) - height / 2
+        log.info("title fontsize {} pos_x, pos_y {},{}".format(font_size, pos_x, pos_y))
+        draw.text(
+            (pos_x, pos_y),
+            title, font = font_title, fill = color,
+        )
+        return self._tpl_image
+
     def resize(self,**kwargs):
         """
-        resizes template (and changes the .box, .size, ... properties accordingly)
+        resizes template
+        (and changes the .box, .size, ... properties accordingly - the properties
+        with the suffix _max will not be touched: tey represent the original
+        template (maximum quality))
         # 11
         """
-        raise Exception("TODO #13")
+        raise Exception("TODO #11")
 
 
     def get_image(self):
