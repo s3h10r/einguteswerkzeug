@@ -248,13 +248,11 @@ class EGWTemplate:
 
     def add_text(self,**kwargs):
         """
-        #13 quickfix: kicks the messy & broken (polaroid-)legacy code ala add_text
         adds text (title) below the paste-box
 
         returns
             Image instance
         """
-        log.critical("TODO #13")
         title = kwargs['title']
         font = kwargs['font']
         color = kwargs['color']
