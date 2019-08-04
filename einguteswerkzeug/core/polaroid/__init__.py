@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import logging
+import sys
 from PIL import Image, ImageDraw, ImageFont
 from einguteswerkzeug.helpers import get_resource_file, show_error
 from einguteswerkzeug.helpers.gfx import paste_image_into_box #legacy
@@ -15,7 +16,7 @@ log.addHandler(handler)
 # ---
 
 
-def make_polaroid(source, size, options, template = None, template_box = None, bg_color_inner=(255,255,255),color_border=(0,0,0), size_border = 3, LEGACY_CONST = {}):
+def make_polaroid(source, size, options, template = None, template_box = None, bg_color_inner=(255,255,255),color_border=(255,255,255), size_border = 3, LEGACY_CONST = {}):
     """
     Converts an image into polaroid-style. This is the (legacy) main-function
     of the old module. It is exposed and can still be imported and used by
@@ -33,7 +34,7 @@ def make_polaroid(source, size, options, template = None, template_box = None, b
         img = _add_border(img, size_border, color_border)
     if not options['noframe']: # if pasting into a template (for example a polaroid frame) is wanted #2
         if template:
-            img = paste_image_into_box(image=img, paste_into_image = template, blend = None, box = template_box)
+            img = paste_image_into_box(source_image=img, target_image = template, blend = None, box = template_box)
         else:
             img = _add_frame(img)
     return img
@@ -49,4 +50,5 @@ def _add_frame(image):
     """
     adds the frame around the image
     """
-    raise Exception("dropped for now by #13")
+    log.critical("_add_frame support dropped for now (#13). please consider using a Template")
+    sys.exit(1)

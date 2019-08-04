@@ -234,7 +234,7 @@ class EGWTemplate:
         return self._box
 
 
-    def paste(image, alpha_blend = 1.0, max = False):
+    def paste(self, image, alpha_blend = 1.0, max = False):
         """
         pastes Image instance into the .box of the template
         (not init box_max! but usually they are the same for now
@@ -243,7 +243,7 @@ class EGWTemplate:
         returns
             Image instance
         """
-        return paste_image_into_box(image = self._tpl_image, paste_into_image = image, blend=alpha_blend, box = self.box)
+        return paste_image_into_box(source_image = image, target_image = self._tpl_image, blend=alpha_blend, box = self.box)
 
 
     def add_text(self,**kwargs):

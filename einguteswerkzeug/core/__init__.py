@@ -30,7 +30,7 @@ handler.setFormatter(formatter)
 log.addHandler(handler)
 # ---
 
-__version__ = (0,3,93)
+__version__ = (0,3,95)
 
 class EGW:
     __version__ = __version__
@@ -102,7 +102,8 @@ class EGW:
         returns list of Template-instances
         """
         templates = {} # template-instances
-        configfile = get_resource_file(config)
+        if not (os.path.isfile(configfile)):
+            configfile = get_resource_file(config)
         TEMPLATE_BOXES = None
         if configfile:
             if not (os.path.isfile(configfile)):
@@ -128,102 +129,93 @@ class EGW:
         # ---
         # Colors
         COLOR_FRAME   = (237, 243, 214)
-        COLOR_BORDER  = (0, 0, 0)
         COLOR_TEXT_TITLE = (58, 68, 163)
         COLOR_TEXT_DESCR = COLOR_TEXT_TITLE
-        COLOR_BG_INNER = (0,0,0)                # usefull if --nocrop
+        COLOR_BG_INNER = (255,255,255)                # usefull if --nocrop
         # ---
-
+        self._alpha_blend = None
+        self._add_meta_to_title = False
+        self._align = "center"
+        self._configfile = get_resource_file(self._RESOURCE_CONFIG_FILE)
+        self._f_font = None
         self._options = { 'rotate': None, 'crop' : True, 'noframe' : False} # defaults
         self._source = []
+        self._seed = None
+        self._seed_is_global = False # if True (when kwargs['--seed'] is given)
+                                     # it overwrites every
+                                     # potential filte/gen seed-kwarg provided
+                                     # via params-filter/params-generator
         self._size_box = (400,400) # inner size, only the picture without surrounding frame
         self._target = None
-        self._align = "center"
+        self._text_color = (135,206,235)
         self._title = ""
-        self._add_meta_to_title = False
-        self._f_font = None
         self._template = None
-        self._configfile = get_resource_file(self._RESOURCE_CONFIG_FILE)
-        self._max_size = None # max size (width)
+        self._max_size = (800,800) # max size (width)
         self._add_exif_to_title = None
-        self._alpha_blend = None
         self._bg_color_inner = COLOR_BG_INNER
         self._nopolaroid = False
-        self._border_size = None           # only used  in combination with --no-polaroid
+        self._border_size_fact = None           # only used  in combination with --no-polaroid
         self._border_color = (255,255,255) # only used  in combination with --no-polaroid
         self._apply_filters = None
         self._params_filter = []
+        self._params_generator = []
 
         # process options
         if kwargs['<source-image>']:
             self._source = kwargs['<source-image>'].split(',') # some filters require a list of images ('composite', ...)
         if len(self._source) == 1:
             self._source = self._source[0]
-        log.debug("source : %s" % self._source)
         self._generator = None
         if self._source and not isinstance(self._source, list):
             if self._source.lower() in('-', 'stdin'):
                 raise Exception("hey, great idea! :) reading from STDIN isn't supported yet but it's on the TODO-list.")
-        elif not self._source:
-            self._generator = kwargs['--generator'] # surpriseme :)
-            if not self._generator in self._PLUGINS_GENERATORS:
-                show_error("Hu? Sorry generator '%s' unknown. Valid choices are: %s" % (generator, PLUGINS_GENERATORS.keys()))
-        self._params_generator = []
-        if kwargs['--params-generator']:
-            self._params_generator = kwargs['--params-generator'].split('}')
-            self._params_generator = [el + '}' for el in self._params_generator if el != '' ]
-        log.debug("params_generator: %s" % self._params_generator)
-        # overwriting the default-kwargs for generators with user-provided settings
-        for i,pjson in enumerate(self._params_generator): # should only be 1 generator
-            log.info("generator %s : loading & applying --params-generator %s '%s'" % (self._generator, i, pjson))
-            params = json.loads(pjson)
-            for k,v in params.items():
-                if k in self._PLUGINS_GENERATORS[generator].kwargs:
-                    self._PLUGINS_GENERATORS[generator].kwargs = {'k' : v}
-                else:
-                    raise Exception("generator '%s' provides no parameter '%s'. please check your --params-generator argument(s)." % (self._params_generator[i], k))
+        if kwargs['--alignment']: # only used if --crop
+            self._align = kwargs['--alignment']
         if kwargs['--alpha-blend']:
             self._alpha_blend = float(kwargs['--alpha-blend'])
-        if kwargs['--border-size']:
-            self._border_size = float(kwargs['--border-size'])
         if kwargs['--border-color']:
             self._border_color = tuple([int(el) for el in kwargs['--border-color'].split(',')])
             assert(len(self._border_color)==3)
+        if kwargs['--border-size']:
+            self._border_size_fact = float(kwargs['--border-size'])
         if kwargs['--clockwise']:
             self._options['rotate'] = 'clockwise'
         elif kwargs['--anticlock']:
             self._options['rotate'] = 'anticlockwise'
+        if kwargs['--config']:
+            self._configfile = kwargs['--config']
+            if not os.path.isabs(self._configfile):
+                # path to configfile is relative and not absolute
+                # turn it into absolute
+                self._configfile = os.path.abspath(self._configfile)
+            assert(os.path.isabs(self._configfile))
+            if not os.path.isfile(self._configfile):
+                raise Exception("Sorry, configfile {} not found.".format(self._configfile))
         if kwargs['--crop']:
             self._options['crop'] = True
         elif kwargs['--nocrop']:
             self._options['crop'] = False
-        if kwargs['--noframe']:
-            self._options['noframe'] = True # using no polaroid nor any other template at all, outputs only the (maybe filtered) image
-        if kwargs['--nopolaroid']:
-            self._nopolaroid = True # using an other template thang polaroid
-        if kwargs['--size-inner']:
-            self._size_box = int(kwargs['--size-inner'])
-        if kwargs['--alignment']: # only used if --crop
-            self._align = kwargs['--alignment']
-        if kwargs['--title']:
-            self._title = kwargs['--title']
-        if kwargs['--title-meta']:
-            self._add_meta_to_title = True # exif data | infos about choosen generator's-params
-        if kwargs['--font']:
-            self._f_font = kwargs['--font']
-        else:
-            self._f_font = self._RESOURCE_FONT
-        if kwargs['--output']:
-            self._target = kwargs['--output']
-        if kwargs['--template']:
-            self._template = kwargs['--template']
-        if kwargs['--config']:
-            self._configfile = kwargs['--config']
         if kwargs['--filter']:
             self._apply_filters = kwargs['--filter'].split(',')
             for filter in self._apply_filters:
                 if filter not in self._PLUGINS_FILTERS:
                     show_error("Hu? Filter '%s' not available. Valid choices are: %s" % (filter, self._PLUGINS_FILTERS))
+        if not self._source:
+            self._generator = kwargs['--generator'] # surpriseme :)
+            if not self._generator in self._PLUGINS_GENERATORS:
+                show_error("Hu? Sorry generator '%s' unknown. Valid choices are: %s" % (generator, PLUGINS_GENERATORS.keys()))
+        if kwargs['--font']:
+            self._f_font = kwargs['--font']
+        else:
+            self._f_font = self._RESOURCE_FONT
+        if kwargs['--max-size']:
+            self._max_size = int(kwargs['--max-size'])
+        if kwargs['--noframe']:
+            self._options['noframe'] = True # using no template at all - outputs only the (maybe filtered) image
+        if kwargs['--nopolaroid']:
+            self._nopolaroid = True # using an other template than polaroid
+        if kwargs['--output']:
+            self._target = kwargs['--output']
         if kwargs['--params-filter']:
             self._params_filter = kwargs['--params-filter'].split('}')
             self._params_filter = [el + '}' for el in self._params_filter if el != '' ]
@@ -238,19 +230,40 @@ class EGW:
                 else:
                     raise Exception("filter %s has no parameter '%s'. please check your --params-filter argument(s)." % (self._apply_filters[i], k))
         # ---
-        if self._template:
-            self._size_box = None # needs to be calculated
-        if kwargs['--max-size']:
-            self._max_size = int(kwargs['--max-size'])
-
+        if kwargs['--params-generator']:
+            self._params_generator = kwargs['--params-generator'].split('}')
+            self._params_generator = [el + '}' for el in self._params_generator if el != '' ]
+        log.debug("params_generator: %s" % self._params_generator)
+        # overwriting the default-kwargs for generators with user-provided settings
+        for i,pjson in enumerate(self._params_generator): # should only be 1 generator
+            log.info("generator %s : loading & applying --params-generator %s '%s'" % (self._generator, i, pjson))
+            params = json.loads(pjson)
+            for k,v in params.items():
+                if k in self._PLUGINS_GENERATORS[self._generator].kwargs:
+                    self._PLUGINS_GENERATORS[self._generator].kwargs = {'k' : v}
+                else:
+                    raise Exception("generator '%s' provides no parameter '%s'. please check your --params-generator argument(s)." % (self._params_generator[i], k))
+        # ---
+        if kwargs['--seed']:
+            self._seed = int(kwargs['--seed'])
+            self._seed_is_global = True
+        if kwargs['--size-inner']:
+            self._size_box = int(kwargs['--size-inner'])
+        if kwargs['--template']:
+            self._template = kwargs['--template']
+        if kwargs['--text-color']:
+            self._text_color = tuple([int(el) for el in kwargs['--text-color'].split(',')])
+        if kwargs['--title']:
+            self._title = kwargs['--title']
+        if kwargs['--title-meta']:
+            self._add_meta_to_title = True # exif data | infos about choosen generator's-params
+        # ---
         self._TEMPLATES = load_templates(self._configfile)
-
-        if self._size_box and isinstance(self._size_box,int):
-            self._size_box = (self._size_box,self._size_box) #square format
-
         if self._template:
             self._template = select_template(name=os.path.basename(self._template), templates = self._TEMPLATES)
             self._size_box = self._template.box_size
+        elif self._size_box and isinstance(self._size_box,int):
+            self._size_box = (self._size_box,self._size_box) #square format
 
 
     def _process_args(self):
@@ -281,6 +294,8 @@ class EGW:
                 kwargs['size'] = self._size_box
             else:
                 log.warning("deprecated : generator {} doesn't provide 'size' parameter".format(generator))
+            if self._seed_is_global and ('seed' in kwargs):
+                kwargs['seed'] = self._seed
             generator = self._PLUGINS_GENERATORS[self._generator]
             self._source = generator.run()
         if self._add_meta_to_title:
@@ -381,6 +396,8 @@ class EGW:
                 kwargs = self._PLUGINS_FILTERS[edit_filter].kwargs
                 kwargs['image'] = img
                 log.info("%s kwargs = %s" % (edit_filter,kwargs))
+            if self._seed_is_global and ('seed' in kwargs):
+                kwargs['seed'] = self._seed
             self._PLUGINS_FILTERS[edit_filter].kwargs = kwargs
             img = self._PLUGINS_FILTERS[edit_filter].run()
 
@@ -407,7 +424,7 @@ class EGW:
         # --- finish the picture: paste it into the template,
         #     add borders, text, whatsoever ...
         if self._nopolaroid:
-            options['alpha_blend'] = self._alpha_blend
+            self._options['alpha_blend'] = self._alpha_blend
             if isinstance(self._source,Image.Image):
                 img = self._source
             else:
@@ -416,16 +433,19 @@ class EGW:
             assert(w == self._size_box[0])
             assert(h == self._size_box[1])
             if self._border_size_fact and (w == h):
-                img = add_border_around_image(image = img, size = int(img.size[0] * border_size_fact), color = self._border_color)
+                img = add_border_around_image(image = img, size = int(img.size[0] * self._border_size_fact), color = self._border_color)
             img = scale_square_image(img, self._size_box)
-            log.warning("--template with --nopolaroid is experimental! alpha_blend: {}".format(options['alpha_blend']))
+            log.warning("--template with --nopolaroid is experimental! alpha_blend: {}".format(self._options['alpha_blend']))
             img = self._template.paste(image=img, alpha_blend = self._alpha_blend)
             self._img = img
+            if self._title and self._title != "":
+                f_kwargs = {'title' : self._title, 'font' : self._f_font, 'color' : self._text_color}
+                self._img = self._template.add_text(**f_kwargs)
         else:
             if self._template:
                 self._img = make_polaroid(source = self._source, size = self._size_box, options = self._options, template = self._template.image, template_box = self._template.box)
                 if (self._title and self._title != ""):
-                    f_kwargs = {'title' : self._title, 'font' : self._f_font, 'color' : (0,0,220)}
+                    f_kwargs = {'title' : self._title, 'font' : self._f_font, 'color' : self._text_color}
                     self._img = self._template.add_text(**f_kwargs)
             else:
                 self._img = make_polaroid(source = self._source, size = self._size_box, options = self._options, template = None, template_box = None)
@@ -483,14 +503,16 @@ class EGW:
         shows infos about the current state of the template
         """
         tpl_doc = string.Template("""
-        version       : $version
-        filters       : $len_filters
-        filters       : $filters
-        generators    : $len_generators
-        generators    : $generators
-        len_templates : $len_templates
-        template      : $template
-        templates     : $templates
+        version        : $version
+        filters        : $len_filters
+        filters        : $filters
+        generators     : $len_generators
+        generators     : $generators
+        seed           : $seed
+        seed_is_global : $seed_is_global
+        len_templates  : $len_templates
+        template       : $template
+        templates      : $templates
         """)
         tpl_name = None
         if self._template:
@@ -501,9 +523,11 @@ class EGW:
             'filters' : self.filters,
             'len_generators' : len(self.generators),
             'generators' : self.generators,
+            'seed' : self._seed,
+            'seed_is_global' : self._seed_is_global,
             'len_templates' : len(self._TEMPLATES),
             'template' : tpl_name,
-            'templates' : self._TEMPLATES,
+            'templates' : self._TEMPLATES.keys(),
             })
 
 

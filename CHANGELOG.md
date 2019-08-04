@@ -1,6 +1,11 @@
-**0.3.4** (in progress)
+**0.3.5** (in progress)
 - refactoring: transition to class-based plugins #13
-- TODO: refactoring : transition to class-based core #13
+- refactoring: transition to class-based core #13
+- unclutters docopts
+- fixes #14 : cli-opt --config doesn't work with relative paths
+- adds --seed option for reproducing pseudo-randomness
+- supports either template-usage or --noframe. kicks out legacy add_frame-feature,
+- fixes filter-plugin 'puzzle'
 - TODO: contactsheet supports filtering by time-window
 - TODO: improved template support
 

@@ -153,10 +153,11 @@ def add_border_around_image(image, size = None, color = (255,255,255)):
     img.paste(image, (int(size / 2),int(size / 2)))
     return img
 
-def paste_image_into_box(image = None, paste_into_image = None, blend=1.0, box=None):
+def paste_image_into_box(source_image = None, target_image = None, blend=1.0, box=None):
     """
     """
-    image_tpl = paste_into_image
+    image = source_image
+    image_tpl = target_image
     if not box:
         raise Exception("Sorry, no pasting-area defined. Please use argument 'box'.")
     else:
@@ -260,7 +261,7 @@ def trim(im):
     if bbox:
         return im.crop(bbox)
 
-def scale_and_prep_image(source = None, size = None, options = {}, align = "center", bg_color_inner=(0,0,0)):
+def scale_and_prep_image(source = None, size = None, options = {}, align = "center", bg_color_inner=(255,255,255)):
     """
     preprocessing (crop and/or scale) input image before applying filters etc.
     #11
