@@ -153,7 +153,7 @@ def add_border_around_image(image, size = None, color = (255,255,255)):
     img.paste(image, (int(size / 2),int(size / 2)))
     return img
 
-def paste_image_into_box(source_image = None, target_image = None, blend=1.0, box=None):
+def paste_image_into_box(source_image = None, target_image = None, blend=1.0, box=None, return_only_box_blended = False):
     """
     """
     image = source_image
@@ -182,8 +182,10 @@ def paste_image_into_box(source_image = None, target_image = None, blend=1.0, bo
     if blend:
         region2pasteinto = image_tpl.crop(box)
         log.info("alpha_blend: {} paste_area_size: {} {} copy_into_paste_area_size: {} {}".format(blend, region2pasteinto.size, region2pasteinto.mode, region2copy.size, region2copy.mode))
-        region2copy = Image.blend(region2pasteinto, region2copy.convert('RGB'), blend)
-    image_tpl.paste(region2copy,box)
+        region_blended = Image.blend(region2pasteinto, region2copy.convert('RGB'), blend)
+    if return_only_box_blended:
+        return region_blended
+    image_tpl.paste(region_blended,box)
     return image_tpl
 
 

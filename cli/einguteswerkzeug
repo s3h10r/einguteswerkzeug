@@ -6,11 +6,11 @@ einguteswerkzeug - converts image into polaroid style and/or does phonky generat
 Usage:
 egw <source-image> [--output=<filename>]
 egw (<source-image> | --generator=<str>) [--output=<filename>]
-egw (<source-image> | --generator=<str>) [--config=<fqfn>] [--template=<str>]
+egw (<source-image> | --generator=<str>) [--config=<fqfn>] [--template=<str>] [--noframe]
     [--filter <name>] [--params-filter <fparams>] [--params-generator <params>]
     [--title=<str>] [--title-meta] [--font=<fqfn>] [--text-color=<rgb>]
     [--alpha-blend=<float>] [--border-size=<int>] [--border-color=<rgb>]
-    [--size-inner=<n>] [--max-size=<w>] [--noframe] [--nopolaroid]
+    [--size-inner=<n>] [--max-size=<w>]
     [--crop | --nocrop] [--alignment=<str>] [--clockwise | --anticlock] [-o <fout>]
     [--seed=<int>]
 
@@ -54,8 +54,7 @@ Options:
   --generator=<str> Get phonky & create some generative art instead of using an input-image.
   --params-generator=<pydict>
                     sets kwargs for a generator
-  --seed=<int>      **TODO**
-                    sets random seed (allows reproduction of pseudo-randomness)
+  --seed=<int>      sets random seed (allows reproduction of pseudo-randomness)
                     if set than the given value overwrites every single
                     seed-argument of filters and generators and also weights
                     more than a filter-/generator-specific seed value set via
@@ -75,8 +74,10 @@ Options:
                     (size-inner + template|frame <= max-size) [default:800]
   --nocrop          Rescale the image to fit fullframe in the final output
                     (default="--crop"). btw. alignment is ignored if option is set.
-  --noframe         put the processed image not into any frame. (ignores template etc.)
-  --nopolaroid      put the processed image into a given template which doesn't have to be a polaroid
+  --noframe         put the processed image not into any frame / template.
+                    if --template is given nevertheless additionally then
+                    the "paste-area" (box) of template will be used
+                    so --alpha-blending can be applied for example.
   -o, --output=<s>  Defines the name of the outputfile. If omitted a filename
                     based on the original will be used - example:
                     'test.polaroid.png' will be used as filename if input-file is 'test.png'

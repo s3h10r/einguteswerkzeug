@@ -19,7 +19,6 @@ from einguteswerkzeug.helpers import get_resource_file, show_error
 from einguteswerkzeug.helpers.gfx import scale_and_prep_image, scale_square_image, add_border_around_image
 from einguteswerkzeug.plugins import EGWPluginFilter, EGWPluginGenerator
 from einguteswerkzeug.core.template import EGWTemplate, load_templates, select_template
-from einguteswerkzeug.core.polaroid import make_polaroid # legacy #13
 
 # --- configure logging
 log = logging.getLogger(__name__)
@@ -138,7 +137,7 @@ class EGW:
         self._align = "center"
         self._configfile = get_resource_file(self._RESOURCE_CONFIG_FILE)
         self._f_font = None
-        self._options = { 'rotate': None, 'crop' : True, 'noframe' : False} # defaults
+        self._options = { 'rotate': None, 'crop' : True, 'noframe' : False} # legacy
         self._source = []
         self._seed = None
         self._seed_is_global = False # if True (when kwargs['--seed'] is given)
@@ -153,7 +152,7 @@ class EGW:
         self._max_size = (800,800) # max size (width)
         self._add_exif_to_title = None
         self._bg_color_inner = COLOR_BG_INNER
-        self._nopolaroid = False
+        self._noframe = False
         self._border_size_fact = None           # only used  in combination with --no-polaroid
         self._border_color = (255,255,255) # only used  in combination with --no-polaroid
         self._apply_filters = None
@@ -211,9 +210,7 @@ class EGW:
         if kwargs['--max-size']:
             self._max_size = int(kwargs['--max-size'])
         if kwargs['--noframe']:
-            self._options['noframe'] = True # using no template at all - outputs only the (maybe filtered) image
-        if kwargs['--nopolaroid']:
-            self._nopolaroid = True # using an other template than polaroid
+            self._noframe = True # using no template at all - outputs only the image after filter_processing (if any)
         if kwargs['--output']:
             self._target = kwargs['--output']
         if kwargs['--params-filter']:
@@ -325,8 +322,7 @@ class EGW:
                 raise Exception("Ouch. Holy crap... wt..?!? ")
             if self._max_size and (self._max_size[0]*self._max_size[1] < el.size[0] * el.size[1]):
                 log.warning("input-image can be downsized before applying filters etc..... TODO #11")
-            if self._nopolaroid:
-                self._bg_color_inner = self._border_color
+            self._bg_color_inner = self._border_color
             self._source.append(scale_and_prep_image(source = el, size = self._size_box, options = self._options, align = self._align, bg_color_inner= self._bg_color_inner))
         for el in self._source:
             log.info("size: {} max_size: {} image-input size after preproc: {}".format(self._size_box,self._max_size,self._source[-1].size))
@@ -385,6 +381,10 @@ class EGW:
                     idx = random.randint(0,2)
                     algo = algos[idx]
                     kwargs['image'] = img
+                elif edit_filter in ('puzzle'):
+                    kwargs = self._PLUGINS_FILTERS[edit_filter].kwargs
+                    kwargs['block_size'] = random.randrange(10,int(img.size[0] / 4))
+                    kwargs['image'] = img
                 else:
                     # generic interface (kwargs always with 'image' and optionally with other arguments set to defaults)
                     kwargs = self._PLUGINS_FILTERS[edit_filter].kwargs
@@ -423,7 +423,7 @@ class EGW:
             log.info("ok. filter(s) finished.")
         # --- finish the picture: paste it into the template,
         #     add borders, text, whatsoever ...
-        if self._nopolaroid:
+        if not self._noframe:
             self._options['alpha_blend'] = self._alpha_blend
             if isinstance(self._source,Image.Image):
                 img = self._source
@@ -435,20 +435,24 @@ class EGW:
             if self._border_size_fact and (w == h):
                 img = add_border_around_image(image = img, size = int(img.size[0] * self._border_size_fact), color = self._border_color)
             img = scale_square_image(img, self._size_box)
-            log.warning("--template with --nopolaroid is experimental! alpha_blend: {}".format(self._options['alpha_blend']))
             img = self._template.paste(image=img, alpha_blend = self._alpha_blend)
             self._img = img
             if self._title and self._title != "":
                 f_kwargs = {'title' : self._title, 'font' : self._f_font, 'color' : self._text_color}
                 self._img = self._template.add_text(**f_kwargs)
-        else:
-            if self._template:
-                self._img = make_polaroid(source = self._source, size = self._size_box, options = self._options, template = self._template.image, template_box = self._template.box)
-                if (self._title and self._title != ""):
-                    f_kwargs = {'title' : self._title, 'font' : self._f_font, 'color' : self._text_color}
-                    self._img = self._template.add_text(**f_kwargs)
+        else: # no framing / pasting into a (polaroid-)template, only put the (generated / filtered) source-image  out
+            if self._template and self._alpha_blend: # alpha-blending makes sense here
+                if isinstance(self._source,Image.Image):
+                    img = self._source
+                else:
+                    img = Image.open(self._source)
+                [w, h] = img.size
+                assert(w == self._size_box[0])
+                assert(h == self._size_box[1])
+                img = scale_square_image(img, self._size_box)
+                self._img = self._template.paste(image=img, alpha_blend = self._alpha_blend, return_only_region_blended = True)
             else:
-                self._img = make_polaroid(source = self._source, size = self._size_box, options = self._options, template = None, template_box = None)
+                self._img = self._source
         log.debug("size: {}".format(self._img.size))
         # ---  if --max-size is given: check if currently bigger and downscale if necessary...
         if self._max_size:
