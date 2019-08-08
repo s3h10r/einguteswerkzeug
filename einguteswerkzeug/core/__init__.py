@@ -16,17 +16,13 @@ import sys
 from PIL import Image
 from pluginbase import PluginBase
 from einguteswerkzeug.helpers import get_resource_file, show_error
-from einguteswerkzeug.helpers.gfx import scale_and_prep_image, scale_square_image, add_border_around_image
+from einguteswerkzeug.helpers.gfx import add_border_around_image, get_exif, scale_and_prep_image, scale_square_image
 from einguteswerkzeug.plugins import EGWPluginFilter, EGWPluginGenerator
 from einguteswerkzeug.core.template import EGWTemplate, load_templates, select_template
 
 # --- configure logging
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
-handler = logging.StreamHandler() # console-handler
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-log.addHandler(handler)
 # ---
 
 __version__ = (0,3,95)
@@ -146,7 +142,7 @@ class EGW:
                                      # via params-filter/params-generator
         self._size_box = (400,400) # inner size, only the picture without surrounding frame
         self._target = None
-        self._text_color = (135,206,235)
+        self._text_color = (35,105,225)
         self._title = ""
         self._template = None
         self._max_size = (800,800) # max size (width)
@@ -269,13 +265,13 @@ class EGW:
         # -- here we go...
         if not isinstance(self._source, list):
             if self._add_meta_to_title:
-                exif_data = get_exif(source)
+                exif_data = get_exif(self._source)
                 if ('EXIF DateTimeOriginal') in exif_data:
                     v = exif_data['EXIF DateTimeOriginal']
                     timestamp = dt.datetime.strptime(str(v), '%Y:%m:%d %H:%M:%S')
-                    meta = timestamp
+                    self._meta = timestamp
                 else:
-                    log.warning("--title-meta set but exif_data about DateTime unavailable for the input-image. :-/ : {}; ;".format(fn))
+                    log.warning("--title-meta set but exif_data about DateTime unavailable for the input-image. :-/ : {}; ;".format(self._source))
             name, ext = os.path.splitext(self._source)
             if not os.path.isfile(self._source):
                 show_error("Source file '%s' does not exist." % source)
@@ -298,7 +294,7 @@ class EGW:
         if self._add_meta_to_title:
             if len(self._title) > 0:
                 self._title += " "
-            self._title += "%s" % (meta)
+            self._title += "%s" % (self._meta)
         # Prepare our resources
         self._f_font = get_resource_file(self._f_font)
         if not isinstance(self._source,Image.Image): # that's the case if we're not using a generator
@@ -541,7 +537,6 @@ class EGW:
 
 
 def main(kwargs):
-    print(type(kwargs), kwargs)
     egw = EGW(**kwargs)
     print(egw.info)
     egw.run()

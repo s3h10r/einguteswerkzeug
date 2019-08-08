@@ -9,11 +9,7 @@ from PIL import Image, ImageChops
 
 # --- configure logging
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
-handler = logging.StreamHandler() # console-handler
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-log.addHandler(handler)
+log.setLevel(logging.INFO)
 # ---
 
 
@@ -182,7 +178,7 @@ def paste_image_into_box(source_image = None, target_image = None, blend=1.0, bo
     if blend:
         region2pasteinto = image_tpl.crop(box)
         log.info("alpha_blend: {} paste_area_size: {} {} copy_into_paste_area_size: {} {}".format(blend, region2pasteinto.size, region2pasteinto.mode, region2copy.size, region2copy.mode))
-        region_blended = Image.blend(region2pasteinto, region2copy.convert('RGB'), blend)
+        region_blended = Image.blend(region2pasteinto.convert('RGB'), region2copy.convert('RGB'), blend)
     if return_only_box_blended:
         return region_blended
     image_tpl.paste(region_blended,box)

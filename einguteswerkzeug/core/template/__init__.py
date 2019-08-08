@@ -15,10 +15,6 @@ from einguteswerkzeug.helpers.gfx import paste_image_into_box
 # --- configure logging
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
-handler = logging.StreamHandler() # console-handler
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-log.addHandler(handler)
 # ---
 
 RESOURCE_CONFIG_FILE="einguteswerkzeug.conf"
@@ -55,7 +51,10 @@ class EGWTemplate:
         self._box = self._box_max
         self._tpl_image_max = Image.open(self._fqfn)
         self._tpl_image = Image.open(self._fqfn)
-
+        # making sure we use RGB(A) mode
+        # (fixes grayscale templates need special care...)
+        self._tpl_image_max = self._tpl_image_max.convert("RGB")
+        self._tpl_image = self._tpl_image.convert("RGB")
         if self._box_format != self.BOX_FORMATS['square']:
             raise Exception("Sorry, only format 'square' is supported yet. #6")
         # --- check if box-definition is a square & auto-correct if not
@@ -277,12 +276,12 @@ class EGWTemplate:
         if (font_size <= 0):
             show_error("Text is too large")
         draw = ImageDraw.Draw(self._tpl_image)
-        pos_x = self.box[0] + int(self.box_size[0] / 2) - width / 2
-        pos_y = self.box[3] + int(self.box[3] / 7) - height / 2
-        log.info("title fontsize {} pos_x, pos_y {},{}".format(font_size, pos_x, pos_y))
+        pos_x = int(self.box[0] + int(self.box_size[0] / 2) - width / 2)
+        pos_y = int(self.box[3] + int(self.box[3] / 7) - height / 2)
+        log.info("title fontsize {} pos_x, pos_y {},{} color {}".format(font_size, pos_x, pos_y,color))
         draw.text(
             (pos_x, pos_y),
-            title, font = font_title, fill = color,
+            title, font = font_title, fill = color
         )
         return self._tpl_image
 
