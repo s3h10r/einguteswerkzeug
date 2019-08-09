@@ -23,9 +23,16 @@ from einguteswerkzeug.core.template import EGWTemplate, load_templates, select_t
 # --- configure logging
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
+if log.hasHandlers():
+    log.andlers.clear()
+handler = logging.StreamHandler() # console-handler
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+log.addHandler(handler)
+log.propagate=False
 # ---
 
-__version__ = (0,3,95)
+__version__ = (0,4,0)
 
 class EGW:
     __version__ = __version__

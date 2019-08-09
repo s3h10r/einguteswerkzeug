@@ -4,14 +4,14 @@
 einguteswerkzeug - converts image into polaroid style and/or does phonky generative art
 
 Usage:
-egw <source-image> [--output=<filename>]
+egw <source-image> --output=<filename>
 egw (<source-image> | --generator=<str>) [--output=<filename>]
 egw (<source-image> | --generator=<str>) [--config=<fqfn>] [--template=<str>] [--noframe]
     [--filter <name>] [--params-filter <fparams>] [--params-generator <params>]
     [--title=<str>] [--title-meta] [--font=<fqfn>] [--text-color=<rgb>]
     [--alpha-blend=<float>] [--border-size=<int>] [--border-color=<rgb>]
     [--size-inner=<n>] [--max-size=<w>]
-    [--crop | --nocrop] [--alignment=<str>] [--clockwise | --anticlock] [-o <fout>]
+    [--crop | --nocrop] [--alignment=<str>] [--clockwise | --anticlock] -o <fout>
     [--seed=<int>]
 
 Where:
