@@ -1,4 +1,4 @@
-**0.3.5** (in progress)
+**0.4.0** (in progress)
 - refactoring: transition to class-based plugins #13
 - refactoring: transition to class-based core #13
 - unclutters docopts
@@ -6,9 +6,7 @@
 - adds --seed option for reproducing pseudo-randomness
 - supports either template-usage or --noframe. kicks out legacy add_frame-feature,
 - fixes filter-plugin 'puzzle'
-- TODO: contactsheet supports filtering by time-window
-- TODO: improved template support
-
+- supports greyscale templates
 
 **0.3.2**
 - introduces generators (`--generator` option) as an alternative to source-image
