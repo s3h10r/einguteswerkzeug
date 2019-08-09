@@ -70,8 +70,8 @@ Some examples of works i am doing with `einguteswerkzeug`:
 <img src="/examples/test_generator-mondrian.filter-oil2.jpg" width="48%" title=""></img>
 <img src="/examples/awork_small_platoscave_unfinished.polaroid.png" width="48%" title=""></img>
 
-<img src="/examples/awork_small_milk+colorpalette.jpg" width="48%" title="milk + color palette, 2019"></img>
-<img src="/examples/awork_small_milk+colorpalette_vb.jpg" width="48%" title=""></img>
+<img src="/examples/awork_small_milk+colorpalette_vb.jpg" width="48%" title="milk + color palette, 2019"></img>
+<img src="/examples/awork_small_play2.png" width="48%" title="play2"></img>
 
 
 you want to help?
