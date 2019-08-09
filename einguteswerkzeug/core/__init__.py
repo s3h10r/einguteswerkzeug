@@ -98,35 +98,6 @@ class EGW:
                 log.info("generator '%s' successfully loaded" % plug_instance.generator.name)
 
 
-    def _load_templates(config = None):
-        """
-        loads templatedefinition & params from provided configfile
-        returns list of Template-instances
-        """
-        templates = {} # template-instances
-        if not (os.path.isfile(configfile)):
-            configfile = get_resource_file(config)
-        TEMPLATE_BOXES = None
-        if configfile:
-            if not (os.path.isfile(configfile)):
-                log.warning("configfile {} not found... please always give absolute paths to config-file to avoid confusions :D".format(configfile))
-                sys.exit(1)
-            # --- load config file (if any)
-            with open(configfile) as f:
-                log.info("reading config...")
-                code = compile(f.read(), configfile, 'exec')
-                global_vars ={}
-                local_vars = {}
-                exec(code,global_vars, local_vars)
-                TEMPLATE_BOXES=local_vars['TEMPLATE_BOXES']
-        for k in TEMPLATE_BOXES:
-            TEMPLATE_BOXES[k] = [int(round(f)) for f in TEMPLATE_BOXES[k]]
-        for k,v in TEMPLATE_BOXES.items():
-            templates[k] = EGWTemplate(name=k, box = list(v))
-        log.info("{} templates loaded.".format(len(templates.keys())))
-        return templates
-
-
     def _setup_args(self,**kwargs):
         # ---
         # Colors
@@ -258,7 +229,7 @@ class EGW:
         if kwargs['--title-meta']:
             self._add_meta_to_title = True # exif data | infos about choosen generator's-params
         # ---
-        self._TEMPLATES = load_templates(self._configfile)
+        self._TEMPLATES = load_templates(self._configfile, self._template)
         if self._template:
             self._template = select_template(name=os.path.basename(self._template), templates = self._TEMPLATES)
             self._size_box = self._template.box_size

@@ -317,13 +317,14 @@ class EGWTemplate:
             return None
 
 
-def load_templates(config = None):
+def load_templates(configfile = None, template = None):
     """
     loads templatedefinition & params from provided configfile
     returns list of Template-instances
     """
     templates = {} # template-instances
-    configfile = get_resource_file(config)
+    if not (os.path.isfile(configfile)):
+        configfile = get_resource_file(configfile)
     TEMPLATE_BOXES = None
     if configfile:
         if not (os.path.isfile(configfile)):
@@ -340,7 +341,12 @@ def load_templates(config = None):
     for k in TEMPLATE_BOXES:
         TEMPLATE_BOXES[k] = [int(round(f)) for f in TEMPLATE_BOXES[k]]
     for k,v in TEMPLATE_BOXES.items():
-        templates[k] = EGWTemplate(name=k, box = list(v))
+        if template:
+            if k == os.path.basename(template):
+                templates[k] = EGWTemplate(name=k, box = list(v))
+                break
+        else: # loading all templates (can be time consuming)
+            templates[k] = EGWTemplate(name=k, box = list(v))
     log.info("{} templates loaded.".format(len(templates.keys())))
     return templates
 
