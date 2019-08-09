@@ -183,6 +183,7 @@ class EGW:
             self._f_font = self._RESOURCE_FONT
         if kwargs['--max-size']:
             self._max_size = int(kwargs['--max-size'])
+            self._max_size=(self._max_size,self._max_size)
         if kwargs['--noframe']:
             self._noframe = True # using no template at all - outputs only the image after filter_processing (if any)
         if kwargs['--output']:
@@ -232,6 +233,12 @@ class EGW:
         self._TEMPLATES = load_templates(self._configfile, self._template)
         if self._template:
             self._template = select_template(name=os.path.basename(self._template), templates = self._TEMPLATES)
+
+            if self._max_size: # TODO resize template accourding to max size #11
+                self._template.resize(size=self._max_size)
+                assert(self._template.size[0] <= self._max_size[0])
+                assert(self._template.size[1] <= self._max_size[1])
+
             self._size_box = self._template.box_size
         elif self._size_box and isinstance(self._size_box,int):
             self._size_box = (self._size_box,self._size_box) #square format
@@ -428,23 +435,7 @@ class EGW:
             else:
                 self._img = self._source
         log.debug("size: {}".format(self._img.size))
-        # ---  if --max-size is given: check if currently bigger and downscale if necessary...
-        if self._max_size:
-            xs, ys = self._img.size
-            if (xs > self._max_size[0]) or (ys > self._max_size[1]):
-                log.info('scaling result down to --max_size {}'.format(self._max_size))
-                factor = 1
-                if xs >= ys:
-                    factor = self._max_size[0] / xs
-                else:
-                    factor = self._max_size[1] / ys
-                x_new = int(self._img.width * factor)
-                y_new = int(self._img.height * factor)
-                self._img_final = self._img.resize((x_new,y_new),Image.ANTIALIAS)
-            else:
-                self._img_final = self._img
-        else:
-            self._img_final = self._img
+        self._img_final = self._img
         self._img_final.save(self._target)
         print("saving final image...")
         print(self._target)

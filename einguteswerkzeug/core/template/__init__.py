@@ -292,15 +292,45 @@ class EGWTemplate:
         )
         return self._tpl_image
 
-    def resize(self,**kwargs):
+
+    def resize(self,size=None):
         """
-        resizes template
+        resizes the ("work copy"-) template (only downscaling is allowed)
         (and changes the .box, .size, ... properties accordingly - the properties
-        with the suffix _max will not be touched: tey represent the original
+        with the suffix _max will not be touched: they represent the original
         template (maximum quality))
-        # 11
         """
-        raise Exception("TODO #11")
+        xs, ys = self.size
+        if (xs < size[0]) or (ys < size[1]):
+            raise Exception("Templates can't be upscaled! {} -> {}".format(self.size,size))
+        if (xs > size[0]) or (ys > size[1]):
+            log.info('scaling template down to --max_size {}'.format(size))
+            factor = 1
+            if xs >= ys:
+                factor = size[0] / xs
+            else:
+                factor = size[1] / ys
+            x_new = int(self._tpl_image.width * factor)
+            y_new = int(self._tpl_image.height * factor)
+            log.info("tpl_size_old: {} factor: {} -> tpl_size_new: {},{}".format(self.size,factor,x_new,y_new))
+            self._tpl_image = self._tpl_image.resize((x_new,y_new),Image.ANTIALIAS)
+            log.info("tpl_box_old: {} box_size: {}".format(self.box,self.box_size))
+            self._box = [ int(pos * factor) for pos in self._box]
+            # --- check if box-definition is a square & auto-correct if not
+            w, h = self.box_size[0], self.box_size[1]
+            if w != h:
+                # the longer side is made equal to the shorter side by removing pixels on both ends
+                if w < h:
+                    diff = h - w
+                    self._box[1] += int(diff // 2)
+                    self._box[3] -= int(diff // 2) + int(diff % 2)
+                else:
+                    diff = w - h
+                    self.box[0] += int(diff // 2)
+                    self.box[2] -= int(diff // 2) + int(diff % 2)
+                w, h = self.box_size
+                assert(w == h)
+            log.info("tpl_box_new: {} box_size: {}".format(self.box,self.box_size))
 
 
     def get_image(self):
