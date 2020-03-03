@@ -23,6 +23,69 @@ around (see credits & thanks). in short the software provides:
 change for sure - but for now it already works fine for me. Maybe it
 can be usefull for you too, especially if you like to tinker with code.
 
+hu?
+---
+
+`egw` creates or uses given input-image-data (`generators` vs. image-data)
+to place it into a "template" (usually a polaroid frame). 
+on its way it runs a bunch of (your own or the included) filters 
+with random (default) or fixed params. no filters are okay too. 
+
+```
+input (generator|image) [--> filter(s) & filter-params] --> paste into template --> output (image)
+```
+
+Installation
+------------
+
+```
+# -- fetch latest source
+
+$ git clone --recurse-submodules -j8 https://github.com/s3h10r/einguteswerkzeug.git
+$ cd einguteswerkzeug
+
+# -- install & build into a dedicated virtualenv
+
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv) $ pip install -r requirements.txt
+(venv) $ rm ./dist/*
+(venv) $ ./build.sh
+(venv) $ pip install ./dist/einguteswerkzeug-0.4.0.tar.gz
+
+# -- ready to rumble! (:
+
+(venv) $ egw
+Usage:
+egw <source-image> --output=<filename>
+egw (<source-image> | --generator=<str>) [--output=<filename>]
+egw (<source-image> | --generator=<str>) [--config=<fqfn>] [--template=<str>] [--    >  \noframe]
+    [--filter <name>] [--params-filter <fparams>] [--params-generator <params>]
+    [--title=<str>] [--title-meta] [--font=<fqfn>] [--text-color=<rgb>]
+    [--alpha-blend=<float>] [--border-size=<int>] [--border-color=<rgb>]
+    [--size-inner=<n>] [--max-size=<w>]
+    [--crop | --nocrop] [--alignment=<str>] [--clockwise | --anticlock] -o <fout>
+    [--seed=<int>]
+```
+
+Have fun! (:
+
+Quickstart
+----------
+
+Generate an output by using a generator (here `sprites`):
+
+```
+$ egw --generator sprites -o /tmp/out.png --template ./einguteswerkzeug/templates/fzm-Polaroid.Frame-01.jpg --title "einguteswerkzeug $(egw --version)" && feh  /tmp/out.png
+```
+
+Generate output by using an image:
+
+```
+egw foobar.png -o /tmp/out.png --nocrop --template ./einguteswerkzeug/templates/fzm-Polaroid.Frame-01.jpg --title "einguteswerkzeug $(egw --version)" && feh /tmp/out.png
+```
+
+
 
 turn einguteswerkzeug into deinguteswerkzeug :)
 -----------------------------------------------
@@ -145,7 +208,7 @@ is gratefull for being allowed to use and remix in this software product.
 
 MIT License
 
-Copyright (c) 2019 Sven Hessenmüller <sven.hessenmueller@gmail.com>
+Copyright (c) 2019-2020 Sven Hessenmüller <sven.hessenmueller@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
