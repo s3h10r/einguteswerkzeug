@@ -23,13 +23,14 @@ around (see credits & thanks). in short the software provides:
 change for sure - but for now it already works fine for me. Maybe it
 can be usefull for you too, especially if you like to tinker with code.
 
-hu?
----
-
+<!--
 `egw` creates or uses given input-image-data (`generators` vs. image-data)
 to place it into a "template" (usually a polaroid frame). 
 on its way it runs a bunch of (your own or the included) filters 
 with random (default) or fixed params. no filters are okay too. 
+-->
+
+Things here are simple (less than 2000 lines of core-code):
 
 ```
 input (generator|image) [--> filter(s) & filter-params] --> paste into template --> output (image)
@@ -70,6 +71,18 @@ egw (<source-image> | --generator=<str>) [--config=<fqfn>] [--template=<str>] [-
 
 Have fun! (:
 
+turn einguteswerkzeug into deinguteswerkzeug :)
+-----------------------------------------------
+
+It's fun to chain some of the provided filters to get good results
+but to get most out of `egw` use its lightweight plugin-mechanism to [simply roll your own **plugin(s)**](https://github.com/s3h10r/egw-plugins) in [Python](https://python.org).
+
+**Contributions are welcome** and they are greatly appreciated!
+
+Please feel free to send a pull-request and use the [issue tracker](https://github.com/s3h10r/polaroidme/issues).
+
+
+<!--
 Quickstart
 ----------
 
@@ -84,18 +97,7 @@ Generate output by using an image:
 ```
 egw foobar.png -o /tmp/out.png --nocrop --template ./einguteswerkzeug/templates/fzm-Polaroid.Frame-01.jpg --title "einguteswerkzeug $(egw --version)" && feh /tmp/out.png
 ```
-
-
-
-turn einguteswerkzeug into deinguteswerkzeug :)
------------------------------------------------
-
-It's fun to chain some of the provided filters to get good results
-but to get most out of `egw` use its lightweight plugin-mechanism to [simply roll your own **plugin(s)**](https://github.com/s3h10r/egw-plugins) in [Python](https://python.org).
-
-**Contributions are welcome** and they are greatly appreciated!
-
-Please feel free to send a pull-request and use the [issue tracker](https://github.com/s3h10r/polaroidme/issues).
+-->
 
 
 TLDR; show don't tell
