@@ -411,8 +411,10 @@ class EGW:
             else:
                 img = Image.open(self._source)
             [w, h] = img.size
-            assert(w == self._size_box[0])
-            assert(h == self._size_box[1])
+            #assert(w == self._size_box[0])
+            #assert(h == self._size_box[1])
+            if (w != self._size_box[0]) or (h != self._size_box[1]):
+                log.warning("w={} {} h={} {}".format(w, self._size_box[0], h, self._size_box[1]))
             if self._border_size_fact and (w == h):
                 img = add_border_around_image(image = img, size = int(img.size[0] * self._border_size_fact), color = self._border_color)
             img = scale_square_image(img, self._size_box)
