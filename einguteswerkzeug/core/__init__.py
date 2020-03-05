@@ -32,7 +32,7 @@ log.addHandler(handler)
 log.propagate=False
 # ---
 
-__version__ = (0,4,0)
+__version__ = (0,4,1)
 
 class EGW:
     __version__ = __version__
@@ -212,7 +212,7 @@ class EGW:
             params = json.loads(pjson)
             for k,v in params.items():
                 if k in self._PLUGINS_GENERATORS[self._generator].kwargs:
-                    self._PLUGINS_GENERATORS[self._generator].kwargs = {'k' : v}
+                    self._PLUGINS_GENERATORS[self._generator].kwargs = {k : v}
                 else:
                     raise Exception("generator '%s' provides no parameter '%s'. please check your --params-generator argument(s)." % (self._params_generator[i], k))
         # ---
