@@ -1,3 +1,6 @@
+**0.4.1**
+- fixes: --params-generator 
+
 **0.4.0** 
 - refactoring: transition to class-based plugins #13
 - refactoring: transition to class-based core #13

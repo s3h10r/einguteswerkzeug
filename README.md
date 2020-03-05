@@ -51,7 +51,7 @@ $ source venv/bin/activate
 (venv) $ pip install -r requirements.txt
 (venv) $ rm ./dist/*
 (venv) $ ./build.sh
-(venv) $ pip install ./dist/einguteswerkzeug-0.4.0.tar.gz
+(venv) $ pip install ./dist/einguteswerkzeug-0.4.1.tar.gz
 
 # -- ready to rumble! (:
 
