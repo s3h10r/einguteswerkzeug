@@ -19,10 +19,10 @@ around (see credits & thanks). in short the software provides:
 * supports your favorite [(truetype-)font](https://www.dafont.com)
 * `--help`-option :) + usage-examples as shellscripts
 
-`egw` is in **beta-status** and therefore some interface-things will
+`egw` is **beta-software** and therefore some interface-things will
 change for sure - but for now it already works fine for me. Maybe it
 can be usefull for you too, especially if you like to tinker with code. 
-Things here are simple (less than 2000 lines of core-code):
+Things are simple (here... <2000 lines of core-code):
 
 ```
 input (generator|image) [--> filter(s) & filter-params] --> paste into template --> output (image)
