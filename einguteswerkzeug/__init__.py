@@ -1,4 +1,5 @@
-#-*- coding: utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 __author__ = 'Sven Hessenmüller (sven.hessenmueller@gmail.com)'
 __date__ = '2019'
 __license__ = "MIT"

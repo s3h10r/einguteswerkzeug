@@ -32,7 +32,7 @@ log.addHandler(handler)
 log.propagate=False
 # ---
 
-__version__ = (0,4,1)
+__version__ = (0,4,2)
 
 class EGW:
     __version__ = __version__
@@ -54,7 +54,7 @@ class EGW:
     def __init__(self, *args, **kwargs):
         self._IFACE_VERSION = "0.4.0"
         self._load_plugins()
-        log.info("filters registered: {}".format(len(self.filters)))
+        log.info("filters    registered: {}".format(len(self.filters   )))
         log.info("generators registered: {}".format(len(self.generators)))
         self._seed = None
         self._setup_args(**kwargs)
@@ -177,6 +177,8 @@ class EGW:
             self._generator = kwargs['--generator'] # surpriseme :)
             if not self._generator in self._PLUGINS_GENERATORS:
                 show_error("Hu? Sorry generator '%s' unknown. Valid choices are: %s" % (generator, PLUGINS_GENERATORS.keys()))
+            else:
+                self._generator = self._PLUGINS_GENERATORS[self._generator]
         if kwargs['--font']:
             self._f_font = kwargs['--font']
         else:
@@ -208,11 +210,11 @@ class EGW:
         log.debug("params_generator: %s" % self._params_generator)
         # overwriting the default-kwargs for generators with user-provided settings
         for i,pjson in enumerate(self._params_generator): # should only be 1 generator
-            log.info("generator %s : loading & applying --params-generator %s '%s'" % (self._generator, i, pjson))
+            log.info("generator %s : loading & applying --params-generator %s '%s'" % (self._generator.name, i, pjson))
             params = json.loads(pjson)
             for k,v in params.items():
-                if k in self._PLUGINS_GENERATORS[self._generator].kwargs:
-                    self._PLUGINS_GENERATORS[self._generator].kwargs = {k : v}
+                if k in self._generator.kwargs:
+                    self._generator.kwargs = {k : v}
                 else:
                     raise Exception("generator '%s' provides no parameter '%s'. please check your --params-generator argument(s)." % (self._params_generator[i], k))
         # ---
@@ -265,7 +267,7 @@ class EGW:
             if not self._align in ("left", "right", "top", "bottom", "center"):
                 show_error("Unknown alignment %s." % self._align)
         elif self._generator: # source can also be a generative art thingy
-            kwargs = self._PLUGINS_GENERATORS[self._generator].kwargs
+            kwargs = self._generator.kwargs
             # TODO #11 if --size-inner or --max-size we can set generator kwargs['size'] to this already
             # for this the generator interface should provide always a tuple(size) ...
             if 'size' in kwargs:
@@ -274,7 +276,7 @@ class EGW:
                 log.warning("deprecated : generator {} doesn't provide 'size' parameter".format(generator))
             if self._seed_is_global and ('seed' in kwargs):
                 kwargs['seed'] = self._seed
-            generator = self._PLUGINS_GENERATORS[self._generator]
+            generator = self._generator
             self._source = generator.run()
         if self._add_meta_to_title:
             if len(self._title) > 0:
@@ -389,7 +391,7 @@ class EGW:
         """
         apply filters, paste into template, generate output, save output
         returns
-            Imagin instance : the final image is saved and also returned
+            Image instance : the final image is saved and also returned
         """
         # --- apply_filters
         if self._apply_filters:
@@ -443,22 +445,49 @@ class EGW:
         print(self._target)
         return self._img_final
 
+
     @property
-    def filters(self):
+    def generator(self):
         """
         returns
-            list : names of filter-plugins available
+            EGWPluginGenerator : active generator
         """
-        return list(self._PLUGINS_FILTERS.keys())
+        return self._generator
+
+
+    @generator.setter
+    def generator(self, value):
+        if not isinstance(value,EGWPluginGenerator):
+            value = self._PLUGINS_GENERATORS[value]
+        self._generator = value
 
 
     @property
     def generators(self):
         """
         returns
-            list : names of generator-plugins available
+            dict : generator-plugins available
         """
-        return list(self._PLUGINS_GENERATORS.keys())
+        return self._PLUGINS_GENERATORS
+
+
+    @property
+    def filter(self):
+        """
+        returns
+            EGWPluginFilter : active filter
+        """
+        return self._filter
+
+
+    @property
+    def filters(self):
+        """
+        returns
+            list : filter-plugins available
+        """
+        return self._PLUGINS_FILTERS
+
 
     @property
     def version(self):
@@ -468,10 +497,11 @@ class EGW:
         """
         return self.__version__
 
+
     @property
     def info(self):
         """
-        shows infos about the current state of the template
+        shows infos about the current state
         """
         tpl_doc = string.Template("""
         version        : $version

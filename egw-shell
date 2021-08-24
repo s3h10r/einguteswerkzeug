@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+egw-shell - an interactive line-oriented command interpreter for
+            einguteswergzeug (egw).
+
+Usage:
+egwsh <source-image> --output=<filename>
+egwsh (<source-image> | --generator=<str>) [--output=<filename>]
+egwsh (<source-image> | --generator=<str>) [--config=<fqfn>] [--template=<str>] [--noframe]
+      [--filter <name>] [--params-filter <fparams>] [--params-generator <params>]
+      [--title=<str>] [--title-meta] [--font=<fqfn>] [--text-color=<rgb>]
+      [--alpha-blend=<float>] [--border-size=<int>] [--border-color=<rgb>]
+      [--size-inner=<n>] [--max-size=<w>]
+      [--crop | --nocrop] [--alignment=<str>] [--clockwise | --anticlock] -o <fout>
+      [--seed=<int>]
+
+Where:
+  source-image    Name of the image file to convert.
+
+Options:
+  --alignment=<str> Used for cropping - specifies the portion of the image
+                    to include in the final output.
+                    One of 'top', 'left', 'bottom', 'right' or 'center'.
+                    'top' and 'left' are synonomous as are 'bottom' and
+                    'right'. [default: center]
+                    Not of any use if --nocrop option is set.
+  --anticlockwise   Rotate the image anti-clockwise before processing
+  --alpha-blend=<float>
+                    option to blend image into the template
+                    value has a range of 0 to 1, for example "0.8".
+                    0 means fully transparent, 1 means opaque)
+                    [default: 1] fell free to PLAY: you can also try
+                    for example value 2.0 (hint, hint ;) ...
+  --border-size=<float>
+                    optional and only valid in combination with --nopolaroid.
+                    defines the percentage of borderspace around the image
+                    example: 0.2 => a border of 20 percent of the image_size
+                    will be added.
+  --border-color=<tuple>
+                    comma-seperated RGB values to set color for the border
+                    (if any, means if --border-size is set).
+                    default is: [default: 255,255,255]
+  -c,--config=<py>  a config is only necessary if --template is used (see docs)
+  --clockwise       Rotate the image clockwise before processing
+  --crop            the images will be cropped to fit. see --alignment
+  -f, --font=<f>    Specify (ttf-)font to use (full path!)
+  --filter=<str>    One or more (seperated by comma) of
+                    'ascii', 'ascii-color', 'pixelsort', 'diffuse', 'emboss',
+                    'find_edge', 'glowing_edge', 'ice', 'molten', 'mosaic', ...
+                    If more than one filter is used (filterchain) they will be applied in
+                    the sequence given.
+  --params-filter=<fparams0><fparams1>...<fparamsN>
+                    sets kwargs for filter(s) in json notation.
+  --generator=<str> Get phonky & create some generative art instead of using an input-image.
+  --params-generator=<pydict>
+                    sets kwargs for a generator
+  --seed=<int>      sets random seed (allows reproduction of pseudo-randomness)
+                    if set than the given value overwrites every single
+                    seed-argument of filters and generators and also weights
+                    more than a filter-/generator-specific seed value set via
+                    --params-filter|--params-generator.
+  -s,--size-inner=<n>
+                    Size of the processed / generated image (which is usually
+                    pasted into a template-image, for esample a polaroid-frame)
+                    in pixels. [default: 400]
+  --text-color=<tuple>
+                    Defines the color of text / title (if any is used)
+                    RGB-tuple. default value : [default: 135,206,235]
+  -t,--title=<str>  Defines an optional caption to be displayed at the
+                    bottom of the image. [default: ""]
+  --title-meta      Adds EXIF-data (date of capturing) to the title. If Input is
+                    a generator this adds infos about the generator's params.
+  -m,--max-size=<w> Sets maximum size (width) of the created image incl. "frame".
+                    (size-inner + template|frame <= max-size) [default:800]
+  --nocrop          Rescale the image to fit fullframe in the final output
+                    (default="--crop"). btw. alignment is ignored if option is set.
+  --noframe         put the processed image not into any frame / template.
+                    if --template is given nevertheless additionally then
+                    the "paste-area" (box) of template will be used
+                    so --alpha-blending can be applied for example.
+  -o, --output=<s>  Defines the name of the outputfile. If omitted a filename
+                    based on the original will be used - example:
+                    'test.polaroid.png' will be used as filename if input-file is 'test.png'
+  --template=<t>    Specify a template to use. A template can be a high-res
+                    scan of a real Polaroid or something of its shape.
+                    By using a template the visual output quality gains on
+                    expression & authenticity.
+
+  -h, --help        Print this.
+      --version     Print version.
+
+Examples:
+  $ egwsh --generator mondrian -o /tmp/1.png --params-generator '{"size" : [1024,768]}' --noframe
+  $ egwsh --generator nlines -o /tmp/2.png --filter puzzle -s 800 --noframe && feh /tmp/2.png
+
+Tip:
+  processing filterchains feels a bit like in the 90s of the last century,
+  means: it can get time-consuming. By setting the size to 200*200 pixels
+  (`-s 200`) and not using any frame (`--noframe`) the runtime
+  reduces a lot. This is ideal for getting a preview while experimenting with
+  different settings until a combination produces interesting results which
+  can then be rendered in high-res:
+
+  $ egwsh --generator psychedelic --filter pixelsort,mosaic,oil2 --params-filter '{"algo":10}{"block_size":16}{"brush_size":8, "roughness" : 80}' -o /tmp/3.png -s 200 --noframe && feh /tmp/3.png
+
+
+The latest version is available on github: https://github.com/s3h10r/einguteswerkzeug
+"""
+
+import logging
+from docopt import docopt
+from einguteswerkzeug.shell import __version__, main
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
+handler = logging.StreamHandler() # console-handler
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+log.addHandler(handler)
+
+
+if __name__ == '__main__':
+    # --- process args & options
+    args = docopt(__doc__, version=str('.'.join([str(el) for el in __version__])))
+    main(args)

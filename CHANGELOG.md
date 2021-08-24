@@ -1,3 +1,8 @@
+**0.4.2**
+- inits interactive commandline interpreter (egw-shell)
+- minor bugfixes & refactoring
+- inits docs (pydoc)
+
 **0.4.1**
 - fixes: --params-generator 
 

@@ -201,7 +201,7 @@ changelog
 License
 =======
 
-einguteswerkzeug is made with <3, actively maintained & developed by Sven Hessenmüller.
+einguteswerkzeug is made with <3, maintained & developed by Sven Hessenmüller.
 
 einguteswerkzeug uses some excellent open source software and snippets - please
 take a look at Credits & Thanks for the complete list of codes & inspirations the author
@@ -209,7 +209,7 @@ is gratefull for being allowed to use and remix in this software product.
 
 MIT License
 
-Copyright (c) 2019-2020 Sven Hessenmüller <sven.hessenmueller@gmail.com>
+Copyright (c) 2019-2021 Sven Hessenmüller <sven.hessenmueller@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
