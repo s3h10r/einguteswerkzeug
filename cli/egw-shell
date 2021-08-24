@@ -1,0 +1,169 @@
+#!/usr/bin/env python3
+"""
+**TODO**
+
+a line-oriented command interpreter / "shell-like" command interface
+for egw
+
+literature:
+* https://pymotw.com/2/cmd/
+* https://docs.python.org/3/library/cmd.html
+
+* color-support:
+  * https://github.com/dmerejkowsky/python-cli-ui
+  * https://github.com/tartley/colorama
+  * https://www.devdungeon.com/content/colorize-terminal-output-python
+"""
+import cmd
+import logging
+import os
+from pluginbase import PluginBase
+from einguteswerkzeug.plugins import EGWPluginFilter, EGWPluginGenerator
+from einguteswerkzeug.core.template import EGWTemplate, load_templates, select_template
+from einguteswerkzeug.core import EGW
+
+import cli_ui
+from colorama import init, Fore, Back, Style
+from termcolor import colored
+
+# --- configure logging
+log = logging.getLogger(__name__)
+log.setLevel(logging.CRITICAL)
+if log.hasHandlers():
+    log.andlers.clear()
+handler = logging.StreamHandler() # console-handler
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+log.addHandler(handler)
+log.propagate=False
+# ---
+
+
+class EGWShell(cmd.Cmd):
+    """Simple command processor example."""
+    intro = 'Welcome to the egw-shell shell. Type help or ? to list commands.\n'
+    prompt = '(egw) '
+
+    l_searchpaths_filters = [os.path.dirname(os.path.realpath(__file__)) + "/../einguteswerkzeug/plugins/filters/", ]
+    l_searchpaths_generators = [os.path.dirname(os.path.realpath(__file__)) + "/../einguteswerkzeug/plugins/generators/", ]
+    _plugin_base = PluginBase(package='einguteswerkzeug.pluginframework')
+    _plugin_source_filters = _plugin_base.make_plugin_source(searchpath=l_searchpaths_filters)
+    _plugin_source_generators = _plugin_base.make_plugin_source(searchpath=l_searchpaths_generators)
+    _PLUGINS_FILTERS = {}
+    _PLUGINS_GENERATORS = {}
+    _TEMPLATES = {}
+
+    generator = 'rothko'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._load_plugins()
+        print(self.generator)
+        #self.egw = EGW()
+
+    def _load_plugins(self):
+        """
+        searches for plugins and registers / loads them class-wide
+        """
+        print("load")
+        for plug in self._plugin_source_filters.list_plugins():
+            plug_instance = self._plugin_source_filters.load_plugin(plug)
+            try:
+                if isinstance(plug_instance.filter, EGWPluginFilter):
+                    log.debug("{} provides a EGWPluginFilter-instance. iface_v : {}".format(plug_instance.filter.name, plug_instance.filter.iface_version))
+            except:
+                continue
+            if plug_instance.filter.name in self._PLUGINS_FILTERS:
+                log.warning("loading filter-plugin '%s' skipped because of name-conflict :/" % plug_instance.filter.name)
+                continue
+            self._PLUGINS_FILTERS[plug_instance.filter.name] = plug_instance.filter
+            log.info("filter '%s' successfully loaded" % plug_instance.filter.name)
+        log.debug("loading generator-plugins from %s" % self._plugin_source_generators.searchpath)
+        log.debug("generators.list_plugins %s" % self._plugin_source_generators.list_plugins())
+        for plug in self._plugin_source_generators.list_plugins():
+                plug_instance = self._plugin_source_generators.load_plugin(plug)
+                try:
+                    if isinstance(plug_instance.generator, EGWPluginGenerator):
+                        log.debug("{} provides a EGWPluginGenerator-instance. iface_v: {}".format(plug_instance.generator.name, plug_instance.generator.iface_version))
+                except:
+                    continue
+                if plug_instance.generator.name in self._PLUGINS_GENERATORS:
+                    log.warning("loading generator-plugin '%s' skipped because of name-conflict :/" % plug_instance.generator.name)
+                    continue
+                self._PLUGINS_GENERATORS[plug_instance.generator.name] = plug_instance.generator
+                log.info("generator '%s' successfully loaded" % plug_instance.generator.name)
+
+
+    def do_greet(self, person):
+        """greet [person]
+        Greet the named person"""
+        # Set the color semi-permanently
+        print(Fore.CYAN)
+        #print(Style.RESET_ALL)
+        if person:
+            print("hi," + person)
+        else:
+            print('hi')
+        print(colored('hi, ' + person, 'green', 'on_red'))
+
+    def do_EOF(self, line):
+        return True
+
+    def postloop(self):
+        print
+
+    def do_listGenerators(self,arg):
+        """
+        list available generators
+        """
+        for i, g in enumerate(self._PLUGINS_GENERATORS):
+            # cli_ui.info_count(i, len(self.avail_generators), g)
+            print(Fore.LIGHTBLUE_EX + "{} {} ({})".format(i,g,self._PLUGINS_GENERATORS[g]._author)) # FIXME Plugins are false feeded by kwargs on init, see plugin-code & EGWBasePlugin (version = description, author = version ...)
+            print(colored("    {}".format(self._PLUGINS_GENERATORS[g]._version), "blue"))
+
+    def do_listFilters(self,arg):
+        """
+        list available filters
+        """
+        print(self._PLUGINS_FILTERS)
+        #print(Fore.CYAN) #MAGENTA YELLOW LIGHTBLUE_EX LIGHTGREEN_EX CYAN LIGHTCYAN_EX
+        print(Fore.CYAN)
+        for i, g in enumerate(self._PLUGINS_FILTERS):
+            # cli_ui.info_count(i, len(self.avail_generators), g)
+            print(i, g)
+        print(Style.RESET_ALL)
+
+    def do_detailGenerator(self, generator):
+        """detailGenerator [generator]
+        shows details about generator. if no arg: active generator is used.
+        """
+        print(Fore.LIGHTBLUE_EX + "--generator={}".format(self.generator))
+        print(colored("description : **TODO**", "red"))
+
+    def do_setGenerator(self, generator):
+        """setGenerator [generator]
+        sets active generator. if no arg: shows details about active generator"
+        """
+        print(Fore.BLUE)
+        if generator:
+            self.generator = generator
+        #print(Fore.LIGHTBLUE_EX + "--generator={}".format(self.generator)
+        self.do_detailGenerator(generator)
+
+    def do_generator(self, generator):
+        self.do_setGenerator(generator)
+
+
+if __name__ == '__main__':
+    # use Colorama to make Termcolor work on Windows too
+    init()
+    # Set the color semi-permanently
+    #print(Fore.CYAN)
+    #print("Text will continue to be cyan")
+    #print("until it is reset or changed")
+    #print(Style.RESET_ALL)
+    # then use Termcolor for all colored text output
+    #print(colored('Hello, World!', 'green', 'on_red'))
+    egwsh = EGWShell()
+    egwsh.cmdloop()
+

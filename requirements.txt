@@ -4,6 +4,12 @@ exifread==2.1.2
 pluginbase==1.0.0
 cowpy==1.1.0
 
+# --- egw-shell color-support
+cli-ui 
+colorama
+termcolor
+# ---
+
 # --- for cutting the templates manually (./cli/setup_templates_manually.py)
 matplotlib
 
