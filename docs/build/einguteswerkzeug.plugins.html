@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: package einguteswerkzeug.plugins</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="einguteswerkzeug.html"><font color="#ffffff">einguteswerkzeug</font></a>.plugins</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/s3h10r/development/einguteswerkzeug/venv/lib/python3.7/site-packages/einguteswerkzeug/plugins/__init__.py">/home/s3h10r/development/einguteswerkzeug/venv/lib/python3.7/site-packages/einguteswerkzeug/plugins/__init__.py</a></font></td></tr></table>
+    <p><tt>base-classes&nbsp;of&nbsp;all&nbsp;filters&nbsp;and&nbsp;generators</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Package Contents</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="abc.html#ABC">abc.ABC</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="einguteswerkzeug.plugins.html#EGWPluginBase">EGWPluginBase</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="einguteswerkzeug.plugins.html#EGWPluginFilter">EGWPluginFilter</a>
+</font></dt><dt><font face="helvetica, arial"><a href="einguteswerkzeug.plugins.html#EGWPluginGenerator">EGWPluginGenerator</a>
+</font></dt></dl>
+</dd>
+</dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EGWPluginBase">class <strong>EGWPluginBase</strong></a>(<a href="abc.html#ABC">abc.ABC</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#EGWPluginBase">EGWPluginBase</a>(name=None,&nbsp;version=None,&nbsp;description=None,&nbsp;author=None)<br>
+&nbsp;<br>
+abstract&nbsp;base&nbsp;class&nbsp;of&nbsp;all&nbsp;plugins&nbsp;for&nbsp;einguteswerkzeug<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="einguteswerkzeug.plugins.html#EGWPluginBase">EGWPluginBase</a></dd>
+<dd><a href="abc.html#ABC">abc.ABC</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EGWPluginBase-__init__"><strong>__init__</strong></a>(self, name=None, version=None, description=None, author=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;<a href="#EGWPluginBase-help">help</a>(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="EGWPluginBase-run"><strong>run</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>author</strong></dt>
+</dl>
+<dl><dt><strong>description</strong></dt>
+</dl>
+<dl><dt><strong>help</strong></dt>
+<dd><tt>shows&nbsp;infos&nbsp;about&nbsp;the&nbsp;plugin,&nbsp;expecially&nbsp;the&nbsp;mandatory&nbsp;kwargs&nbsp;to&nbsp;set.</tt></dd>
+</dl>
+<dl><dt><strong>iface_version</strong></dt>
+<dd><tt>returns&nbsp;plugin&nbsp;interface&nbsp;version</tt></dd>
+</dl>
+<dl><dt><strong>kwargs</strong></dt>
+<dd><tt>get&nbsp;plugin's&nbsp;kwargs</tt></dd>
+</dl>
+<dl><dt><strong>name</strong></dt>
+</dl>
+<dl><dt><strong>version</strong></dt>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__abstractmethods__</strong> = frozenset({'run'})</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EGWPluginFilter">class <strong>EGWPluginFilter</strong></a>(<a href="einguteswerkzeug.plugins.html#EGWPluginBase">EGWPluginBase</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#EGWPluginFilter">EGWPluginFilter</a>(**kwargs)<br>
+&nbsp;<br>
+base-class&nbsp;of&nbsp;a&nbsp;filter-plugin&nbsp;for&nbsp;einguteswerkzeug<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="einguteswerkzeug.plugins.html#EGWPluginFilter">EGWPluginFilter</a></dd>
+<dd><a href="einguteswerkzeug.plugins.html#EGWPluginBase">EGWPluginBase</a></dd>
+<dd><a href="abc.html#ABC">abc.ABC</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EGWPluginFilter-__init__"><strong>__init__</strong></a>(self, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;<a href="#EGWPluginFilter-help">help</a>(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="EGWPluginFilter-run"><strong>run</strong></a>(self)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__abstractmethods__</strong> = frozenset({'_generate_image'})</dl>
+
+<hr>
+Data descriptors inherited from <a href="einguteswerkzeug.plugins.html#EGWPluginBase">EGWPluginBase</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>author</strong></dt>
+</dl>
+<dl><dt><strong>description</strong></dt>
+</dl>
+<dl><dt><strong>help</strong></dt>
+<dd><tt>shows&nbsp;infos&nbsp;about&nbsp;the&nbsp;plugin,&nbsp;expecially&nbsp;the&nbsp;mandatory&nbsp;kwargs&nbsp;to&nbsp;set.</tt></dd>
+</dl>
+<dl><dt><strong>iface_version</strong></dt>
+<dd><tt>returns&nbsp;plugin&nbsp;interface&nbsp;version</tt></dd>
+</dl>
+<dl><dt><strong>kwargs</strong></dt>
+<dd><tt>get&nbsp;plugin's&nbsp;kwargs</tt></dd>
+</dl>
+<dl><dt><strong>name</strong></dt>
+</dl>
+<dl><dt><strong>version</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EGWPluginGenerator">class <strong>EGWPluginGenerator</strong></a>(<a href="einguteswerkzeug.plugins.html#EGWPluginBase">EGWPluginBase</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#EGWPluginGenerator">EGWPluginGenerator</a>(name=None,&nbsp;version=None,&nbsp;description=None,&nbsp;author=None)<br>
+&nbsp;<br>
+base-class&nbsp;of&nbsp;a&nbsp;generator-plugin&nbsp;for&nbsp;einguteswerkzeug<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="einguteswerkzeug.plugins.html#EGWPluginGenerator">EGWPluginGenerator</a></dd>
+<dd><a href="einguteswerkzeug.plugins.html#EGWPluginBase">EGWPluginBase</a></dd>
+<dd><a href="abc.html#ABC">abc.ABC</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EGWPluginGenerator-__init__"><strong>__init__</strong></a>(self, name=None, version=None, description=None, author=None)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;<a href="#EGWPluginGenerator-help">help</a>(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="EGWPluginGenerator-run"><strong>run</strong></a>(self)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__abstractmethods__</strong> = frozenset({'_generate_image'})</dl>
+
+<hr>
+Data descriptors inherited from <a href="einguteswerkzeug.plugins.html#EGWPluginBase">EGWPluginBase</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>author</strong></dt>
+</dl>
+<dl><dt><strong>description</strong></dt>
+</dl>
+<dl><dt><strong>help</strong></dt>
+<dd><tt>shows&nbsp;infos&nbsp;about&nbsp;the&nbsp;plugin,&nbsp;expecially&nbsp;the&nbsp;mandatory&nbsp;kwargs&nbsp;to&nbsp;set.</tt></dd>
+</dl>
+<dl><dt><strong>iface_version</strong></dt>
+<dd><tt>returns&nbsp;plugin&nbsp;interface&nbsp;version</tt></dd>
+</dl>
+<dl><dt><strong>kwargs</strong></dt>
+<dd><tt>get&nbsp;plugin's&nbsp;kwargs</tt></dd>
+</dl>
+<dl><dt><strong>name</strong></dt>
+</dl>
+<dl><dt><strong>version</strong></dt>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>
