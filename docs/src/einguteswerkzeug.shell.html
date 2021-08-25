@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: package einguteswerkzeug.shell</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="einguteswerkzeug.html"><font color="#ffffff">einguteswerkzeug</font></a>.shell</strong></big></big> (version (0, 1, 0))</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/s3h10r/development/einguteswerkzeug/venv/lib/python3.7/site-packages/einguteswerkzeug/shell/__init__.py">/home/s3h10r/development/einguteswerkzeug/venv/lib/python3.7/site-packages/einguteswerkzeug/shell/__init__.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;-*-&nbsp;coding:&nbsp;utf-8&nbsp;-*-</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Package Contents</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="cmd.html#Cmd">cmd.Cmd</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="einguteswerkzeug.shell.html#EGWShell">EGWShell</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EGWShell">class <strong>EGWShell</strong></a>(<a href="cmd.html#Cmd">cmd.Cmd</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#EGWShell">EGWShell</a>(*args,&nbsp;**kwargs)<br>
+&nbsp;<br>
+An&nbsp;interactive&nbsp;line-oriented&nbsp;command&nbsp;interpreter&nbsp;for<br>
+einguteswergzeug&nbsp;(egw).<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="einguteswerkzeug.shell.html#EGWShell">EGWShell</a></dd>
+<dd><a href="cmd.html#Cmd">cmd.Cmd</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EGWShell-__init__"><strong>__init__</strong></a>(self, *args, **kwargs)</dt><dd><tt>Instantiate&nbsp;a&nbsp;line-oriented&nbsp;interpreter&nbsp;framework.<br>
+&nbsp;<br>
+The&nbsp;optional&nbsp;argument&nbsp;'completekey'&nbsp;is&nbsp;the&nbsp;readline&nbsp;name&nbsp;of&nbsp;a<br>
+completion&nbsp;key;&nbsp;it&nbsp;defaults&nbsp;to&nbsp;the&nbsp;Tab&nbsp;key.&nbsp;If&nbsp;completekey&nbsp;is<br>
+not&nbsp;None&nbsp;and&nbsp;the&nbsp;readline&nbsp;module&nbsp;is&nbsp;available,&nbsp;command&nbsp;completion<br>
+is&nbsp;done&nbsp;automatically.&nbsp;The&nbsp;optional&nbsp;arguments&nbsp;stdin&nbsp;and&nbsp;stdout<br>
+specify&nbsp;alternate&nbsp;input&nbsp;and&nbsp;output&nbsp;file&nbsp;objects;&nbsp;if&nbsp;not&nbsp;specified,<br>
+sys.stdin&nbsp;and&nbsp;sys.stdout&nbsp;are&nbsp;used.</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-do_EOF"><strong>do_EOF</strong></a>(self, line)</dt></dl>
+
+<dl><dt><a name="EGWShell-do_detailGenerator"><strong>do_detailGenerator</strong></a>(self, generator)</dt><dd><tt>detailGenerator&nbsp;[generator]<br>
+shows&nbsp;details&nbsp;about&nbsp;generator.&nbsp;if&nbsp;no&nbsp;arg:&nbsp;active&nbsp;generator&nbsp;is&nbsp;used.</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-do_editGenerator"><strong>do_editGenerator</strong></a>(self, arg)</dt><dd><tt>alias&nbsp;of&nbsp;paramsGenerator</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-do_filters"><strong>do_filters</strong></a>(self, arg)</dt><dd><tt>list&nbsp;available&nbsp;filters</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-do_generator"><strong>do_generator</strong></a>(self, generator)</dt><dd><tt>generator&nbsp;[generator]<br>
+sets&nbsp;active&nbsp;generator.&nbsp;if&nbsp;no&nbsp;arg:&nbsp;shows&nbsp;details&nbsp;about&nbsp;active&nbsp;generator"</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-do_generators"><strong>do_generators</strong></a>(self, arg)</dt><dd><tt>list&nbsp;available&nbsp;generators</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-do_listFilters"><strong>do_listFilters</strong></a>(self, arg)</dt><dd><tt>list&nbsp;available&nbsp;filters</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-do_listGenerators"><strong>do_listGenerators</strong></a>(self)</dt><dd><tt>list&nbsp;available&nbsp;generators</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-do_paramsGenerator"><strong>do_paramsGenerator</strong></a>(self, arg)</dt><dd><tt>paramsGenerator&nbsp;[parameters]<br>
+edit&nbsp;parameters&nbsp;(kwargs)&nbsp;of&nbsp;active&nbsp;generator.<br>
+equivalent&nbsp;to&nbsp;'--params-generator='&nbsp;on&nbsp;console.<br>
+&nbsp;<br>
+optional&nbsp;args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters&nbsp;(string)&nbsp;:&nbsp;generator's&nbsp;parameters&nbsp;in&nbsp;json-format<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;paramsGenerathor&nbsp;{"seed":1372403442,&nbsp;"colors":["#ff0000",&nbsp;"#00ff00",&nbsp;"#0000ff"]}'</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-do_printCLI"><strong>do_printCLI</strong></a>(self, arg)</dt><dd><tt>generate&nbsp;suiting&nbsp;egw&nbsp;command&nbsp;(handy&nbsp;for&nbsp;copy'n'paste)</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-do_run"><strong>do_run</strong></a>(self, arg)</dt><dd><tt>run&nbsp;(egw-)job</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-do_setGenerator"><strong>do_setGenerator</strong></a>(self, generator)</dt><dd><tt>setGenerator&nbsp;[generator]<br>
+sets&nbsp;active&nbsp;generator.&nbsp;if&nbsp;no&nbsp;arg:&nbsp;shows&nbsp;details&nbsp;about&nbsp;active&nbsp;generator"</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-postcmd"><strong>postcmd</strong></a>(self, stop, line)</dt><dd><tt>Hook&nbsp;method&nbsp;executed&nbsp;just&nbsp;after&nbsp;a&nbsp;command&nbsp;dispatch&nbsp;is&nbsp;finished.</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-postloop"><strong>postloop</strong></a>(self)</dt><dd><tt>Hook&nbsp;method&nbsp;executed&nbsp;once&nbsp;when&nbsp;the&nbsp;<a href="#EGWShell-cmdloop">cmdloop</a>()&nbsp;method&nbsp;is&nbsp;about&nbsp;to<br>
+return.</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-preloop"><strong>preloop</strong></a>(self)</dt><dd><tt>Hook&nbsp;method&nbsp;executed&nbsp;once&nbsp;when&nbsp;the&nbsp;<a href="#EGWShell-cmdloop">cmdloop</a>()&nbsp;method&nbsp;is&nbsp;called.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>color_flt</strong> = '<font color="#c040c0">\x1b</font>[93m'</dl>
+
+<dl><dt><strong>color_flt2</strong> = '<font color="#c040c0">\x1b</font>[33m'</dl>
+
+<dl><dt><strong>color_gen</strong> = '<font color="#c040c0">\x1b</font>[96m'</dl>
+
+<dl><dt><strong>color_gen2</strong> = '<font color="#c040c0">\x1b</font>[36m'</dl>
+
+<dl><dt><strong>color_prompt</strong> = '<font color="#c040c0">\x1b</font>[32m'</dl>
+
+<dl><dt><strong>egw</strong> = None</dl>
+
+<dl><dt><strong>intro</strong> = 'Welcome to egw-shell (0.1.0). Type help or ? to list commands.<font color="#c040c0">\n</font>'</dl>
+
+<dl><dt><strong>prompt</strong> = '(egw) '</dl>
+
+<hr>
+Methods inherited from <a href="cmd.html#Cmd">cmd.Cmd</a>:<br>
+<dl><dt><a name="EGWShell-cmdloop"><strong>cmdloop</strong></a>(self, intro=None)</dt><dd><tt>Repeatedly&nbsp;issue&nbsp;a&nbsp;prompt,&nbsp;accept&nbsp;input,&nbsp;parse&nbsp;an&nbsp;initial&nbsp;prefix<br>
+off&nbsp;the&nbsp;received&nbsp;input,&nbsp;and&nbsp;dispatch&nbsp;to&nbsp;action&nbsp;methods,&nbsp;passing&nbsp;them<br>
+the&nbsp;remainder&nbsp;of&nbsp;the&nbsp;line&nbsp;as&nbsp;argument.</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-columnize"><strong>columnize</strong></a>(self, list, displaywidth=80)</dt><dd><tt>Display&nbsp;a&nbsp;list&nbsp;of&nbsp;strings&nbsp;as&nbsp;a&nbsp;compact&nbsp;set&nbsp;of&nbsp;columns.<br>
+&nbsp;<br>
+Each&nbsp;column&nbsp;is&nbsp;only&nbsp;as&nbsp;wide&nbsp;as&nbsp;necessary.<br>
+Columns&nbsp;are&nbsp;separated&nbsp;by&nbsp;two&nbsp;spaces&nbsp;(one&nbsp;was&nbsp;not&nbsp;legible&nbsp;enough).</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-complete"><strong>complete</strong></a>(self, text, state)</dt><dd><tt>Return&nbsp;the&nbsp;next&nbsp;possible&nbsp;completion&nbsp;for&nbsp;'text'.<br>
+&nbsp;<br>
+If&nbsp;a&nbsp;command&nbsp;has&nbsp;not&nbsp;been&nbsp;entered,&nbsp;then&nbsp;complete&nbsp;against&nbsp;command&nbsp;list.<br>
+Otherwise&nbsp;try&nbsp;to&nbsp;call&nbsp;complete_&lt;command&gt;&nbsp;to&nbsp;get&nbsp;list&nbsp;of&nbsp;completions.</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-complete_help"><strong>complete_help</strong></a>(self, *args)</dt></dl>
+
+<dl><dt><a name="EGWShell-completedefault"><strong>completedefault</strong></a>(self, *ignored)</dt><dd><tt>Method&nbsp;called&nbsp;to&nbsp;complete&nbsp;an&nbsp;input&nbsp;line&nbsp;when&nbsp;no&nbsp;command-specific<br>
+complete_*()&nbsp;method&nbsp;is&nbsp;available.<br>
+&nbsp;<br>
+By&nbsp;default,&nbsp;it&nbsp;returns&nbsp;an&nbsp;empty&nbsp;list.</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-completenames"><strong>completenames</strong></a>(self, text, *ignored)</dt></dl>
+
+<dl><dt><a name="EGWShell-default"><strong>default</strong></a>(self, line)</dt><dd><tt>Called&nbsp;on&nbsp;an&nbsp;input&nbsp;line&nbsp;when&nbsp;the&nbsp;command&nbsp;prefix&nbsp;is&nbsp;not&nbsp;recognized.<br>
+&nbsp;<br>
+If&nbsp;this&nbsp;method&nbsp;is&nbsp;not&nbsp;overridden,&nbsp;it&nbsp;prints&nbsp;an&nbsp;error&nbsp;message&nbsp;and<br>
+returns.</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-do_help"><strong>do_help</strong></a>(self, arg)</dt><dd><tt>List&nbsp;available&nbsp;commands&nbsp;with&nbsp;"help"&nbsp;or&nbsp;detailed&nbsp;help&nbsp;with&nbsp;"help&nbsp;cmd".</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-emptyline"><strong>emptyline</strong></a>(self)</dt><dd><tt>Called&nbsp;when&nbsp;an&nbsp;empty&nbsp;line&nbsp;is&nbsp;entered&nbsp;in&nbsp;response&nbsp;to&nbsp;the&nbsp;prompt.<br>
+&nbsp;<br>
+If&nbsp;this&nbsp;method&nbsp;is&nbsp;not&nbsp;overridden,&nbsp;it&nbsp;repeats&nbsp;the&nbsp;last&nbsp;nonempty<br>
+command&nbsp;entered.</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-get_names"><strong>get_names</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="EGWShell-onecmd"><strong>onecmd</strong></a>(self, line)</dt><dd><tt>Interpret&nbsp;the&nbsp;argument&nbsp;as&nbsp;though&nbsp;it&nbsp;had&nbsp;been&nbsp;typed&nbsp;in&nbsp;response<br>
+to&nbsp;the&nbsp;prompt.<br>
+&nbsp;<br>
+This&nbsp;may&nbsp;be&nbsp;overridden,&nbsp;but&nbsp;should&nbsp;not&nbsp;normally&nbsp;need&nbsp;to&nbsp;be;<br>
+see&nbsp;the&nbsp;<a href="#EGWShell-precmd">precmd</a>()&nbsp;and&nbsp;<a href="#EGWShell-postcmd">postcmd</a>()&nbsp;methods&nbsp;for&nbsp;useful&nbsp;execution&nbsp;hooks.<br>
+The&nbsp;return&nbsp;value&nbsp;is&nbsp;a&nbsp;flag&nbsp;indicating&nbsp;whether&nbsp;interpretation&nbsp;of<br>
+commands&nbsp;by&nbsp;the&nbsp;interpreter&nbsp;should&nbsp;stop.</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-parseline"><strong>parseline</strong></a>(self, line)</dt><dd><tt>Parse&nbsp;the&nbsp;line&nbsp;into&nbsp;a&nbsp;command&nbsp;name&nbsp;and&nbsp;a&nbsp;string&nbsp;containing<br>
+the&nbsp;arguments.&nbsp;&nbsp;Returns&nbsp;a&nbsp;tuple&nbsp;containing&nbsp;(command,&nbsp;args,&nbsp;line).<br>
+'command'&nbsp;and&nbsp;'args'&nbsp;may&nbsp;be&nbsp;None&nbsp;if&nbsp;the&nbsp;line&nbsp;couldn't&nbsp;be&nbsp;parsed.</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-precmd"><strong>precmd</strong></a>(self, line)</dt><dd><tt>Hook&nbsp;method&nbsp;executed&nbsp;just&nbsp;before&nbsp;the&nbsp;command&nbsp;line&nbsp;is<br>
+interpreted,&nbsp;but&nbsp;after&nbsp;the&nbsp;input&nbsp;prompt&nbsp;is&nbsp;generated&nbsp;and&nbsp;issued.</tt></dd></dl>
+
+<dl><dt><a name="EGWShell-print_topics"><strong>print_topics</strong></a>(self, header, cmds, cmdlen, maxcol)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="cmd.html#Cmd">cmd.Cmd</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="cmd.html#Cmd">cmd.Cmd</a>:<br>
+<dl><dt><strong>doc_header</strong> = 'Documented commands (type help &lt;topic&gt;):'</dl>
+
+<dl><dt><strong>doc_leader</strong> = ''</dl>
+
+<dl><dt><strong>identchars</strong> = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'</dl>
+
+<dl><dt><strong>lastcmd</strong> = ''</dl>
+
+<dl><dt><strong>misc_header</strong> = 'Miscellaneous help topics:'</dl>
+
+<dl><dt><strong>nohelp</strong> = '*** No help on %s'</dl>
+
+<dl><dt><strong>ruler</strong> = '='</dl>
+
+<dl><dt><strong>undoc_header</strong> = 'Undocumented commands:'</dl>
+
+<dl><dt><strong>use_rawinput</strong> = 1</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>(kwargs)</dt></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>Back</strong> = &lt;colorama.ansi.AnsiBack object&gt;<br>
+<strong>Fore</strong> = &lt;colorama.ansi.AnsiFore object&gt;<br>
+<strong>Style</strong> = &lt;colorama.ansi.AnsiStyle object&gt;<br>
+<strong>formatter</strong> = &lt;logging.Formatter object&gt;<br>
+<strong>handler</strong> = &lt;StreamHandler &lt;stderr&gt; (NOTSET)&gt;<br>
+<strong>log</strong> = &lt;Logger einguteswerkzeug.shell (CRITICAL)&gt;</td></tr></table>
+</body></html>
