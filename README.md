@@ -72,6 +72,12 @@ egw (<source-image> | --generator=<str>) [--config=<fqfn>] [--template=<str>] [-
 
 Have fun! (:
 
+```console 
+(venv) $ egw --shell
+```
+
+<img src="/docs/egwsh.png" width="90%" title="egwsh (experimental)"></img>
+
 turn einguteswerkzeug into deinguteswerkzeug :)
 -----------------------------------------------
 
