@@ -176,7 +176,7 @@ class EGW:
         if not self._source:
             self._generator = kwargs['--generator'] # surpriseme :)
             if not self._generator in self._PLUGINS_GENERATORS:
-                show_error("Hu? Sorry generator '%s' unknown. Valid choices are: %s" % (generator, PLUGINS_GENERATORS.keys()))
+                show_error("Hu? Sorry generator '%s' unknown. Valid choices are: %s" % (self._generator, self._PLUGINS_GENERATORS.keys()))
             else:
                 self._generator = self._PLUGINS_GENERATORS[self._generator]
         if kwargs['--font']:

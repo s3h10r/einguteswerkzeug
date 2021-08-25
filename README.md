@@ -152,6 +152,10 @@ If you own a good scanner and could [provide some high-res scans of polaroid fra
 donate
 ------
 
+.. |donate| image:: https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif
+  :target: https://paypal.me/s3h10r
+  :alt: Donate with Paypal
+
 You do like einguteswerkzeug and want to support its development but you don't
 have the time? Please **[consider a small donation](https://paypal.me/s3h10r)** - every
 cent helps me to pay the bills & to continue building awesome software for

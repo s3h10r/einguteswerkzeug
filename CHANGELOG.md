@@ -1,5 +1,10 @@
 **0.4.2**
-- inits interactive commandline interpreter (egw-shell)
+- adds interactive commandline interpreter (egw-shell)
+  [X] support for inline-editing parameters
+  [P] generators
+  [ ] filters
+  [ ] complete functionality of egw available in shell
+- adds einguteswerkzeug.helpers
 - minor bugfixes & refactoring
 - inits docs (pydoc)
 
