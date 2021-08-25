@@ -52,7 +52,7 @@ _`examples`: https://github.com/s3h10r/einguteswerkzeug/blob/master/README.md
 setuptools.setup(
      name='einguteswerkzeug',
      version='0.4.2',
-     scripts=['cli/einguteswerkzeug', 'cli/egw'] ,
+     scripts=['cli/egw', 'cli/egwsh', 'cli/egw-shell'] ,
      author="Sven Hessenmüller",
      author_email="sven.hessenmueller@gmail.com",
      description="converts an image into vintage polaroid style - and can do some phonky stuff. :D",

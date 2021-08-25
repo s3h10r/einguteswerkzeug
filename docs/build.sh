@@ -2,7 +2,7 @@
 FQFN=$(realpath $0)
 MYPATH=$(dirname $FQFN)
 PY_LIB_PATH="../venv/lib/python3.7/site-packages"
-DIR_TGT="${MYPATH}/build/"
+DIR_TGT="${MYPATH}/src/"
 
 PYMODULES="einguteswerkzeug einguteswerkzeug.core einguteswerkzeug.helpers einguteswerkzeug.helpers.gfx einguteswerkzeug.plugins einguteswerkzeug.plugins.generators einguteswerkzeug.plugins.filters einguteswerkzeug.shell"
 cd $PY_LIB_PATH
