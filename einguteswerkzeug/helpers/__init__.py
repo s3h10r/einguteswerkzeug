@@ -95,7 +95,7 @@ def confirm_prompt(question: str, yes_by_default = True) -> bool:
     replies_values = ["y", "n"]
     yes = ("y")
     if yes_by_default: 
-        replies.add("")
+        replies_values.append("")
         replies_prompt = "Y/n"
         yes = ("", "y")
     reply = None
