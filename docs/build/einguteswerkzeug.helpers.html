@@ -25,7 +25,32 @@
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-get_resource_file"><strong>get_resource_file</strong></a>(basefile, PACKAGE_NAME='einguteswerkzeug')</dt><dd><tt>gets&nbsp;the&nbsp;fully&nbsp;qualified&nbsp;name&nbsp;of&nbsp;a&nbsp;resource&nbsp;file</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-confirm_prompt"><strong>confirm_prompt</strong></a>(question: str, yes_by_default=True) -&gt; bool</dt><dd><tt>Shows&nbsp;a&nbsp;yes/no&nbsp;question.<br>
+&nbsp;<br>
+example:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;reply&nbsp;=&nbsp;<a href="#-confirm_prompt">confirm_prompt</a>("Are&nbsp;you&nbsp;sure?")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;print(reply)<br>
+&nbsp;<br>
+args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;yes_by_default&nbsp;(bool)&nbsp;:&nbsp;if&nbsp;True&nbsp;just&nbsp;hitting&nbsp;return&nbsp;equals&nbsp;yes.<br>
+&nbsp;<br>
+returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;:&nbsp;True&nbsp;if&nbsp;ansered&nbsp;with&nbsp;yes.&nbsp;False&nbsp;if&nbsp;answerded&nbsp;with&nbsp;no.</tt></dd></dl>
+ <dl><dt><a name="-editor"><strong>editor</strong></a>(text=None, default_editor='vi')</dt><dd><tt>Open&nbsp;an&nbsp;editor&nbsp;(environment&nbsp;variable&nbsp;EDITOR).<br>
+Allows&nbsp;to&nbsp;edit&nbsp;(given)&nbsp;text&nbsp;like&nbsp;the&nbsp;functionality<br>
+that&nbsp;happens&nbsp;when&nbsp;doing&nbsp;'git&nbsp;commit'&nbsp;on&nbsp;the&nbsp;console.&nbsp;<br>
+&nbsp;<br>
+args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;text&nbsp;(string):&nbsp;the&nbsp;text&nbsp;to&nbsp;edit<br>
+&nbsp;<br>
+optional&nbsp;args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;default_editor&nbsp;(string)&nbsp;:&nbsp;editor&nbsp;to&nbsp;use&nbsp;if&nbsp;environment&nbsp;varibale&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EDITOR&nbsp;is&nbsp;not&nbsp;set<br>
+&nbsp;<br>
+returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;string:&nbsp;the&nbsp;edited&nbsp;text</tt></dd></dl>
+ <dl><dt><a name="-get_resource_file"><strong>get_resource_file</strong></a>(basefile, PACKAGE_NAME='einguteswerkzeug')</dt><dd><tt>gets&nbsp;the&nbsp;fully&nbsp;qualified&nbsp;name&nbsp;of&nbsp;a&nbsp;resource&nbsp;file</tt></dd></dl>
  <dl><dt><a name="-show_error"><strong>show_error</strong></a>(msg)</dt><dd><tt>Show&nbsp;an&nbsp;error&nbsp;message&nbsp;and&nbsp;exit</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
