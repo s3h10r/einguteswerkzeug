@@ -32,7 +32,7 @@ log.addHandler(handler)
 log.propagate=False
 # ---
 
-__version__ = (0,4,2)
+__version__ = (0,4,21)
 
 class EGW:
     __version__ = __version__

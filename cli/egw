@@ -129,8 +129,8 @@ log.addHandler(handler)
 if __name__ == '__main__':
     # --- process args & options
     args = docopt(__doc__, version=str('.'.join([str(el) for el in __version__])))
-    myname = sys.argv[0]
-    if ('--shell' in args) or ('--interactive' in args) or (myname not in ('egw', 'einguteswerkzeug')):
+    myname = os.path.basename(sys.argv[0])
+    if (args['--shell']) or (args['--interactive']) or (myname not in ('egw', 'einguteswerkzeug')):
         if not args['--generator'] : args['--generator']='mondrian'
         main_shell(args)
     else:
