@@ -1,4 +1,5 @@
 #!/bin/bash
+pip install -r requirements.txt
 rm -Rf ./build/
 rm -Rf ./dist/
 rm -Rf ./egw.egg-info

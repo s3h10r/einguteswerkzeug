@@ -50,10 +50,7 @@ $ cd einguteswerkzeug
 
 $ python3 -m venv venv
 $ source venv/bin/activate
-(venv) $ pip install -r requirements.txt
-(venv) $ rm ./dist/*
 (venv) $ ./build.sh
-(venv) $ pip install ./dist/einguteswerkzeug-0.4.2.tar.gz
 
 # -- ready to rumble! (:
 
